@@ -1,0 +1,84 @@
+.me-3 {
+    margin-left: 1rem !important;
+    margin-right: unset !important;
+}
+/* Bootstrap RTL (Right-to-Left) CSS Override */
+
+/* Margin Utilities */
+.ms-0 { margin-right: unset !important; margin-left: unset !important; }
+.ms-1 { margin-right: 0.25rem !important; margin-left: unset !important; }
+.ms-2 { margin-right: 0.5rem !important; margin-left: unset !important; }
+.ms-3 { margin-right: 1rem !important; margin-left: unset !important; }
+.ms-4 { margin-right: 1.5rem !important; margin-left: unset !important; }
+.ms-5 { margin-right: 3rem !important; margin-left: unset !important; }
+.ms-6 { margin-right: 4rem !important; margin-left: unset !important; }
+.me-0 { margin-left: unset !important; margin-right: unset !important; }
+.me-1 { margin-left: 0.25rem !important; margin-right: unset !important; }
+.me-2 { margin-left: 0.5rem !important; margin-right: unset !important; }
+.me-3 { margin-left: 1rem !important; margin-right: unset !important; }
+.me-4 { margin-left: 1.5rem !important; margin-right: unset !important; }
+.me-5 { margin-left: 3rem !important; margin-right: unset !important; }
+.me-6 { margin-left: 1rem !important; margin-right: unset !important; }
+
+/* Padding Utilities */
+.ps-0 { padding-right: unset !important; padding-left: unset !important; }
+.ps-1 { padding-right: 0.25rem !important; padding-left: unset !important; }
+.ps-2 { padding-right: 0.5rem !important; padding-left: unset !important; }
+.ps-3 { padding-right: 1rem !important; padding-left: unset !important; }
+.ps-4 { padding-right: 1.5rem !important; padding-left: unset !important; }
+.ps-5 { padding-right: 3rem !important; padding-left: unset !important; }
+.ps-6 { padding-right: 1rem !important; padding-left: unset !important; }
+
+.pe-0 { padding-left: unset !important; padding-right: unset !important; }
+.pe-1 { padding-left: 0.25rem !important; padding-right: unset !important; }
+.pe-2 { padding-left: 0.5rem !important; padding-right: unset !important; }
+.pe-3 { padding-left: 1rem !important; padding-right: unset !important; }
+.pe-4 { padding-left: 1.5rem !important; padding-right: unset !important; }
+.pe-5 { padding-left: 3rem !important; padding-right: unset !important; }
+.pe-6 { padding-left: 1rem !important; padding-right: unset !important; }
+.me-7 { margin-left: 1.75rem !important; margin-right: unset !important; }
+
+
+@media (min-width: 992px) {
+    .ms-lg-4 {
+      margin-left: unset !important;
+      margin-right:1rem !important;
+    }
+}
+
+.text-left { text-align: right !important; }
+.text-right { text-align: left !important; }
+
+
+.float-left { float: right !important; }
+.float-right { float: left !important; }
+
+.order-first { order: 1 !important; }
+.order-last { order: -1 !important; }
+
+.me-auto {
+    margin-left: auto !important;
+    margin-right: unset !important;
+}
+
+.ms-auto {
+    margin-right: auto !important;
+    margin-left: unset !important;
+}
+
+.breadcrumb .breadcrumb-item {
+    padding-left: 0;
+    padding-right:.5rem;
+}
+
+.select2-container--bootstrap5 .select2-dropdown .select2-results__option.select2-results__option--selected::after {
+    left: 1.25rem;
+    right: unset !important;
+}
+
+@media (min-width: 992px) {
+    .me-lg-9 {
+      margin-right:  unset !important;
+      margin-left:  2.25rem !important;
+    }
+}

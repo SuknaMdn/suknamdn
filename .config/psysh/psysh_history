@@ -1,0 +1,2 @@
+$user = App\Models\User::find(1); // Assuming user ID 1
+$user->assignRole('super_admin');

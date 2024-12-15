@@ -1,0 +1,79 @@
+.ibm-plex-sans-arabic-thin {
+    font-family: "IBM Plex Sans Arabic", serif;
+    font-weight: 100;
+    font-style: normal;
+}
+
+.ibm-plex-sans-arabic-extralight {
+    font-family: "IBM Plex Sans Arabic", serif;
+    font-weight: 200;
+    font-style: normal;
+}
+
+.ibm-plex-sans-arabic-light {
+    font-family: "IBM Plex Sans Arabic", serif;
+    font-weight: 300;
+    font-style: normal;
+}
+
+.ibm-plex-sans-arabic-regular {
+    font-family: "IBM Plex Sans Arabic", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.ibm-plex-sans-arabic-medium {
+    font-family: "IBM Plex Sans Arabic", serif;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.ibm-plex-sans-arabic-semibold {
+    font-family: "IBM Plex Sans Arabic", serif;
+    font-weight: 600;
+    font-style: normal;
+}
+
+.ibm-plex-sans-arabic-bold {
+    font-family: "IBM Plex Sans Arabic", serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+:root {
+    --bs-primary: #000000;
+    --bs-primary-active: #333333;
+    --bs-primary-inverse: #ffffff;
+}
+
+.h-35px {
+    height: 35px !important;
+}
+
+* {
+    font-family: "IBM Plex Sans Arabic", serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "IBM Plex Sans Arabic", serif;
+    font-weight: 600;
+}
+p {
+    font-family: "IBM Plex Sans Arabic", serif;
+    font-weight: 400;
+}
+span {
+    font-family: "IBM Plex Sans Arabic", serif;
+    font-weight: 400;
+}
+
+.me-auto {
+    margin-right: auto !important;
+}
+
+.mapboxgl-popup-content{
+    padding: 10px 0px 4px !important;
+    border-radius: 10px !important;
+    padding-top: 0 !important;
+    border: 1px solid #d0d0d0 !important;
+}

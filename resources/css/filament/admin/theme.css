@@ -1,0 +1,95 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+@config 'tailwind.config.js';
+
+/* AUTH */
+.fi-logo {
+    @apply !h-8;
+}
+
+/* SIDEBAR */
+.fi-sidebar.fi-sidebar-open {
+    /* @apply !w-1/5; */
+}
+
+.fi-sidebar-nav-groups {
+    /* @apply gap-y-4; */
+}
+
+.fi-sidebar-header {
+    @apply !shadow-none;
+}
+
+/* .fi-sidebar-group > .fi-sidebar-group-items { @apply gap-y-2; } */
+
+.fi-topbar nav {
+    @apply !shadow-none;
+}
+
+/* SIDEBAR ITEM */
+.fi-sidebar-item a {
+    @apply px-4 py-2 rounded-xl;
+}
+
+.fi-sidebar-item a > span,
+.fi-sidebar-item a > svg {
+    /* @apply font-semibold; */
+}
+
+.fi-sidebar-item a:focus,
+.fi-sidebar-item a:hover {
+    @apply transition-all ease-in-out duration-300 !important;
+}
+
+.fi-sidebar-item a:hover svg,
+.fi-sidebar-item a:focus span,
+.fi-sidebar-item a:hover span {
+    @apply transition-all ease-in-out duration-300 !important;
+}
+
+.fi-sidebar-item-active a {
+    /* @apply bg-primary-100 dark:bg-primary-900 ; */
+}
+
+.fi-sidebar-item a:hover svg,
+.fi-sidebar-item a:focus svg,
+.fi-sidebar-item-active svg {
+    @apply transition-all ease-in-out duration-300 !important;
+}
+.fi-sidebar.fi-sidebar-open {
+    .fi-sidebar-item a:hover svg,
+    .fi-sidebar-item a:focus svg,
+    .fi-sidebar-item-active svg {
+        @apply !ml-1;
+    }
+}
+
+/* Content */
+.fi-main {
+    /* @apply my-4 pb-4 bg-white dark:bg-gray-900 rounded-lg; */
+}
+
+.fi-simple-main,
+.fi-section,
+.fi-ta-ctn,
+.fi-fo-tabs,
+.fi-wi-stats-overview-stat,
+.fi-fo-repeater-item {
+    /* @apply shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px]; */
+}
+
+.fi-header-heading {
+    @apply !text-2xl text-primary-600 dark:text-primary-400;
+}
+
+.fi-header-subheading {
+    @apply !text-sm;
+}
+
+/* Filament Actions */
+.fi-btn.fi-btn-color-primary {
+    @apply text-secondary-50;
+}
+.fi-dropdown-trigger button.fi-btn {
+    @apply !p-1;
+}
