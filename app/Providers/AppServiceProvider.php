@@ -14,6 +14,8 @@ use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Support\Facades\View as ViewFacade;
 use Illuminate\Support\Facades\Auth;
 use App\Settings\MailSettings;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Log;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -70,9 +72,15 @@ class AppServiceProvider extends ServiceProvider
             $view->with('authUser', Auth::user());
         });
 
-        // # Mail Settings
-        // check if the mail settings are loaded
-        // $mailSettings = app(MailSettings::class)->toArray();
-        // app(MailSettings::class)->loadMailSettingsToConfig($mailSettings);
+        // Mail Settings with safe loading
+        try {
+            if (Schema::hasTable('settings')) {
+                $mailSettings = app(MailSettings::class)->toArray();
+                app(MailSettings::class)->loadMailSettingsToConfig($mailSettings);
+            }
+        } catch (\Exception $e) {
+            // Log the error or handle it gracefully
+            Log::error('Error loading mail settings: ' . $e->getMessage());
+        }
     }
 }

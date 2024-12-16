@@ -53,7 +53,6 @@ COPY --chown=www-data:www-data . /var/www
 # Change current user to www
 USER www-data
 
-
 # Use the entrypoint script
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 

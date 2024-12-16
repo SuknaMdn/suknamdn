@@ -138,7 +138,12 @@ class ProjectResource extends Resource
                                             Forms\Components\FileUpload::make('icon')
                                                 ->image()
                                                 ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/svg+xml'])
-                                                ->required(),
+                                                ->directory('projects/facilities')
+                                                ->disk('public')
+                                                ->nullable()
+                                                ->previewable()
+                                                ->downloadable(),
+
                                             Forms\Components\TextInput::make('title')
                                                 ->required(),
                                             Forms\Components\TextInput::make('content')
@@ -157,7 +162,9 @@ class ProjectResource extends Resource
                                             Forms\Components\FileUpload::make('icon')
                                                 ->image()
                                                 ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/svg+xml'])
-                                                ->required(),
+                                                ->directory('projects/operational-services')
+                                                ->disk('public')
+                                                ->nullable(),
                                             Forms\Components\TextInput::make('title')
                                                 ->required(),
                                         ])
@@ -174,7 +181,9 @@ class ProjectResource extends Resource
                                             Forms\Components\FileUpload::make('icon')
                                                 ->image()
                                                 ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/svg+xml'])
-                                                ->required(),
+                                                ->directory('projects/warranties')
+                                                ->disk('public')
+                                                ->nullable(),
                                             Forms\Components\TextInput::make('title')
                                                 ->required(),
                                             Forms\Components\TextInput::make('content')

@@ -154,8 +154,10 @@ These are [Filament Plugins](https://filamentphp.com/plugins) use for this proje
 #### Generate Shield
 
 ```bash
-php artisan shield:generate
+php artisan shield:setup
+php artisan shield:install admin
 php artisan shield:super-admin
+php artisan shield:generate --all
 php artisan optimize:clear
 php artisan config:clear
 php artisan cache:clear
@@ -163,7 +165,5 @@ php artisan filament:optimize
 php artisan optimize
 **important**
 php artisan icons:cache
-
-**from artisan menu**
 php artisan storage:link
 ```

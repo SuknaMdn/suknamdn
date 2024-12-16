@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use Dotswan\MapPicker\Fields\Map;
 use Filament\Forms\Set;
+use Filament\Forms\Get;
 use Filament\Actions\Action;
 use Filament\Tables\Actions\Action as TableAction;
 use Filament\Notifications\Notification;
@@ -169,13 +170,28 @@ class UnitResource extends Resource
                                     ->default('direct'),
                                 Forms\Components\TextInput::make('unit_price')
                                     ->numeric()
-                                    ->step('0.01'),
+                                    ->live()
+                                    ->afterStateUpdated(function (Get $get, Set $set) {
+                                        $unitPrice = floatval($get('unit_price')) ?? 0;
+                                        $propertyTax = floatval($get('property_tax')) ?? 0;
+                                        $totalAmount = $unitPrice + ($unitPrice * ($propertyTax / 100));
+                                        $set('total_amount', $totalAmount);
+                                    }),
                                 Forms\Components\TextInput::make('property_tax')
                                     ->numeric()
-                                    ->step('0.01'),
+                                    ->default(15)
+                                    ->live()
+                                    ->afterStateUpdated(function (Get $get, Set $set) {
+                                        $unitPrice = floatval($get('unit_price')) ?? 0;
+                                        $propertyTax = floatval($get('property_tax')) ?? 0;
+                                        $totalAmount = $unitPrice + ($unitPrice * ($propertyTax / 100));
+                                        $set('total_amount', $totalAmount);
+                                    }),
                                 Forms\Components\TextInput::make('total_amount')
                                     ->numeric()
-                                    ->step('0.01'),
+                                    ->disabled(),
+
+
                             ])->columns(4),
                     ])
                     ->collapsible(),

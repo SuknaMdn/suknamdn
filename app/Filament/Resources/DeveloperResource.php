@@ -60,6 +60,7 @@ class DeveloperResource extends Resource
                                                     ->whereColumn('roles.id', 'model_has_roles.role_id');
                                           });
                                 })
+                                ->required()
                                 ->searchable(),
                         ])->columns(2),
                 ]),
