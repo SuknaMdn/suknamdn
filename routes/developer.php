@@ -4,7 +4,6 @@ use App\Livewire\Developer\Dashboard\Index;
 use App\Livewire\Developer\Auth\Login;
 use App\Livewire\Developer\Auth\ForgotPassword;
 use App\Livewire\Developer\Auth\ResetPassword;
-use App\Livewire\Developer\Dashboard\Profile;
 use App\Livewire\Developer\Dashboard\EditProfile;
 use App\Livewire\Developer\Dashboard\Companies\Company;
 use App\Livewire\Developer\Dashboard\Companies\EditCompany;

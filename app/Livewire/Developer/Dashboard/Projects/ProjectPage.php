@@ -5,13 +5,13 @@ namespace App\Livewire\Developer\Dashboard\Projects;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
-use App\Models\Project as ProjectModel;
+use App\Models\Project;
 use App\Models\Unit;
 use App\Models\UnitOrder;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
 #[Layout('components.layouts.developer')]
-#[Title('Project')]
+#[Title('Project Details')]
 
 class ProjectPage extends Component
 {
@@ -32,7 +32,7 @@ class ProjectPage extends Component
 
     public function mount($slug)
     {
-        $this->project = ProjectModel::where('slug', $slug)->first();
+        $this->project = Project::where('slug', $slug)->first();
         $this->units = Unit::where('project_id', $this->project->id)->with('orders')->get();
         $this->orders = UnitOrder::whereIn('unit_id', $this->units->pluck('id'))->get();
         $this->unitsSold = $this->units->where('case', 1)->count();
