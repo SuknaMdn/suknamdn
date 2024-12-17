@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Auth\PasswordController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\MapController;
+use App\Http\Controllers\Api\FavoriteController;
 /*
 |--------------------------------------------------------------------------
 | Api Routes
@@ -39,11 +40,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // createSTCPayment
     Route::get('payments/stc-payment', [PaymentController::class, 'createSTCPayment']); // TODO: remove this
 
+    Route::get('favorites/{user_id}', [FavoriteController::class, 'getUserFavorite']);
 });
 
 Route::get('/addresses/cities', [AddressController::class, 'getCities']);
 Route::get('/addresses/areas', [AddressController::class, 'getAreas']);
-
 Route::get('/map/projects', [MapController::class, 'index']);
-
 Route::post('/payments/webhook', [PaymentController::class, 'handleWebhook']);
