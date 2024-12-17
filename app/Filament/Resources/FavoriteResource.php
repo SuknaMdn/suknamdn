@@ -27,30 +27,30 @@ class FavoriteResource extends Resource
     {
         return $form
             ->schema([
-                // Forms\Components\Select::make('user_id')
-                //     ->relationship('user', 'username')
-                //     ->required(),
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', 'username')
+                    ->required(),
 
-                // Forms\Components\Select::make('favoritable_type')
-                //     ->options([
-                //         'App\Models\Unit' => 'Unit',
-                //         'App\Models\Project' => 'Project',
-                //     ])
-                //     ->live() // This makes the field reactive
-                //     ->required(),
+                Forms\Components\Select::make('favoritable_type')
+                    ->options([
+                        'App\Models\Unit' => 'Unit',
+                        'App\Models\Project' => 'Project',
+                    ])
+                    ->live() // This makes the field reactive
+                    ->required(),
 
-                // Forms\Components\Select::make('favoritable_id')
-                //     ->options(function (Get $get) {
-                //         $modelClass = $get('favoritable_type');
+                Forms\Components\Select::make('favoritable_id')
+                    ->options(function (Get $get) {
+                        $modelClass = $get('favoritable_type');
 
-                //         if (!$modelClass) {
-                //             return [];
-                //         }
-                //         return $modelClass::query()->pluck('title', 'id');
-                //     })
-                //     ->searchable()
-                //     ->required()
-                //     ->hidden(fn (Get $get) => !$get('favoritable_type')), // Hide until a type is selected
+                        if (!$modelClass) {
+                            return [];
+                        }
+                        return $modelClass::query()->pluck('title', 'id');
+                    })
+                    ->searchable()
+                    ->required()
+                    ->hidden(fn (Get $get) => !$get('favoritable_type')), // Hide until a type is selected
             ]);
     }
 
