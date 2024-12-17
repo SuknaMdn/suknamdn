@@ -40,7 +40,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // createSTCPayment
     Route::get('payments/stc-payment', [PaymentController::class, 'createSTCPayment']); // TODO: remove this
 
-    Route::get('favorites/{user_id}', [FavoriteController::class, 'getUserFavorite']);
+    Route::get('favorite/{user_id}', [FavoriteController::class, 'getUserFavorite']);
 });
 
 Route::get('/addresses/cities', [AddressController::class, 'getCities']);
