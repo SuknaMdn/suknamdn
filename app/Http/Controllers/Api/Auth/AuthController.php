@@ -26,7 +26,7 @@ class AuthController extends Controller
 {
 
     protected $otpService;
-
+    public $is_new_user = false;
     public function __construct(OtpAuthService $otpService)
     {
         $this->otpService = $otpService;
@@ -72,10 +72,14 @@ class AuthController extends Controller
                 if (!$user->roles->contains($role)) {
                     // Assign the "user" role to the authenticated user
                     $user->roles()->attach($role);
+                    $user->is_new_user = true;
+                }else {
+                    $user->is_new_user = false;
                 }
 
                 return response()->json([
                     'status' => true,
+                    'is_new_user' => $user->is_new_user,
                     'message' => 'Successfully signed in',
                     'data' => [
                         'user' => $user->only(['id', 'username', 'phone', 'email', 'created_at']),
