@@ -14,7 +14,7 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         // Check if superadmin user already exists
-        $existingUser = User::where('email', 'superadmin@sokna.sa')->first();
+        $existingUser = User::where('email', 'superadmin@sukna.sa')->first();
 
         if (!$existingUser) {
             // Create superadmin user
@@ -24,7 +24,7 @@ class UsersTableSeeder extends Seeder
                 'firstname' => 'Super',
                 'lastname' => 'Admin',
                 'phone' => '0500000000',
-                'email' => 'superadmin@sokna.sa',
+                'email' => 'superadmin@sukna.sa',
                 'email_verified_at' => now(),
                 'password' => Hash::make('superadmin'),
                 'created_at' => now(),

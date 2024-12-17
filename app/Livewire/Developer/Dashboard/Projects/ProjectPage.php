@@ -13,7 +13,7 @@ use Jantinnerezo\LivewireAlert\LivewireAlert;
 #[Layout('components.layouts.developer')]
 #[Title('Project')]
 
-class Project extends Component
+class ProjectPage extends Component
 {
     use LivewireAlert;
     public $project;

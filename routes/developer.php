@@ -8,7 +8,7 @@ use App\Livewire\Developer\Dashboard\Profile;
 use App\Livewire\Developer\Dashboard\EditProfile;
 use App\Livewire\Developer\Dashboard\Companies\Company;
 use App\Livewire\Developer\Dashboard\Companies\EditCompany;
-use App\Livewire\Developer\Dashboard\Projects\Project;
+use App\Livewire\Developer\Dashboard\Projects\ProjectPage;
 use App\Livewire\Developer\Dashboard\Projects\Projects;
 use App\Livewire\Developer\Dashboard\Projects\CreateProject;
 use App\Livewire\Developer\Dashboard\Units\ProjectUnits;
@@ -29,7 +29,7 @@ Route::middleware(['auth', 'check.role'])->prefix('developer')->name('developer.
 
     // projects
     Route::get('/projects', Projects::class)->name('projects');
-    Route::get('/project/{slug}', Project::class)->name('projects.show');
+    Route::get('/project/{slug}', ProjectPage::class)->name('projects.show');
     Route::get('/projects/fullmap', Fullmap::class)->name('projects.fullmap');
 
     // projects/create
