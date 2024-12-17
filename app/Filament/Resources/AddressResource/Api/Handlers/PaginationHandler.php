@@ -23,7 +23,12 @@ class PaginationHandler extends Handlers {
             ->allowedSorts($this->getAllowedSorts() ?? [])
             ->allowedFilters($this->getAllowedFilters() ?? [])
             ->allowedIncludes($this->getAllowedIncludes() ?? [])
-            ->get();
+            ->get()
+            ->map(function ($item) {
+                $item->city_name = $item->city->name;
+                $item->state_name = $item->state->name;
+                return $item;
+            });
 
         return static::getApiTransformer()::collection($query);
     }
