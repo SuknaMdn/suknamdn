@@ -58,18 +58,18 @@ class FavoriteResource extends Resource
                 Tables\Columns\TextColumn::make('user.username')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('favoritable_type')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'App\Models\Unit' => 'primary',
-                        'App\Models\Project' => 'success',
-                        default => 'gray',
-                    })
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'App\Models\Unit' => 'Unit',
-                        'App\Models\Project' => 'Project',
-                        default => $state,
-                    }),
+                // Tables\Columns\TextColumn::make('favoritable_type')
+                //     ->badge()
+                //     ->color(fn (string $state): string => match ($state) {
+                //         'App\Models\Unit' => 'primary',
+                //         'App\Models\Project' => 'success',
+                //         default => 'gray',
+                //     })
+                //     ->formatStateUsing(fn (string $state): string => match ($state) {
+                //         'App\Models\Unit' => 'Unit',
+                //         'App\Models\Project' => 'Project',
+                //         default => $state,
+                //     }),
 
                 Tables\Columns\TextColumn::make('favoritable.title')
                     ->label('Favorited Item')
