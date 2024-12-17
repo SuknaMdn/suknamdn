@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use Rupadana\ApiService\Http\Handlers;
 use App\Filament\Resources\FavoriteResource;
 use Illuminate\Validation\ValidationException;
-
+use Illuminate\Support\Facades\Log;
 class CreateHandler extends Handlers {
     public static string | null $uri = '/';
     public static string | null $resource = FavoriteResource::class;
@@ -43,6 +43,8 @@ class CreateHandler extends Handlers {
                 'message' => 'Validation Error',
                 'errors' => $e->errors()
             ], 422);
+
+            Log::error($e->getMessage());
         } catch (\Exception $e) {
             // Handle other unexpected errors
             return response()->json([
@@ -50,6 +52,8 @@ class CreateHandler extends Handlers {
                 'message' => 'An error occurred while creating the resource',
                 'error' => $e->getMessage()
             ], 500);
+
+            Log::error($e->getMessage());
         }
     }
 }
