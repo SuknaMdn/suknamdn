@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\City;
 use App\Models\State;
 use App\Models\User;
-
+use App\Models\Address;
 class AddressController extends Controller
 {
     public function getUserAddress(Request $request)
@@ -21,8 +21,10 @@ class AddressController extends Controller
                     'error' => 'User not authenticated'
                 ], 401);
             }
-
-            $address = $user->address;
+            $address = Address::where('user_id', $user->id)
+                ->with(['city:id,name', 'state:id,name'])
+                ->select('id', 'user_id', 'city_id', 'state_id', 'is_default')
+                ->get();
 
             return response()->json([
                 'address' => $address
