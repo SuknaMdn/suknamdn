@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Project;
+class SearchController extends Controller
+{
+    public function searchProjects(Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'name' => 'required|string|min:2'
+        ]);
+
+        // Perform the search
+        $projects = Project::where('title', 'LIKE', '%' . $request->query('name') . '%')
+            ->orWhere('description', 'LIKE', '%' . $request->query('name') . '%')
+            ->orWhere('address', 'LIKE', '%' . $request->query('name') . '%')
+            ->select('id','title', 'slug','description','address')
+            ->limit(10)
+            ->get();
+
+        // Return the results
+        return response()->json([
+            'status' => true,
+            'data' => $projects,
+        ]);
+    }
+}

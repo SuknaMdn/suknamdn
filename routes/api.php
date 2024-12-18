@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\MapController;
 use App\Http\Controllers\Api\FavoriteController;
+use App\Http\Controllers\Api\SearchController;
 /*
 |--------------------------------------------------------------------------
 | Api Routes
@@ -43,6 +44,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('user/favorite/{user_id}', [FavoriteController::class, 'getUserFavorite']);
     Route::post('user/favorite', [FavoriteController::class, 'createFavorite']);
     Route::delete('user/favorite/{id}', [FavoriteController::class, 'deleteFavorite']);
+
+    // search
+    Route::get('/search/projects', [SearchController::class, 'searchProjects']);
 });
 
 Route::get('/addresses/cities', [AddressController::class, 'getCities']);
