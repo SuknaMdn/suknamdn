@@ -19,8 +19,7 @@ class SearchController extends Controller
                 ->get();
         } else {
             // Get all projects when no search query is provided
-            $projects = Project::select('id', 'title', 'slug', 'description', 'address')
-                ->get();
+            return "no search query";
         }
 
         return response()->json([
