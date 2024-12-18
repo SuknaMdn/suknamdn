@@ -16,9 +16,9 @@ class FavoriteController extends Controller
 
         $units = [];
         $projects = [];
-        dd($favorites);
 
         foreach ($favorites as $favorite) {
+            return $favorite;
             if ($favorite->favoritable_type == Unit::class) {
                 $units = Unit::where('id', $favorite->favoritable_id)
                     ->get()
