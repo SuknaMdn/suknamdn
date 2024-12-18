@@ -24,9 +24,9 @@ class FavoriteController extends Controller
                 $units = Unit::find($favorite->favoritable_id)->select('id', 'title', 'slug', 'images', 'building_number', 'unit_number', 'total_area', 'bedrooms', 'bathrooms', 'unit_price')
                 ->get()
                 ->map(function ($unit) use ($favorite) {
-                    $unit->images = collect($unit->images)->map(function ($image) {
-                        return asset('storage/' . $image);
-                    });
+                    // $unit->images = collect($unit->images)->map(function ($image) {
+                    //     return asset('storage/' . $image);
+                    // });
                     $unit->favorite_id = $favorite->id;
 
                     return $unit;
