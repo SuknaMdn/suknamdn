@@ -13,7 +13,7 @@ class SearchController extends Controller
         $request->validate([
             'name' => 'required|string|min:2'
         ]);
-        dd($request->name);
+        return $request->name;
         // $name = $request->query('name');
         // if($name != null){
         //     // Perform the search
