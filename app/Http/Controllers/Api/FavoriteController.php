@@ -19,16 +19,17 @@ class FavoriteController extends Controller
 
         foreach ($favorites as $favorite) {
 
-            // get unit
             if ($favorite->favoritable_type == Unit::class) {
-                $units = Unit::find($favorite->favoritable_id)->select('id', 'title', 'slug', 'images', 'building_number', 'unit_number', 'total_area', 'bedrooms', 'bathrooms', 'unit_price')
-                ->get()
-                ->map(function ($unit) use ($favorite) {
-                    // $unit->images = collect($unit->images)->map(function ($image) {
-                    //     return asset('storage/' . $image);
-                    // });
-                    $unit->favorite_id = $favorite->id;
-
+                $units = Unit::where('id', $favorite->favoritable_id)
+                    ->get()
+                    ->map(function ($unit) use ($favorite) {
+                        $unit->favorite_id = $favorite->id;
+                        return $unit;
+                    });
+                $units = $units->map(function ($unit) {
+                    $unit->images = collect($unit->images)->map(function ($image) {
+                        return asset('storage/' . $image);
+                    });
                     return $unit;
                 });
             }
