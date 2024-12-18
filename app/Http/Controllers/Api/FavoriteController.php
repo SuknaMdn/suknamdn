@@ -22,9 +22,13 @@ class FavoriteController extends Controller
             // get unit
             if ($favorite->favoritable_type == Unit::class) {
                 $unit = Unit::where('id', $favorite->favoritable_id)
+                ->select('id', 'title', 'slug', 'images', 'building_number', 'unit_number', 'total_area', 'bedrooms', 'bathrooms', 'unit_price')
                 ->first();
 
                 if ($unit) {
+                    $unit->images = collect($unit->images)->map(function ($image) {
+                        return asset('storage/' . $image);
+                    });
                     $unit->favorite_id = $favorite->id;
                     $units->push($unit);
                 }
