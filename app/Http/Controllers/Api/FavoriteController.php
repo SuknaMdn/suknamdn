@@ -12,7 +12,7 @@ class FavoriteController extends Controller
 {
     public function getUserFavorite($user_id)
     {
-        $favorites = Favorite::where('user_id', $user_id)->with('unit', 'project')->get();
+        $favorites = Favorite::where('user_id', $user_id)->get();
 
         $units = [];
         $projects = [];
@@ -21,17 +21,13 @@ class FavoriteController extends Controller
 
             if ($favorite->favoritable_type == Unit::class) {
                 $units = Unit::where('id', $favorite->favoritable_id)
-                    ->get()
-                    ->map(function ($unit) use ($favorite) {
-                        $unit->favorite_id = $favorite->id;
-                        return $unit;
-                    });
-                $units = $units->map(function ($unit) {
-                    $unit->images = collect($unit->images)->map(function ($image) {
-                        return asset('storage/' . $image);
-                    });
-                    return $unit;
-                });
+                    ->get();
+                // $units = $units->map(function ($unit) {
+                //     $unit->images = collect($unit->images)->map(function ($image) {
+                //         return asset('storage/' . $image);
+                //     });
+                //     return $unit;
+                // });
             }
 
             // get project with units
