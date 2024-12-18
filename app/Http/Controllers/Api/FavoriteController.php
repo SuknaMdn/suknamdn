@@ -22,7 +22,7 @@ class FavoriteController extends Controller
             // get unit
             if ($favorite->favoritable_type == Unit::class) {
                 $units = Unit::where('id', $favorite->favoritable_id)->get();
-                dd($units);
+                return $units;
             }
             // get project
             if ($favorite->favoritable_type == Project::class) {
