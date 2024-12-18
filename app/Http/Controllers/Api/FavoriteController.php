@@ -21,7 +21,8 @@ class FavoriteController extends Controller
 
             // get unit
             if ($favorite->favoritable_type == Unit::class) {
-                $units[] = Unit::where('id', $favorite->favoritable_id)->get()
+                $units = Unit::where('id', $favorite->favoritable_id)
+                ->get()
                 ->map(function ($unit) use ($favorite) {
                     $unit->favorite_id = $favorite->id;
                     return $unit;
