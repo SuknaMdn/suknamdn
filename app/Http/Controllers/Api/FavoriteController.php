@@ -16,18 +16,22 @@ class FavoriteController extends Controller
 
         $units = [];
         $projects = [];
+        dd($favorites);
 
         foreach ($favorites as $favorite) {
-
             if ($favorite->favoritable_type == Unit::class) {
                 $units = Unit::where('id', $favorite->favoritable_id)
-                    ->get();
-                // $units = $units->map(function ($unit) {
-                //     $unit->images = collect($unit->images)->map(function ($image) {
-                //         return asset('storage/' . $image);
-                //     });
-                //     return $unit;
-                // });
+                    ->get()
+                    ->map(function ($unit) use ($favorite) {
+                        $unit->favorite_id = $favorite->id;
+                        return $unit;
+                    });
+                $units = $units->map(function ($unit) {
+                    $unit->images = collect($unit->images)->map(function ($image) {
+                        return asset('storage/' . $image);
+                    });
+                    return $unit;
+                });
             }
 
             // get project with units
