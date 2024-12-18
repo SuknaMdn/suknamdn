@@ -41,6 +41,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('payments/stc-payment', [PaymentController::class, 'createSTCPayment']); // TODO: remove this
 
     Route::get('user/favorite/{user_id}', [FavoriteController::class, 'getUserFavorite']);
+    Route::post('user/favorite', [FavoriteController::class, 'createFavorite']);
+    Route::delete('user/favorite/{id}', [FavoriteController::class, 'deleteFavorite']);
 });
 
 Route::get('/addresses/cities', [AddressController::class, 'getCities']);
