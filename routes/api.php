@@ -46,7 +46,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('user/favorite/{id}', [FavoriteController::class, 'deleteFavorite']);
 
     // search
-    Route::get('/search/projects', [SearchController::class, 'searchProjects']);
+    Route::get('/search', [SearchController::class, 'searchProjects']);
 });
 
 Route::get('/addresses/cities', [AddressController::class, 'getCities']);
