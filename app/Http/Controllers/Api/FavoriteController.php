@@ -14,37 +14,39 @@ class FavoriteController extends Controller
     {
         $favorites = Favorite::where('user_id', $user_id)->get();
 
-        $units = [];
-        $projects = [];
+        $units = collect();
+        $projects = collect();
 
         foreach ($favorites as $favorite) {
 
             // get unit
             if ($favorite->favoritable_type == Unit::class) {
-                $units = Unit::where('id', $favorite->favoritable_id)
-                ->get()
-                ->map(function ($unit) use ($favorite) {
+                $unit = Unit::where('id', $favorite->favoritable_id)
+                ->first();
+
+                if ($unit) {
                     $unit->favorite_id = $favorite->id;
-                    return $unit;
-                });
+                    $units->push($unit);
+                }
             }
             // get project
             if ($favorite->favoritable_type == Project::class) {
 
-                $projects = Project::find($favorite->favoritable_id)->select('id', 'title', 'slug', 'images', 'area_range_from', 'area_range_to')
+                $project = Project::where('id', $favorite->favoritable_id)->select('id', 'title', 'slug', 'images', 'area_range_from', 'area_range_to')
                     ->withCount('units')
                     ->with(['units' => function ($unitQuery) {
                         $unitQuery->selectRaw('project_id, MIN(unit_price) as min_price, MAX(unit_price) as max_price')
                                   ->groupBy('project_id');
                     }])
-                ->get()
-                ->map(function ($project) use ($favorite) {
+                ->first();
+
+                if ($project) {
                     $project->images = collect($project->images)->map(function ($image) {
                         return asset('storage/' . $image);
                     });
                     $project->favorite_id = $favorite->id;
-                    return $project;
-                });
+                    $projects->push($project);
+                }
             }
         }
 
