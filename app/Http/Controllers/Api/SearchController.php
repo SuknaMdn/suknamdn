@@ -13,23 +13,23 @@ class SearchController extends Controller
         $request->validate([
             'name' => 'required|string|min:2'
         ]);
-
-        $name = $request->query('name');
-        if($name != null){
-            // Perform the search
-            $projects = Project::where('title', 'LIKE', '%' . $request->query('name') . '%')
-                ->orWhere('description', 'LIKE', '%' . $request->query('name') . '%')
-                ->orWhere('address', 'LIKE', '%' . $request->query('name') . '%')
-                ->select('id','title', 'slug','description','address')
-                ->limit(10)
-                ->get();
-        }
-        else{
-            return response()->json([
-                'status' => false,
-                'message' => 'Name is required',
-            ]);
-        }
+        dd($request->name);
+        // $name = $request->query('name');
+        // if($name != null){
+        //     // Perform the search
+        //     $projects = Project::where('title', 'LIKE', '%' . $request->query('name') . '%')
+        //         ->orWhere('description', 'LIKE', '%' . $request->query('name') . '%')
+        //         ->orWhere('address', 'LIKE', '%' . $request->query('name') . '%')
+        //         ->select('id','title', 'slug','description','address')
+        //         ->limit(10)
+        //         ->get();
+        // }
+        // else{
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => 'Name is required',
+        //     ]);
+        // }
 
         // Return the results
         return response()->json([
