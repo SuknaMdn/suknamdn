@@ -15,7 +15,8 @@ class SearchController extends Controller
         ]);
 
         $name = $request->query('name');
-        if($name != null){
+
+        if($name == null){
             // Perform the search
             $projects = Project::where('title', 'LIKE', '%' . $request->query('name') . '%')
                 ->orWhere('description', 'LIKE', '%' . $request->query('name') . '%')
