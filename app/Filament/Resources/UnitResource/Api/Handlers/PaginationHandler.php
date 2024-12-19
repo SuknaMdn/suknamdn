@@ -37,7 +37,7 @@ class PaginationHandler extends Handlers {
             }])
             ->select('id', 'title', 'slug','case', 'building_number', 'floor', 'unit_type', 'unit_number', 'bedrooms', 'bathrooms', 'status', 'project_id', 'created_at', 'total_amount', 'total_area')
             ->allowedFields($this->getAllowedFields() ?? [])
-            // ->allowedSorts($this->getAllowedSorts() ?? [])
+            ->allowedSorts($this->getAllowedSorts() ?? [])
             ->allowedFilters($this->getAllowedFilters() ?? [])
             ->allowedIncludes($this->getAllowedIncludes() ?? [])
             ->paginate(request()->query('per_page'))
@@ -59,7 +59,7 @@ class PaginationHandler extends Handlers {
 
     public function getAllowedSorts(): array
     {
-        return ['id', 'project_id', 'total_amount', 'total_area' , 'created_at'];
+        return ['id', 'total_amount', 'total_area' , 'created_at'];
     }
 
     public function getAllowedFilters(): array
