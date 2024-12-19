@@ -59,7 +59,7 @@ class PaginationHandler extends Handlers {
 
     public function getAllowedSorts(): array
     {
-        return ['id', 'project_id', 'price_amount', 'total_space' , 'created_at'];
+        return ['id', 'project_id', 'total_amount', 'total_area' , 'created_at'];
     }
 
     public function getAllowedFilters(): array
