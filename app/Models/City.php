@@ -21,4 +21,8 @@ class City extends Model
         return $this->hasMany(State::class);
     }
 
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
 }

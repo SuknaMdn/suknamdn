@@ -31,6 +31,23 @@
 
         @filamentScripts
         @vite('resources/js/app.js')
+        @vite(['resources/js/session-expired.js'])
         @livewireScripts
+
+        <script>
+            document.addEventListener('livewire:init', () => {
+                console.log('Livewire initialized');
+                Livewire.hook('request', ({ fail }) => {
+                    fail(({ status, preventDefault }) => {
+                        if (status === 419) {
+                            if (confirm('Your custom page expiration behavior...')) {
+                                window.location.reload();
+                            }
+                            preventDefault();
+                        }
+                    });
+                });
+            });
+        </script>
     </body>
 </html>

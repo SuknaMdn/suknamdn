@@ -18,7 +18,6 @@ class SearchController extends Controller
                 ->select('id', 'title', 'slug', 'description', 'address')
                 ->get();
         } else {
-            // Get all projects when no search query is provided
             return "no search query";
         }
 

@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\MapController;
 use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\SearchController;
+use App\Http\Controllers\Api\FilterController;
 /*
 |--------------------------------------------------------------------------
 | Api Routes
@@ -37,19 +38,27 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Route::get('/payments/{transactionId}', [PaymentController::class, 'getPayment']);
     Route::get('/payments', [PaymentController::class, 'listPayments']);
 
+    // user address
     Route::get('/addresses/user', [AddressController::class, 'getUserAddress']);
+
     // createSTCPayment
     Route::get('payments/stc-payment', [PaymentController::class, 'createSTCPayment']); // TODO: remove this
 
+    // favorite
     Route::get('user/favorite/{user_id}', [FavoriteController::class, 'getUserFavorite']);
     Route::post('user/favorite', [FavoriteController::class, 'createFavorite']);
     Route::delete('user/favorite/{id}', [FavoriteController::class, 'deleteFavorite']);
 
     // search
     Route::get('/search', [SearchController::class, 'searchProjects']);
+
 });
 
 Route::get('/addresses/cities', [AddressController::class, 'getCities']);
 Route::get('/addresses/areas', [AddressController::class, 'getAreas']);
 Route::get('/map/projects', [MapController::class, 'index']);
 Route::post('/payments/webhook', [PaymentController::class, 'handleWebhook']);
+
+// filter parameters
+Route::get('/projects-filter-parameters', [FilterController::class, 'getProjectsFilterParameters']);
+Route::get('/units-filter-parameters', [FilterController::class, 'getUnitsFilterParameters']);
