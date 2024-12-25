@@ -15,7 +15,6 @@ use Filament\Navigation;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -24,13 +23,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Filament\Enums\ThemeMode;
-use Awcodes\Overlook\OverlookPlugin;
-use Awcodes\Overlook\Widgets\OverlookWidget;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
-use TomatoPHP\FilamentSettingsHub\Facades\FilamentSettingsHub;
-use TomatoPHP\FilamentSettingsHub\Services\Contracts\SettingHold;
-use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
 use Rupadana\ApiService\ApiServicePlugin;
 use App\Filament\Resources\UnitOrderResource\Widgets\UnitOrderStat;
 
@@ -108,11 +101,13 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 \TomatoPHP\FilamentArtisan\FilamentArtisanPlugin::make(),
                 ApiServicePlugin::make(),
-                FilamentApexChartsPlugin::make(),
+                // FilamentApexChartsPlugin::make(),
+
                 // \TomatoPHP\FilamentSettingsHub\FilamentSettingsHubPlugin::make()
                 //     ->allowShield()
                 //     ->allowSiteSettings()
                 //     ->allowSocialMenuSettings(),
+
                 FilamentShieldPlugin::make()
                     ->gridColumns([
                         'default' => 1,
@@ -129,25 +124,6 @@ class AdminPanelProvider extends PanelProvider
                         'default' => 1,
                         'sm' => 2,
                 ]),
-                // OverlookPlugin::make()
-                // ->sort(2)
-                // ->columns([
-                //     'default' => 1,
-                //     'sm' => 2,
-                //     'md' => 3,
-                //     'lg' => 3,
-                //     'xl' => 4,
-                //     '2xl' => null,
-                // ])
-                // ->includes([
-                //     \App\Filament\Resources\ProjectResource::class,
-                //     \App\Filament\Resources\UnitOrderResource::class,
-                //     \App\Filament\Resources\UserResource::class,
-                //     \App\Filament\Resources\BannerResource::class,
-                //     \App\Filament\Resources\Blog\PostResource::class,
-                //     \App\Filament\Resources\DeveloperResource::class,
-                // ])
-                // ->alphabetical(),
                 \TomatoPHP\FilamentMediaManager\FilamentMediaManagerPlugin::make()
                     ->allowSubFolders(),
                 \BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin::make(),

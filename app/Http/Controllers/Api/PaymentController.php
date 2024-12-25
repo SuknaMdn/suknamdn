@@ -7,6 +7,7 @@ use App\Models\Payment;
 use App\Services\MoyasarPaymentService;
 use Illuminate\Http\Request;
 use App\Models\Unit;
+use App\Http\Requests\CreatePaymentRequest;
 
 class PaymentController extends Controller
 {
@@ -23,20 +24,20 @@ class PaymentController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function createPayment(Request $request)
+    public function createPayment(CreatePaymentRequest $request)
     {
-        $request->validate([
-            'amount' => 'required|numeric',
-            'currency' => 'required|string|size:3',
-            'payment_method' => 'required|string',
-            'number' => 'required|string',
-            'name' => 'required|string',
-            'month' => 'required|numeric|min:1|max:12',
-            'year' => 'required|numeric',
-            'cvc' => 'required|string',
-            'description' => 'nullable|string',
-            'unit_id' => 'required|exists:units,id',
-        ]);
+        // $request->validate([
+        //     'amount' => 'required|numeric',
+        //     'currency' => 'required|string|size:3',
+        //     'payment_method' => 'required|string',
+        //     'number' => 'required|string',
+        //     'name' => 'required|string',
+        //     'month' => 'required|numeric|min:1|max:12',
+        //     'year' => 'required|numeric',
+        //     'cvc' => 'required|string',
+        //     'description' => 'nullable|string',
+        //     'unit_id' => 'required|exists:units,id',
+        // ]);
 
         $paymentData = $request->all();
 
@@ -44,8 +45,6 @@ class PaymentController extends Controller
 
             // Find the unit first
             $unit = Unit::findOrFail($request->unit_id);
-
-            $payment = new Payment();
 
             $payment = new Payment([
                 'amount' => $request->amount,
@@ -70,6 +69,7 @@ class PaymentController extends Controller
                 'message' => 'Payment processed successfully',
                 'payment' => $moyasarPayment
             ], 200);
+
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Payment failed',

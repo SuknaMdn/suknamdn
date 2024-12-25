@@ -16,8 +16,8 @@ class ProjectFacility extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function getIconAttribute($value)
-    {
-        return asset('storage/' . $value);
-    }
+    // public function getIconAttribute($value)
+    // {
+    //     return asset('storage/' . $value);
+    // }
 }
