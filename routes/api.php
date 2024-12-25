@@ -61,4 +61,4 @@ Route::post('/payments/webhook', [PaymentController::class, 'handleWebhook']);
 
 // filter parameters
 Route::get('/projects-filter-parameters', [FilterController::class, 'getProjectsFilterParameters']);
-Route::get('/units-filter-parameters', [FilterController::class, 'getUnitsFilterParameters']);
+Route::get('/units-filter-parameters/{project_id}', [FilterController::class, 'getUnitsFilterParameters']);

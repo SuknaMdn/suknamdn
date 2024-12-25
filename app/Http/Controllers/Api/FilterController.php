@@ -37,10 +37,10 @@ class FilterController extends Controller
         }
     }
 
-    public function getUnitsFilterParameters(Request $request)
+    public function getUnitsFilterParameters($project_id)
     {
         // Get the project
-        $project = Project::findOrFail($request->project_id);
+        $project = Project::findOrFail($project_id);
 
         if ($project == null) {
             return response()->json([

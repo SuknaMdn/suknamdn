@@ -18,9 +18,9 @@ class PaginationHandler extends Handlers {
         $model = static::getModel();
 
         $query = QueryBuilder::for($query)
-        ->whereHas('projects', function ($query) {
-            $query->where('is_active', true);
-        })
+        // ->whereHas('projects', function ($query) {
+        //     $query->where('is_active', true);
+        // })
         ->allowedFields($this->getAllowedFields() ?? [])
         ->allowedSorts($this->getAllowedSorts() ?? [])
         ->allowedFilters($this->getAllowedFilters() ?? [])
