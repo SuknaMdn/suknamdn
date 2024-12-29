@@ -56,7 +56,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 Route::get('/addresses/cities', [AddressController::class, 'getCities']);
 Route::get('/addresses/areas', [AddressController::class, 'getAreas']);
-Route::get('/map/projects', [MapController::class, 'index']);
+Route::get('/maps/allprojects', [MapController::class, 'index']);
 Route::post('/payments/webhook', [PaymentController::class, 'handleWebhook']);
 
 // filter parameters
