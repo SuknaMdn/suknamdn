@@ -64,6 +64,6 @@ class PaginationHandler extends Handlers {
 
     public function getAllowedFilters(): array
     {
-        return ['title', 'status', 'case', 'unit_type', 'project_id','floor', 'bedrooms', 'bathrooms', 'price_min', 'price_max', 'space_min', 'space_max'];
+        return ['title', 'status', 'case', 'unit_type', 'project_id','floor', 'bedrooms', 'bathrooms', 'price_min', 'price_max', 'space_min', 'space_max', 'building_number'];
     }
 }
