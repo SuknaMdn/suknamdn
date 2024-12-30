@@ -68,6 +68,7 @@ class OrdersByMonth extends Component
         $unitIds = $this->projects->pluck('units')->flatten()->pluck('id');
 
         $this->ordersByMonth = UnitOrder::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+            // ->where('payment_status', 'paid')
             ->whereIn('unit_id', $unitIds)
             ->when(!empty($this->filterStatus), fn($query) => $query->whereIn('status', $this->filterStatus))
             ->groupBy('month')
@@ -87,7 +88,7 @@ class OrdersByMonth extends Component
     {
         $unitIds = $this->projects->pluck('units')->flatten()->pluck('id');
 
-        $query = UnitOrder::whereIn('unit_id', $unitIds)->where('payment_status', 'paid')->orderBy('created_at', 'desc');
+        $query = UnitOrder::whereIn('unit_id', $unitIds)->orderBy('created_at', 'desc'); // ->where('payment_status', 'paid')
 
         if ($this->filterStatus != null) {
             $query->whereIn('status', $this->filterStatus);
