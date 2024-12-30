@@ -24,7 +24,7 @@ class Index extends Component
 
         $projects = $this->developer->projects;
         $unitIds = $projects->pluck('units')->flatten()->pluck('id');
-        $unitOrders = UnitOrder::whereIn('unit_id', $unitIds)->where('case', '1')->orderBy('created_at', 'desc')->get();
+        $unitOrders = UnitOrder::whereIn('unit_id', $unitIds)->where('payment_status', 'paid')->orderBy('created_at', 'desc')->get();
 
 
         // Group units by month and case
