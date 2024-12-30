@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Livewire\Developer\Auth\Login;
 use App\Http\Controllers\Api\PaymentController;
+
+use Illuminate\Support\Facades\Cache;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,3 +23,31 @@ Route::get('/', function () {
 });
 
 Route::get('/payments/webhook', [PaymentController::class, 'handleWebhook']);
+
+
+Route::get('/cache/all', function () {
+    try {
+        // Clear all old cache first
+        Artisan::call('cache:clear');
+        Artisan::call('config:clear');
+        Artisan::call('route:clear');
+        Artisan::call('view:clear');
+
+        // Generate new cache
+        Artisan::call('config:cache');
+        Artisan::call('route:cache');
+        Artisan::call('view:cache');
+        Artisan::call('icons:cache');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'All cache commands executed successfully'
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Cache command failed: ' . $e->getMessage()
+        ], 500);
+    }
+});

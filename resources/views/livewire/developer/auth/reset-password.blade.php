@@ -3,7 +3,7 @@
         <!--begin::Heading-->
         <div class="text-center mb-11">
             {{-- logo --}}
-            <img src="{{ asset($siteLogo) }}" alt="logo" width="100px" class="m-auto">
+            <img src="{{ asset('storage/' . $siteLogo) }}" alt="logo" width="100px" class="m-auto">
         </div>
         <!--begin::Heading-->
 
