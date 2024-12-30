@@ -24,7 +24,7 @@ class Index extends Component
 
         $projects = $this->developer->projects;
         $unitIds = $projects->pluck('units')->flatten()->pluck('id');
-        $unitOrders = UnitOrder::whereIn('unit_id', $unitIds)->where('payment_status', 'paid')->orderBy('created_at', 'desc')->get();
+        $unitOrders = UnitOrder::whereIn('unit_id', $unitIds)->where('case', '1')->orderBy('created_at', 'desc')->get();
 
 
         // Group units by month and case
@@ -34,8 +34,8 @@ class Index extends Component
 
         foreach ($unitsByMonth as $month => $units) {
             $monthLabels[] = $month;
-            $unitsSoldByMonth[] = $units->where('payment_status', 'paid')->count();
-            $unitsNotSoldByMonth[] = $units->where('payment_status', 'unpaid')->count();
+            $unitsSoldByMonth[] = $units->where('case', '1')->count();
+            $unitsNotSoldByMonth[] = $units->where('case', '0')->count();
         }
 
         return [
