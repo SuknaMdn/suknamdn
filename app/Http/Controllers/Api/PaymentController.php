@@ -26,19 +26,6 @@ class PaymentController extends Controller
      */
     public function createPayment(CreatePaymentRequest $request)
     {
-        // $request->validate([
-        //     'amount' => 'required|numeric',
-        //     'currency' => 'required|string|size:3',
-        //     'payment_method' => 'required|string',
-        //     'number' => 'required|string',
-        //     'name' => 'required|string',
-        //     'month' => 'required|numeric|min:1|max:12',
-        //     'year' => 'required|numeric',
-        //     'cvc' => 'required|string',
-        //     'description' => 'nullable|string',
-        //     'unit_id' => 'required|exists:units,id',
-        // ]);
-
         $paymentData = $request->all();
 
         try {
@@ -147,6 +134,7 @@ class PaymentController extends Controller
             $payment = Payment::where('transaction_id', $transactionId)->first();
 
             if ($payment) {
+
                 $payment->status = $status;
                 $payment->save();
 

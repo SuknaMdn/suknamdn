@@ -35,7 +35,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/profile/update', [ProfileController::class, 'updateProfile']);
     Route::put('/password/reset', [PasswordController::class, 'resetPassword']);
     Route::post('/payments', [PaymentController::class, 'createPayment']);
-    // Route::get('/payments/{transactionId}', [PaymentController::class, 'getPayment']);
     Route::get('/payments', [PaymentController::class, 'listPayments']);
 
     // user address
@@ -57,6 +56,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::get('/addresses/cities', [AddressController::class, 'getCities']);
 Route::get('/addresses/areas', [AddressController::class, 'getAreas']);
 Route::get('/maps/allprojects', [MapController::class, 'index']);
+
+// payment webhook
 Route::post('/payments/webhook', [PaymentController::class, 'handleWebhook']);
 
 // filter parameters

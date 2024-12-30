@@ -5,14 +5,6 @@
 - 💌 Setting mail on the fly in Mail settings
 - 🅻 Lang Generator
 
-#### Latest update
-
-##### Version: v1.15.xx
-
-- Add *opcodesio/log-viewer*
-- Add new plugins
-- Bugs fix & Improvement
-- Etc
 
 #### Getting Started
 

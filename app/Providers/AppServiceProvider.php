@@ -7,7 +7,7 @@ use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\ServiceProvider;
-use Opcodes\LogViewer\Facades\LogViewer;
+// use Opcodes\LogViewer\Facades\LogViewer;
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
@@ -47,10 +47,10 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // # \Opcodes\LogViewer
-        LogViewer::auth(function ($request) {
-            $role = auth()?->user()?->roles?->first()->name;
-            return $role == config('filament-shield.super_admin.name');
-        });
+        // LogViewer::auth(function ($request) {
+        //     $role = auth()?->user()?->roles?->first()->name;
+        //     return $role == config('filament-shield.super_admin.name');
+        // });
 
         // # Hooks
         // FilamentView::registerRenderHook(

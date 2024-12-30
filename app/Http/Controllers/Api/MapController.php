@@ -53,8 +53,10 @@ class MapController extends Controller
             $project->images = collect($project->images)->map(function ($image) {
                 return asset('storage/' . $image);
             });
+            // Merge latitude and longitude into latlong
+            $project->latlong = "({$project->latitude},{$project->longitude})";
 
-            $project->makeHidden('units'); // Hide the units field
+            $project->makeHidden('units','latitude', 'longitude'); // Hide the units field
 
         });
 

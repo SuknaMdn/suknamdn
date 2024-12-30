@@ -94,10 +94,12 @@ class PaymentResource extends Resource
                         ->unique(ignorable: fn ($record) => $record)
                         ->columnSpan(1),
 
-                    Forms\Components\DateTimePicker::make('paid_at')
+                    Forms\Components\DatePicker::make('paid_at')
+                        ->native(true)
                         ->columnSpan(1),
 
-                    Forms\Components\DateTimePicker::make('due_date')
+                    Forms\Components\DatePicker::make('due_date')
+                        ->native(true)
                         ->columnSpan(1),
 
                     Forms\Components\TextInput::make('redirect_url')

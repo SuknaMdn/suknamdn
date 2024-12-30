@@ -23,7 +23,6 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Rupadana\ApiService\ApiServicePlugin;
 use App\Filament\Resources\UnitOrderResource\Widgets\UnitOrderStat;
 
@@ -62,12 +61,12 @@ class AdminPanelProvider extends PanelProvider
                     ->collapsed(),
             ])
             ->navigationItems([
-                Navigation\NavigationItem::make('Log Viewer') // !! To-Do: lang
-                    ->visible(fn(): bool => auth()->user()->can('access_log_viewer'))
-                    ->url(config('app.url').'/'.config('log-viewer.route_path'), shouldOpenInNewTab: true)
-                    ->icon('fluentui-document-bullet-list-multiple-20-o')
-                    ->group(__('menu.nav_group.activities'))
-                    ->sort(99),
+                // Navigation\NavigationItem::make('Log Viewer') // !! To-Do: lang
+                //     ->visible(fn(): bool => auth()->user()->can('access_log_viewer'))
+                //     ->url(config('app.url').'/'.config('log-viewer.route_path'), shouldOpenInNewTab: true)
+                //     ->icon('fluentui-document-bullet-list-multiple-20-o')
+                //     ->group(__('menu.nav_group.activities'))
+                //     ->sort(99),
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
@@ -78,10 +77,7 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
-            // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                // Widgets\FilamentInfoWidget::class,
-                // OverlookWidget::class,
                 UnitOrderStat::class,
             ])
             ->middleware([
@@ -107,23 +103,6 @@ class AdminPanelProvider extends PanelProvider
                 //     ->allowShield()
                 //     ->allowSiteSettings()
                 //     ->allowSocialMenuSettings(),
-
-                FilamentShieldPlugin::make()
-                    ->gridColumns([
-                        'default' => 1,
-                        'sm' => 2,
-                        'lg' => 3
-                    ])
-                    ->sectionColumnSpan(1)
-                    ->checkboxListColumns([
-                        'default' => 1,
-                        'sm' => 2,
-                        'lg' => 4,
-                    ])
-                    ->resourceCheckboxListColumns([
-                        'default' => 1,
-                        'sm' => 2,
-                ]),
                 \TomatoPHP\FilamentMediaManager\FilamentMediaManagerPlugin::make()
                     ->allowSubFolders(),
                 \BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin::make(),
