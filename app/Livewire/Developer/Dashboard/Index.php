@@ -34,8 +34,8 @@ class Index extends Component
 
         foreach ($unitsByMonth as $month => $units) {
             $monthLabels[] = $month;
-            $unitsSoldByMonth[] = $units->where('case', '1')->count();
-            $unitsNotSoldByMonth[] = $units->where('case', '0')->count();
+            $unitsSoldByMonth[] = $units->where('payment_status', 'paid')->count();
+            $unitsNotSoldByMonth[] = $units->where('payment_status', 'unpaid')->count();
         }
 
         return [
