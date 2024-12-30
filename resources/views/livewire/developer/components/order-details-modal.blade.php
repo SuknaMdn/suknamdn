@@ -13,7 +13,7 @@
                                 <div class="card-header pt-5">
 
                                     <h3 class="card-title align-items-start flex-column">
-                                        <span class="card-label fw-bold text-gray-900">Order Details</span>
+                                        <span class="card-label fw-bold text-gray-900">تفاصيل الطلب</span>
                                         <span class="text-gray-500 mt-1 fw-semibold fs-6">#-{{ $order->id }}</span>
                                     </h3>
                                 </div>
@@ -29,13 +29,13 @@
                                             <div class="d-inline-block">
                                                 <span class="text-gray-900 fw-bolder fs-6">
                                                     @if($status == 'pending')
-                                                    <span class="badge badge-light-warning">Pending</span>
+                                                    <span class="badge badge-light-warning">قيد الانتظار</span>
                                                     @elseif($status == 'processing')
-                                                    <span class="badge badge-light-primary">Processing</span>
+                                                    <span class="badge badge-light-primary">قيد المعالجة</span>
                                                     @elseif($status == 'confirmed')
-                                                    <span class="badge badge-light-success">Confirmed</span>
+                                                    <span class="badge badge-light-success">مؤكد</span>
                                                     @elseif($status == 'cancelled')
-                                                    <span class="badge badge-light-danger">Cancelled</span>
+                                                    <span class="badge badge-light-danger">ملغى</span>
                                                     @endif
                                                 </span>
                                             </div>
@@ -48,10 +48,10 @@
                                                 wire:change="updateStatus"
                                                 id="orderStatusSelect"
                                             >
-                                                <option value="pending">Pending</option>
-                                                <option value="processing">Processing</option>
-                                                <option value="confirmed">Confirmed</option>
-                                                <option value="cancelled">Cancelled</option>
+                                                <option value="pending">قيد الانتظار</option>
+                                                <option value="processing">قيد المعالجة</option>
+                                                <option value="confirmed">مؤكد</option>
+                                                <option value="cancelled">ملغى</option>
                                             </select>
                                         </div>
                                         <!--end::Statistics-->
@@ -63,7 +63,7 @@
                                     <!--begin::Item-->
                                     <div class="d-flex flex-stack">
                                         <!--begin::Section-->
-                                        <div class="text-gray-700 fw-semibold fs-6 me-2">Customer</div>
+                                        <div class="text-gray-700 fw-semibold fs-6 me-2">العميل</div>
 
                                         <a href="#" class="d-flex flex-row gap-2" title="{{ $order->user->name . ' - ' . $order->user->phone . ' - ' . $order->user->email }}" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
                                             <div class="d-flex align-items-senter">
@@ -79,7 +79,7 @@
 
                                     <div class="d-flex flex-stack">
                                         <!--begin::Section-->
-                                        <div class="text-gray-700 fw-semibold fs-6 me-2">Tax Exemption</div>
+                                        <div class="text-gray-700 fw-semibold fs-6 me-2">الإعفاء الضريبي</div>
                                         <div class="d-flex align-items-senter">
                                             <span class="text-gray-900 fw-bolder fs-6">
                                                 @if($order->tax_exemption_status)
@@ -95,7 +95,7 @@
 
                                     <div class="d-flex flex-stack">
                                         <!--begin::Section-->
-                                        <div class="text-gray-700 fw-semibold fs-6 me-2">Payment Plan</div>
+                                        <div class="text-gray-700 fw-semibold fs-6 me-2">خطة الدفع</div>
                                         <!--end::Section-->
                                         <!--begin::Statistics-->
                                         <div class="d-flex align-items-senter">
@@ -121,7 +121,7 @@
                                 <div class="card-header py-5">
                                     <!--begin::Title-->
                                     <h3 class="card-title align-items-start flex-column">
-                                        <span class="card-label fw-bold text-gray-900">Unit Details</span>
+                                        <span class="card-label fw-bold text-gray-900">تفاصيل الوحدة</span>
                                     </h3>
                                 </div>
                                 <!--end::Header-->
@@ -146,13 +146,13 @@
                                         </div>
                                         <!--end::Wrapper-->
                                         <div class="d-flex align-items-center w-100 mw-90px">
-                                            <a href="{{ route('developer.projects.show', $order->unit->project->slug) }}" target="_blank" class="btn btn-light btn-sm">View <i class="ki-outline ki-eye ms-2"></i></a>
+                                            <a href="{{ route('developer.projects.show', $order->unit->project->slug) }}" target="_blank" class="btn btn-light btn-sm">عرض <i class="ki-outline ki-eye ms-2"></i></a>
                                         </div>
                                     </div>
                                     <div class="my-5">
                                         <div class="d-flex justify-content-between flex-stack">
 
-                                            <div class="text-gray-700 fw-semibold fs-6 me-2">Total Amount</div>
+                                            <div class="text-gray-700 fw-semibold fs-6 me-2">اجمالي سعر الوحدة</div>
 
                                             <div class="d-flex align-items-center">
                                                 <i class="ki-outline ki-wallet fs-2 text-success me-2"></i>
@@ -167,14 +167,14 @@
                                     <div class="d-flex flex-stack justify-content-between mt-5">
 
                                         <div class="d-flex flex-stack">
-                                            <div class="text-gray-700 fw-semibold fs-6 me-2">Floor <i class="ki-outline ki-building-o ms-2"></i></div>
+                                            <div class="text-gray-700 fw-semibold fs-6 me-2">الطابق <i class="ki-outline ki-building-o ms-2"></i></div>
                                             <div class="d-flex align-items-senter">
                                                 <span class="text-gray-900 fw-bolder fs-6 me-2">{{ $order->unit->floor }}</span>
                                             </div>
                                         </div>
 
                                         <div class="d-flex flex-stack">
-                                            <div class="text-gray-700 fw-semibold fs-6 me-2">Space</div>
+                                            <div class="text-gray-700 fw-semibold fs-6 me-2">المساحة</div>
                                             <div class="d-flex align-items-senter">
                                                 <span class="text-gray-900 fw-bolder fs-6 me-2">{{ $order->unit->total_area }} m²</span>
                                             </div>
@@ -185,21 +185,21 @@
                                     <div class="d-flex flex-stack justify-content-between mt-5">
 
                                         <div class="d-flex flex-stack">
-                                            <div class="text-gray-700 fw-semibold fs-6 me-2">Building</div>
+                                            <div class="text-gray-700 fw-semibold fs-6 me-2">العمارة</div>
                                             <div class="d-flex align-items-senter">
                                                 <span class="text-gray-900 fw-bolder fs-6 me-2">{{ $order->unit->building_number }}</span>
                                             </div>
                                         </div>
 
                                         <div class="d-flex flex-stack">
-                                            <div class="text-gray-700 fw-semibold fs-6 me-2">Unit number</div>
+                                            <div class="text-gray-700 fw-semibold fs-6 me-2">رقم الوحدة</div>
                                             <div class="d-flex align-items-senter">
                                                 <span class="text-gray-900 fw-bolder fs-6 me-2">{{ $order->unit->unit_number }}</span>
                                             </div>
                                         </div>
 
                                         <div class="d-flex flex-stack">
-                                            <div class="text-gray-700 fw-semibold fs-6 me-2">Unit type</div>
+                                            <div class="text-gray-700 fw-semibold fs-6 me-2">نوع الوحدة</div>
                                             <div class="d-flex align-items-senter">
                                                 <span class="text-gray-900 fw-bolder fs-6 me-2">{{ $order->unit->unit_type }}</span>
                                             </div>
@@ -213,10 +213,10 @@
                         <!--end::Col-->
                     </div>
                     @endif
-                    <p wire:loading> <i class="spinner-border spinner-border-sm fs-2 text-muted"></i> Loading...</p>
+                    <p wire:loading> <i class="spinner-border spinner-border-sm fs-2 text-muted"></i> تحميل...</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="closeModal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="closeModal">اغلاق</button>
                 </div>
             </div>
         </div>

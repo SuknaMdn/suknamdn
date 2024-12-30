@@ -22,7 +22,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
     use InteractsWithMedia;
     use HasUuids, HasRoles;
     use HasApiTokens, HasFactory, Notifiable;
-
+    use Notifiable;
     /**
      * The attributes that are mass assignable.
      *

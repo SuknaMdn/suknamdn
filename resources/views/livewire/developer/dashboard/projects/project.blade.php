@@ -55,13 +55,14 @@
                                 <!--begin::Menu 3-->
                                 <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-200px py-3" data-kt-menu="true">
                                     <div class="menu-item px-3">
-                                        <a href="#" class="menu-link px-3">Edit</a>
+                                        <a href="#" class="menu-link px-3">تعديل</a>
                                     </div>
                                     <div class="menu-item px-3 my-1">
                                         @if ($project->is_active)
-                                            <a wire:click="inactiveProject" class="menu-link text-danger px-3">Inactive</a>
+                                            <a wire:click="inactiveProject" class="menu-link text-danger px-3">غير نشط</a>
                                         @else
-                                            <a wire:click="activeProject" class="menu-link text-primary px-3">Active</a>
+                                            <a wire:click="activeProject" class="menu-link text-primary px-3">نشط</a>
+                                        @endif
                                         @endif
                                     </div>
                                     <!--end::Menu item-->
@@ -85,7 +86,7 @@
                                 </div>
                                 <!--end::Number-->
                                 <!--begin::Label-->
-                                <div class="fw-semibold fs-6 text-gray-500">Uploaded</div>
+                                <div class="fw-semibold fs-6 text-gray-500">تم التعديل في</div>
                                 <!--end::Label-->
                             </div>
                             <!--end::Stat-->
@@ -94,11 +95,11 @@
                                 <!--begin::Number-->
                                 <div class="d-flex align-items-center">
                                     <i class="ki-outline ki-sort fs-3 text-dark me-2"></i>
-                                    <span class="me-2">All</span> <div class="fs-4 fw-bold me-2" data-kt-countup="true" data-kt-countup-value="{{ $project->units->count() }}">0</div>
+                                    <span class="me-2">الكل</span> <div class="fs-4 fw-bold me-2" data-kt-countup="true" data-kt-countup-value="{{ $project->units->count() }}">0</div>
                                 </div>
                                 <!--end::Number-->
                                 <!--begin::Label-->
-                                <div class="fw-semibold fs-6 text-gray-500">Units <span class="badge badge-light-success fw-bold px-4 py-1">Sold <div class="ms-2" data-kt-countup="true" data-kt-countup-value="{{ $project->units->where('case', 1)->count() }}">0</div> </span></div>
+                                <div class="fw-semibold fs-6 text-gray-500">الوحدات <span class="badge badge-light-success fw-bold px-4 py-1">Sold <div class="ms-2" data-kt-countup="true" data-kt-countup-value="{{ $project->units->where('case', 1)->count() }}">0</div> </span></div>
                                 <!--end::Label-->
                             </div>
                             <!--begin::Stat-->
@@ -110,7 +111,7 @@
                                 </div>
                                 <!--end::Number-->
                                 <!--begin::Label-->
-                                <div class="fw-semibold fs-6 text-gray-500">Developer</div>
+                                <div class="fw-semibold fs-6 text-gray-500">المطور</div>
                                 <!--end::Label-->
                             </div>
                             <!--end::Stat-->
@@ -135,13 +136,13 @@
                 <div class="card-header pt-7 mb-3">
                     <!--begin::Title-->
                     <h3 class="card-title align-items-start flex-column">
-                        <span class="card-label fw-bold text-gray-800">Project Orders</span>
-                        <span class="text-gray-500 mt-1 fw-semibold fs-6">Total {{ $orders->count() }} orders</span>
+                        <span class="card-label fw-bold text-gray-800">طلبات المشروع</span>
+                        <span class="text-gray-500 mt-1 fw-semibold fs-6">كل {{ $orders->count() }} الطلبات</span>
                     </h3>
                     <!--end::Title-->
                     <!--begin::Toolbar-->
                     <div class="card-toolbar">
-                        <a href="{{ route('developer.orders', ['filterProject[0]' => $project->id]) }}" class="btn btn-sm btn-light" data-bs-toggle='tooltip' data-bs-dismiss='click' data-bs-custom-class="tooltip-inverse" title="show in new page">Show All Orders</a>
+                        <a href="{{ route('developer.orders', ['filterProject[0]' => $project->id]) }}" class="btn btn-sm btn-light" data-bs-toggle='tooltip' data-bs-dismiss='click' data-bs-custom-class="tooltip-inverse" title="show in new page">عرض كل الطلبات</a>
                     </div>
                     <!--end::Toolbar-->
                 </div>
@@ -186,13 +187,14 @@
                             <!--begin::Number-->
                             <span class="text-gray-800 fw-bold fs-6 d-block">
                                 @if ($order->status == 'pending')
-                                    <span class="badge badge-light-warning">Pending</span>
+                                    <span class="badge badge-light-warning">قيد الانتظار</span>
                                 @elseif ($order->status == 'processing')
-                                    <span class="badge badge-light-primary">Processing</span>
+                                    <span class="badge badge-light-primary">قيد المعالجة</span>
                                 @elseif ($order->status == 'confirmed')
-                                    <span class="badge badge-light-success">Confirmed</span>
+                                    <span class="badge badge-light-success">مؤكد</span>
                                 @elseif ($order->status == 'canceled')
-                                    <span class="badge badge-light-danger">Canceled</span>
+                                    <span class="badge badge-light-danger">ملغي</span>
+                                @endif
                                 @endif
                             </span>
                             <!--end::Number-->
@@ -232,7 +234,7 @@
                     <!--end::Nav-->
                     <!--begin::Toolbar-->
                     <div class="card-toolbar">
-                        <a href="#" class="btn btn-sm btn-light me-2" data-bs-toggle="modal" data-bs-target="#kt_modal_create_project">Add Unit</a>
+                        <a href="#" class="btn btn-sm btn-light me-2" data-bs-toggle="modal" data-bs-target="#kt_modal_create_project">اضافة وحدة</a>
                     </div>
                     <!--end::Toolbar-->
                 </div>
@@ -263,36 +265,36 @@
                                         @if($unit->building_number == $buildingNumber)
                                         <tr>
                                             <td class="fs-6 fw-bold text-gray-800">{{ $unit->title }}</td>
-                                            <td class="fs-6 fw-bold text-gray-500">status:
+                                            <td class="fs-6 fw-bold text-gray-500">الحالة:
                                                 <span class="text-gray-800">
                                                     @if ($unit->case == 1)
-                                                        <span class="badge badge-light-success">Sold</span>
+                                                        <span class="badge badge-light-success">مباعة</span>
                                                     @else
-                                                        <span class="badge badge-light-danger">Not Sold</span>
+                                                        <span class="badge badge-light-danger">غير مباعة</span>
                                                     @endif
                                                 </span>
                                             </td>
-                                            <td class="fs-6 fw-bold text-gray-500">Amount:
+                                            <td class="fs-6 fw-bold text-gray-500">السعر:
                                                 <span class="text-gray-800">SAR {{ $unit->unit_price }}</span>
                                                 <span class="text-gray-800"><span class="text-info">+</span> <span class="badge badge-light-primary">{{ $unit->property_tax }} %</span></span>
                                                 <span class="text-gray-800">= SAR {{ $unit->total_amount }}</span>
                                             </td>
                                             <td class="pe-0 text-end">
-                                                <button class="btn btn-sm btn-light">Show</button>
+                                                <button class="btn btn-sm btn-light">عرض</button>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td class="bg-light rounded text-gray-600 fs-8 fw-bold px-3 py-2" colspan="4">
                                                 <div class="d-flex flex-column">
-                                                    <span class="text-gray-900"><span class="text-dark fw-bold">building</span> : {{ $unit->building_number }} - {{ $unit->unit_number }} <span class="text-dark fw-bold">floor: {{ $unit->floor }}</span></span>
-                                                    <span class="text-gray-900"><span class="text-dark fw-bold">unit type</span> : {{ $unit->unit_type }}</span>
+                                                    <span class="text-gray-900"><span class="text-dark fw-bold">المبني</span> : {{ $unit->building_number }} - {{ $unit->unit_number }} <span class="text-dark fw-bold">الطابق: {{ $unit->floor }}</span></span>
+                                                    <span class="text-gray-900"><span class="text-dark fw-bold">نوع الوحدة</span> : {{ $unit->unit_type }}</span>
                                                 </div>
                                             </td>
                                         </tr>
                                         @endif
                                         @empty
                                         <tr>
-                                            <td colspan="4" class="text-center">No units found</td>
+                                            <td colspan="4" class="text-center">لا يوجد وحدات</td>
                                         </tr>
                                         @endforelse
                                     </tbody>

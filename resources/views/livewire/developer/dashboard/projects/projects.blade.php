@@ -1,23 +1,26 @@
 <div>
 
-    <div>
-        <div id="kt_app_toolbar" class="app-toolbar pt-7 pt-lg-10">
+    <div dir="rtl">
+        <div id="kt_app_toolbar" class="app-toolbar pb-7 pt-lg-10">
             <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
-                <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
+                <div class="page-title d-flex flex-column justify-content-center gap-1 ms-3">
                     <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7">
+
                         <li class="breadcrumb-item text-gray-700 fw-bold lh-1 mx-n1">
-                            <a href="index.html" class="text-hover-primary">
+                            <a href="{{ route('developer.dashboard') }}" class="text-hover-primary">
                                 <i class="ki-outline ki-home text-gray-700 fs-6"></i>
                             </a>
                         </li>
-                        <li class="breadcrumb-item">
-                            <i class="ki-outline ki-right fs-7 text-gray-700"></i>
+
+                        <li class="breadcrumb-item me-2">
+                            <i class="ki-outline ki-left fs-7 text-gray-700"></i>
                         </li>
-                        <li class="breadcrumb-item text-gray-700 fw-bold lh-1 mx-n1">Dashboard</li>
+
+                        <li class="breadcrumb-item text-gray-700 fw-bold lh-1 mx-n1">لوحة التحكم</li>
                         <li class="breadcrumb-item">
-                            <i class="ki-outline ki-right fs-7 text-gray-700"> </i>
+                            <i class="ki-outline ki-left fs-7 text-gray-700"> </i>
                         </li>
-                        <li class="breadcrumb-item text-gray-500 mx-n1">My Projects</li>
+                        <li class="breadcrumb-item text-gray-500 mx-n1">مشاريعي</li>
                     </ul>
                 </div>
             </div>
@@ -25,20 +28,20 @@
     </div>
 
     <!--begin::Toolbar-->
-    <div class="d-flex flex-wrap flex-stack mb-6">
+    <div class="d-flex flex-wrap flex-stack mb-6" dir="rtl">
         <!--begin::Heading-->
-        <h3 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bolder fs-3 my-5">My Projects</h3>
+        <h3 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bolder fs-3 my-5">مشاريعي</h3>
         <!--end::Heading-->
         <!--begin::Actions-->
         <div class="d-flex flex-wrap align-items-center my-2">
 
             <div wire:loading wire:target="selected_is_active, selected_project_type" class="spinner-border spinner-border-sm mx-5" role="status" aria-hidden="true"></div>
-            <div class="me-4">
+            <div class="me-2">
                 <!--begin::Select-->
                 <select wire:model.live="selected_is_active" class="form-select form-select-sm form-select-solid w-125px">
-                    <option value="">All Status</option>
-                    <option value="1">Active</option>
-                    <option value="0">Not Active</option>
+                    <option value="">الكل</option>
+                    <option value="1">مفعل</option>
+                    <option value="0">غير مفعل</option>
                 </select>
                 <!--end::Select-->
             </div>
@@ -46,7 +49,7 @@
             <div class="me-4">
                 <!--begin::Select-->
                 <select wire:model.live="selected_project_type" class="form-select form-select-sm form-select-solid w-125px">
-                    <option value="">All Types</option>
+                    <option value="">الكل</option>
                     @foreach ($projectTypes as $projectType)
                         <option value="{{ $projectType->id }}">{{ $projectType->name }}</option>
                     @endforeach
@@ -54,7 +57,7 @@
                 <!--end::Select-->
             </div>
 
-            <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#kt_modal_create_project">New Project</a>
+            <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#kt_modal_create_project">مشروع جديد</a>
         </div>
         <!--end::Actions-->
     </div>
@@ -62,7 +65,7 @@
 
 
     <!--begin::Stats-->
-    <div class="row gx-6 gx-xl-9 mb-5">
+    <div class="row gx-6 gx-xl-9 mb-5" dir="rtl">
         <div class="col-lg-6 col-xxl-4">
             <!--begin::Card-->
             <div class="card h-100">
@@ -70,7 +73,7 @@
                 <div class="card-body p-9">
                     <!--begin::Heading-->
                     <div class="fs-2hx fw-bold">{{ $projects->count() }}</div>
-                    <div class="fs-4 fw-semibold text-gray-500 mb-7">Current Projects</div>
+                    <div class="fs-4 fw-semibold text-gray-500 mb-7">المشاريع الحالية</div>
                     <!--end::Heading-->
                     <!--begin::Wrapper-->
                     <div class="d-flex flex-wrap">
@@ -83,23 +86,23 @@
                         <div class="d-flex flex-column justify-content-center flex-row-fluid pe-11 mb-5">
                             <!--begin::Label-->
                             <div class="d-flex fs-6 fw-semibold align-items-center mb-3">
-                                <div class="bullet bg-primary me-3"></div>
-                                <div class="text-gray-500">Active</div>
-                                <div class="ms-auto fw-bold text-gray-700">{{ $projects->where('is_active', 1)->count() }}</div>
+                                <div class="bullet bg-primary ms-3"></div>
+                                <div class="ms-2 fw-bold text-gray-700">{{ $projects->where('is_active', 1)->count() }}</div>
+                                <div class="text-gray-500">مفعل</div>
                             </div>
                             <!--end::Label-->
                             <!--begin::Label-->
                             <div class="d-flex fs-6 fw-semibold align-items-center mb-3">
-                                <div class="bullet bg-success me-3"></div>
-                                <div class="text-gray-500">Completed <span class="text-muted small">(no units to sell)</span></div>
-                                <div class="ms-auto fw-bold text-gray-700">{{ $projectsWithoutCaseZero }}</div>
+                                <div class="bullet bg-success ms-3"></div>
+                                <div class="ms-2 fw-bold text-gray-700">{{ $projectsWithoutCaseZero }}</div>
+                                <div class="text-gray-500">مكتمل <span class="text-muted small">(لا يوجد وحدات متاحة)</span></div>
                             </div>
                             <!--end::Label-->
                             <!--begin::Label-->
                             <div class="d-flex fs-6 fw-semibold align-items-center">
-                                <div class="bullet bg-danger me-3"></div>
-                                <div class="text-gray-500">Not Active</div>
-                                <div class="ms-auto fw-bold text-gray-700">{{ $projects->where('is_active', 0)->count() }}</div>
+                                <div class="bullet bg-danger ms-3"></div>
+                                <div class="ms-2 fw-bold text-gray-700">{{ $projects->where('is_active', 0)->count() }}</div>
+                                <div class="text-gray-500">غير مفعل</div>
                             </div>
                             <!--end::Label-->
                         </div>
@@ -115,20 +118,20 @@
             <!--begin::Budget-->
             <div class="card h-100">
                 <div class="card-body p-9">
-                    <div class="fs-4 fw-semibold text-gray-900 mb-7">Projects Units</div>
+                    <div class="fs-4 fw-semibold text-gray-900 mb-7">وحدات المشاريع</div>
                     <div class="fs-6 d-flex justify-content-between mb-4">
-                        <div class="fw-semibold text-gray-500">All Units</div>
-                        <div class="d-flex fw-bold">{{ $allUnits }} <span class="text-gray-500 ms-1"> units</span></div>
+                        <div class="fw-semibold text-gray-500">جميع الوحدات</div>
+                        <div class="d-flex fw-bold"> <span class="text-gray-500 ms-1"> وحدات</span> {{ $allUnits }}</div>
                     </div>
                     <div class="separator separator-dashed"></div>
                     <div class="fs-6 d-flex justify-content-between my-4">
-                        <div class="fw-semibold text-gray-500">Sold Units</div>
-                        <div class="d-flex fw-bold">{{ $unitsSold }} <span class="text-gray-500 ms-1"> units</span></div>
+                        <div class="fw-semibold text-gray-500">الوحدات المباعة</div>
+                        <div class="d-flex fw-bold"> <span class="text-gray-500 ms-1"> وحدات</span> {{ $unitsSold }}</div>
                     </div>
                     <div class="separator separator-dashed"></div>
                     <div class="fs-6 d-flex justify-content-between mt-4">
-                        <div class="fw-semibold text-gray-500">Not Sold Units</div>
-                        <div class="d-flex fw-bold">{{ $unitsNotSold }} <span class="text-gray-500 ms-1"> units</span></div>
+                        <div class="fw-semibold text-gray-500">الوحدات غير المباعة</div>
+                        <div class="d-flex fw-bold"> <span class="text-gray-500 ms-1"> وحدات</span> {{ $unitsNotSold }}</div>
                     </div>
                 </div>
             </div>
@@ -154,7 +157,7 @@
     </div>
     <!--end::Stats-->
     <!--begin::Row-->
-    <div class="row g-6 g-xl-9">
+    <div class="row g-6 g-xl-9" dir="rtl">
         <!--begin::Col-->
         @foreach ($projects as $project)
         <div class="col-md-6 col-xl-4" wire:key="{{ $project->id }}">
@@ -174,7 +177,7 @@
                     <!--begin::Card toolbar-->
                     <div class="card-toolbar">
                         <span class="badge badge-light-dark fw-bold me-auto px-4 py-3">{{ $project->propertyType->name }}</span>
-                        <span class="badge {{ $project->is_active ? 'badge-light-success' : 'badge-light-danger' }} fw-bold px-4 py-3 ms-2">{{ $project->is_active ? 'active' : 'not Action' }}</span>
+                        <span class="badge {{ $project->is_active ? 'badge-light-success' : 'badge-light-danger' }} fw-bold px-4 py-3 me-2">{{ $project->is_active ? 'active' : 'not Action' }}</span>
                     </div>
 
                     <!--end::Card toolbar-->
@@ -195,13 +198,13 @@
                     <!--begin::Info-->
                     <div class="d-flex flex-wrap mb-5">
                         <!--begin::Due-->
-                        <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-7 mb-3">
+                        <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 ms-7 mb-3">
                             <div class="fs-6 text-gray-800 fw-bold">{{ $project->units->count() }}</div>
-                            <div class="fw-semibold text-gray-500">units</div>
+                            <div class="fw-semibold text-gray-500">وحدات</div>
                         </div>
                         <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 mb-3">
                             <div class="fs-6 text-gray-800 fw-bold">SAR {{ number_format($project->units->where('case', 1)->sum('total_amount'), 2) }}</div>
-                            <div class="fw-semibold text-gray-500">Sold</div>
+                            <div class="fw-semibold text-gray-500">مباع</div>
                         </div>
                     </div>
                     <!--end::Info-->
@@ -243,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     data: [{{ $activeProjects }}, {{ $projectsWithoutCaseZero }}, {{ $inactiveProjects }}],
                     backgroundColor: ["#000000", "#50CD89", "#FF5757"]
                 }],
-                labels: ["Active", "Completed", "Not Active"]
+                labels: ["مفعل", "مكتمل", "غير مفعل"]
             },
             options: {
                 chart: {

@@ -3,42 +3,42 @@
     @livewire('developer.components.order-details-modal')
 
     <!--begin::Table widget 8-->
-    <div class="card h-xl-100">
+    <div class="card h-xl-100" dir="rtl">
         <!--begin::Header-->
         <div class="card-header position-relative py-0 border-bottom-2 pe-3">
-            <h3 class="card-title">Orders</h3>
+            <h3 class="card-title">الطلبات</h3>
             <!--begin::Actions-->
             <div class="card-toolbar">
                 <div class="d-flex justify-content-between">
 
-                    <span class="spinner-border spinner-border-sm me-4 m-auto" wire:loading wire:target="filterPaymentPlan, filterStatus, filterProject, searchTerm"></span>
+                    <span class="spinner-border spinner-border-sm ms-4 m-auto" wire:loading wire:target="filterPaymentPlan, filterStatus, filterProject, searchTerm"></span>
 
                     <div class="d-flex align-items-center position-relative">
-                        <i class="ki-outline ki-magnifier fs-3 position-absolute ms-5"></i>
+                        <i class="ki-outline ki-magnifier fs-3 position-absolute me-5"></i>
                         <input
                             wire:model.live.debounce.300ms="searchTerm"
                             type="text"
-                            class="form-control form-control-solid w-250px ps-13 rounded h-100"
-                            placeholder="Search Orders"
+                            class="form-control form-control-solid w-250px pe-13 rounded h-100"
+                            placeholder="ابحث ..."
                         />
                     </div>
 
                     <div class="d-flex align-items-center" wire:ignore>
-                        <div class=" me-3 ms-3" style="min-width: 200px;">
+                        <div class="ms-3 me-3" style="min-width: 200px;">
                             <select
                                 wire:model.live="filterStatus"
                                 data-control="select2"
                                 class="form-select form-select-solid"
                                 multiple="multiple"
                                 id="status-filter">
-                                <option value="" disabled selected hidden>Select Status</option>
+                                <option value="" disabled selected hidden>اختر الحالة</option>
                                 @foreach($statusOptions as $status)
                                     <option value="{{ $status }}">{{ ucfirst($status) }}</option>
                                 @endforeach
                             </select>
                         </div>
 
-                        <div class=" me-3" style="min-width: 200px;" wire:ignore>
+                        <div class="ms-3" style="min-width: 200px;" wire:ignore>
                             <select
                                 wire:model.live="filterPaymentPlan"
                                 data-control="select2"
@@ -46,14 +46,14 @@
                                 aria-placeholder="Select Payment Plan"
                                 multiple="multiple"
                                 id="payment-plan-filter">
-                                <option value="" disabled selected hidden>Select Payment Plan</option>
+                                <option value="" disabled selected hidden>اختر خطة الدفع</option>
                                 @foreach($paymentPlanOptions as $plan)
                                     <option value="{{ $plan }}">{{ $plan }}</option>
                                 @endforeach
                             </select>
                         </div>
 
-                        <div class=" me-3" style="min-width: 200px;" wire:ignore>
+                        <div class="ms-3" style="min-width: 200px;" wire:ignore>
                             <select
                                 wire:model.live="filterProject"
                                 data-control="select2"
@@ -81,34 +81,33 @@
                         <!--begin::Table head-->
                         <thead>
                             <tr>
-                                <th class="min-w-150px p-0 text-muted">Unit</th>
-                                <th class="min-w-200px p-0 text-muted">Customer</th>
-                                <th class="min-w-100px p-0 text-muted">Status</th>
-                                <th class="min-w-80px p-0 text-muted">Payment Plan</th>
+                                <th class="min-w-150px p-0 text-muted">الوحدة</th>
+                                <th class="min-w-200px p-0 text-muted">العميل</th>
+                                <th class="min-w-100px p-0 text-muted">الحالة</th>
+                                <th class="min-w-80px p-0 text-muted">خطة الدفع</th>
                             </tr>
                         </thead>
                         <!--end::Table head-->
                         <!--begin::Table body-->
                         <tbody>
-                            @foreach ($orders as $order)
-
+                            @forelse ($orders as $order)
                             <tr>
                                 <td class="min-w-175px">
-                                    <div class="position-relative ps-6 pe-3 py-2">
+                                    <div class="position-relative ps-6 ps-3 py-2">
                                         <div class="position-absolute start-0 top-0 w-4px h-100 rounded-2 {{ $order->status == 'pending' ? 'bg-warning' : ($order->status == 'processing' ? 'bg-info' : ($order->status == 'confirmed' ? 'bg-success' : 'bg-danger')) }}"></div>
                                         <a data-bs-toggle="modal" data-bs-target="#orderDetailsModal" wire:click="openOrderDetails({{ $order->id }})" class="mb-1 text-gray-900 text-hover-primary fw-bold cursor-pointer">
                                             <div class="border border-gray-400 border-dashed rounded min-w-100px w-100 py-2 px-4 me-2">
 
-                                                <span class="text-muted">Unit</span> <span class="fs-6 text-gray-700 fw-bold">{{ $order->unit->title }}</span>
+                                                <span class="text-muted">الوحدة</span> <span class="fs-6 text-gray-700 fw-bold">{{ $order->unit->title }}</span>
                                                 @if ($order->unit->case == '1')
-                                                    <span class="badge badge-light-success fs-7">Sold</span>
+                                                    <span class="badge badge-light-success fs-7">مباع</span>
                                                 @else
-                                                    <span class="badge badge-light-dark fs-7">Unsold</span>
+                                                    <span class="badge badge-light-dark fs-7">غير مباع</span>
                                                 @endif
-                                                <div class="fw-semibold text-gray-500">Project: {{ $order->unit->project->title }}</div>
+                                                <div class="fw-semibold text-gray-500">المشروع: {{ $order->unit->project->title }}</div>
                                             </div>
                                         </a>
-                                        <div class="fs-7 text-muted fw-bold mt-3">Created on {{ $order->created_at->format('d M Y h:i A') }}</div>
+                                        <div class="fs-7 text-muted fw-bold mt-3">تم الإنشاء في {{ $order->created_at->format('d M Y h:i A') }}</div>
                                     </div>
                                 </td>
                                 <td class="px-0">
@@ -153,7 +152,7 @@
                                 </td>
                                 <td class="min-w-150px px-0">
                                     <div class="mb-2 fw-bold">{{ $order->updated_at->format('d M Y h:i A') }}</div>
-                                    <div class="fs-7 fw-bold text-muted">Last Update</div>
+                                    <div class="fs-7 fw-bold text-muted">اخر تحديث</div>
                                 </td>
                                 <td class="text-end px-0">
                                     <button type="button" class="btn btn-icon btn-sm btn-light btn-active-primary w-25px h-25px" data-bs-toggle="modal" data-bs-target="#orderDetailsModal" wire:click="openOrderDetails({{ $order->id }})">
@@ -162,7 +161,12 @@
                                     </button>
                                 </td>
                             </tr>
-                            @endforeach
+                            @empty
+                            <div>
+                                {{-- <img src="{{ asset('developer/media/misc/outdoor.png') }}" class="m-auto" alt=""> --}}
+                                <h1 class="h1 text-center m-auto">لا يوجد طلبات</h1>
+                            </div>
+                            @endforelse
                         </tbody>
                         <!--end::Table body-->
                     </table>
@@ -175,7 +179,7 @@
                 <div>{{ $orders->links('pagination::bootstrap-4') }}</div>
                 <div>
                     @if($currentRoute !== 'developer.orders')
-                        <a href="{{ route('developer.orders') }}" class="btn btn-sm btn-light me-2">Show All</a>
+                        <a href="{{ route('developer.orders') }}" class="btn btn-sm btn-light me-2">عرض الكل</a>
                     @endif
                 </div>
             </div>
@@ -190,7 +194,7 @@
 <script>
     document.addEventListener('livewire:initialized', () => {
         $('#status-filter').select2({
-            placeholder: 'Select Status',
+            placeholder: 'اختر الحالة',
         });
         $('#status-filter').on('change', function (e) {
             var data = $('#status-filter').select2("val");
@@ -198,7 +202,7 @@
         });
 
         $('#payment-plan-filter').select2({
-            placeholder: 'Select Payment Plan',
+            placeholder: 'اختر خطة الدفع',
         });
         $('#payment-plan-filter').on('change', function (e) {
             var data = $('#payment-plan-filter').select2("val");
@@ -206,7 +210,7 @@
         });
 
         $('#project-filter').select2({
-            placeholder: 'Select Project',
+            placeholder: 'اختر المشروع',
         });
         $('#project-filter').on('change', function (e) {
             var data = $('#project-filter').select2("val");

@@ -8,11 +8,10 @@
                 <div class="card-body d-flex flex-column flex-center">
                     <!--begin::Heading-->
                     <div class="mb-2">
-
-                        <h1 class="fw-semibold text-gray-800 text-center lh-lg">Have you tried
-                        <br />new
-                        <span class="fw-bolder">Investor Map ?</span></h1>
-                        <!--end::Title-->
+                    <h1 class="fw-semibold text-gray-800 text-center lh-lg">هل جربت
+                    <br />الخريطة الجديدة
+                    <span class="fw-bolder">للمستثمرين؟</span></h1>
+                    <!--end::Title-->
                         <!--begin::Illustration-->
                         <div class="py-10 text-center">
                             <img src="{{ asset('developer/media/auth/coming-soon.png') }}" class="theme-light-show w-250px" alt="" />
@@ -24,7 +23,7 @@
                     <!--begin::Links-->
                     <div class="text-center mb-1">
                         <!--begin::Link-->
-                        <a class="btn btn-sm btn-dark me-2 disabled" disabled data-bs-target="#kt_modal_create_app" data-bs-toggle="modal">Coming soon...</a>
+                        <a class="btn btn-sm btn-dark me-2 disabled" disabled data-bs-target="#kt_modal_create_app" data-bs-toggle="modal">قريباً...</a>
                         <!--end::Link-->
                     </div>
                     <!--end::Links-->
@@ -39,19 +38,19 @@
             <!--begin::Chart Widget 46-->
             <div class="card card-flush h-lg-100">
 
-                <div class="card-header pt-5">
+                <div class="card-header pt-5" dir="rtl">
                     <div class="d-flex flex-center">
-                        <h3 class="card-title align-items-start">
-                            <span class="card-label fw-bold text-gray-800">Units Sales</span>
+                        <h3 class="card-title align-items-end">
+                            <span class="card-label fw-bold text-gray-800">مبيعات الوحدات</span>
                         </h3>
                         <div class="d-flex align-items-center px-5">
-                            <div class="d-flex align-items-center me-6">
-                                <span class="rounded-1 bg-gray-800 me-2 h-10px w-10px"></span>
-                                <span class="fw-semibold fs-6 text-gray-600">Sold</span>
+                            <div class="d-flex align-items-center ms-6">
+                                <span class="rounded-1 bg-gray-800 ms-2 h-10px w-10px"></span>
+                                <span class="fw-semibold fs-6 text-gray-600">مباعة</span>
                             </div>
                             <div class="d-flex align-items-center">
-                                <span class="rounded-1 bg-gray-500 me-2 h-10px w-10px"></span>
-                                <span class="fw-semibold fs-6 text-gray-600">Pending</span>
+                                <span class="rounded-1 bg-gray-500 ms-2 h-10px w-10px"></span>
+                                <span class="fw-semibold fs-6 text-gray-600">معلقة</span>
                             </div>
                         </div>
                     </div>
@@ -221,8 +220,8 @@
 
                         var i = {
                             series: [
-                                { name: "Units Sold", data: unitsSoldData },
-                                { name: "Units Not Sold", data: unitsNotSoldData },
+                                { name: "وحدات مباعة", data: unitsSoldData },
+                                { name: "وحدات غير مباعة", data: unitsNotSoldData },
                             ],
                             chart: { fontFamily: "inherit", type: "bar", stacked: !0, height: l, toolbar: { show: !1 } },
 
@@ -259,7 +258,7 @@
                                 style: { fontSize: "12px", borderRadius: 4 },
                                     y: {
                                         formatter: function (e) {
-                                        return e > 0 ? e + " units" : Math.abs(e) + " units";
+                                        return e > 0 ? e + " الوحدات" : Math.abs(e) + " الوحدات";
                                     },
                                 },
                             },
