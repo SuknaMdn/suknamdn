@@ -63,7 +63,6 @@
                                         @else
                                             <a wire:click="activeProject" class="menu-link text-primary px-3">نشط</a>
                                         @endif
-                                        @endif
                                     </div>
                                     <!--end::Menu item-->
                                 </div>
