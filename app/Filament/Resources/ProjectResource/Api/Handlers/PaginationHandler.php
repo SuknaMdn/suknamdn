@@ -27,6 +27,8 @@ class PaginationHandler extends Handlers {
                 'city_id',
                 'state_id',
                 'developer_id',
+                'area_range_from',
+                'area_range_to',
                 'images',
                 'property_type_id',
             ])
