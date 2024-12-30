@@ -24,21 +24,16 @@ class FavoriteController extends Controller
                 $unit = Unit::where('id', $favorite->favoritable_id)
                     ->select('id', 'title', 'slug','case', 'building_number', 'floor', 'unit_type', 'unit_number', 'bedrooms', 'bathrooms', 'status', 'project_id', 'created_at', 'total_amount', 'total_area')
                     ->with(['images' => function ($query) {
-                        $query->select('id', 'unit_id', 'type', 'created_at', 'updated_at');
+                        $query->select('id', 'unit_id','image_path');
                     }])
                     ->first();
 
                 if ($unit) {
                     // Transform images
-                    $unit->images = $unit->images
-                        ? $unit->images->map(function ($image) {
-                            $image->image_path = asset('storage/' . $image->image_path);
-                            return $image;
-                        })
-                        : collect();
-
-                    // Set the first image as the main image
-                    $unit->image = $unit->images->isNotEmpty() ? $unit->images->first()->image_path : null;
+                    if ($unit->images->isNotEmpty()) {
+                        $firstImage = $unit->images->first();
+                        $unit->image = asset('storage/' . $firstImage->image_path);
+                    }
                     $unit->favorite_id = $favorite->id;
                     $unit->makeHidden('images'); // Hide the field
 

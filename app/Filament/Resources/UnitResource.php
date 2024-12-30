@@ -169,27 +169,12 @@ class UnitResource extends Resource
                                     ])
                                     ->default('direct'),
                                 Forms\Components\TextInput::make('unit_price')
-                                    ->numeric()
-                                    ->live()
-                                    ->afterStateUpdated(function (Get $get, Set $set) {
-                                        $unitPrice = floatval($get('unit_price')) ?? 0;
-                                        $propertyTax = floatval($get('property_tax')) ?? 0;
-                                        $totalAmount = $unitPrice + ($unitPrice * ($propertyTax / 100));
-                                        $set('total_amount', $totalAmount);
-                                    }),
+                                    ->numeric(),
                                 Forms\Components\TextInput::make('property_tax')
                                     ->numeric()
-                                    ->default(15)
-                                    ->live()
-                                    ->afterStateUpdated(function (Get $get, Set $set) {
-                                        $unitPrice = floatval($get('unit_price')) ?? 0;
-                                        $propertyTax = floatval($get('property_tax')) ?? 0;
-                                        $totalAmount = $unitPrice + ($unitPrice * ($propertyTax / 100));
-                                        $set('total_amount', $totalAmount);
-                                    }),
+                                    ->default(15),
                                 Forms\Components\TextInput::make('total_amount')
-                                    ->numeric()
-                                    ->disabled(),
+                                    ->numeric(),
 
 
                             ])->columns(4),
