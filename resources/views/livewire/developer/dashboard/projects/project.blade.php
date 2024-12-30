@@ -194,7 +194,6 @@
                                 @elseif ($order->status == 'canceled')
                                     <span class="badge badge-light-danger">ملغي</span>
                                 @endif
-                                @endif
                             </span>
                             <!--end::Number-->
                         </div>
