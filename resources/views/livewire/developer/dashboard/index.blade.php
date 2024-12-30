@@ -15,8 +15,8 @@
                         <!--end::Title-->
                         <!--begin::Illustration-->
                         <div class="py-10 text-center">
-                            <img src="{{ asset('developer/media/svg/illustrations/easy/1.svg') }}" class="theme-light-show w-200px" alt="" />
-                            <img src="{{ asset('developer/media/svg/illustrations/easy/1-dark.svg') }}" class="theme-dark-show w-200px" alt="" />
+                            <img src="{{ asset('developer/media/auth/coming-soon.png') }}" class="theme-light-show w-200px" alt="" />
+                            <img src="{{ asset('developer/media/auth/coming-soon.png') }}" class="theme-dark-show w-200px" alt="" />
                         </div>
                         <!--end::Illustration-->
                     </div>
