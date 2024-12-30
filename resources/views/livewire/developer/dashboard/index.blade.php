@@ -15,8 +15,8 @@
                         <!--end::Title-->
                         <!--begin::Illustration-->
                         <div class="py-10 text-center">
-                            <img src="{{ asset('developer/media/auth/coming-soon.png') }}" class="theme-light-show w-200px" alt="" />
-                            <img src="{{ asset('developer/media/auth/coming-soon.png') }}" class="theme-dark-show w-200px" alt="" />
+                            <img src="{{ asset('developer/media/auth/coming-soon.png') }}" class="theme-light-show w-250px" alt="" />
+                            <img src="{{ asset('developer/media/auth/coming-soon.png') }}" class="theme-dark-show w-250px" alt="" />
                         </div>
                         <!--end::Illustration-->
                     </div>

@@ -135,7 +135,7 @@
             <!--end::Budget-->
         </div>
 
-        <div class="col-lg-6 col-xxl-4">
+        {{-- <div class="col-lg-6 col-xxl-4">
             <!--begin::Budget-->
             <div class="card h-100">
                 <div class="card-body p-0">
@@ -150,7 +150,7 @@
                 </div>
             </div>
             <!--end::Budget-->
-        </div>
+        </div> --}}
     </div>
     <!--end::Stats-->
     <!--begin::Row-->
@@ -161,12 +161,12 @@
             <!--begin::Card-->
             <a href="{{ route('developer.projects.show', $project->slug) }}" class="card border-hover-primary">
                 <!--begin::Card header-->
-                <div class="card-header border-0">
+                <div class="card-header border-0 pt-4">
                     <!--begin::Card Title-->
                     <div class="card-title m-0">
                         <!--begin::Avatar-->
-                        <div class="symbol bg-light">
-                            <img src="{{ asset($developer->logo) }}" alt="image" />
+                        <div class="bg-light">
+                            <img src="{{ asset($developer->logo) }}" alt="image" width="50px" />
                         </div>
                         <!--end::Avatar-->
                     </div>
