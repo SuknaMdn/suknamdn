@@ -101,11 +101,10 @@
 
                                                 <span class="text-muted">Unit</span> <span class="fs-6 text-gray-700 fw-bold">{{ $order->unit->title }}</span>
                                                 @if ($order->unit->case == '1')
-                                                    <span class="badge badge-light-success fs-7">Paid</span>
+                                                    <span class="badge badge-light-success fs-7">Sold</span>
                                                 @else
-                                                    <span class="badge badge-light-danger fs-7">Unpaid</span>
+                                                    <span class="badge badge-light-dark fs-7">Unsold</span>
                                                 @endif
-
                                                 <div class="fw-semibold text-gray-500">Project: {{ $order->unit->project->title }}</div>
                                             </div>
                                         </a>
