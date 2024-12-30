@@ -1,7 +1,7 @@
 <div>
     @livewire('developer.components.order-details-modal')
 
-    <div class="overflow-auto pb-5">
+    <div class="overflow-auto pb-5" dir="rtl">
         <div class="d-flex align-items-center border border-dashed border-gray-300 rounded min-w-700px p-7">
             <!--begin::Item-->
             @if($project->images)
@@ -16,12 +16,12 @@
         </div>
     </div>
     <!--begin::Navbar-->
-    <div class="card mb-6 mb-xl-9">
+    <div class="card mb-6 mb-xl-9" dir="rtl">
         <div class="card-body pt-9 pb-0">
             <!--begin::Details-->
             <div class="d-flex flex-wrap flex-sm-nowrap mb-6">
                 <!--begin::Image-->
-                <div class="d-flex flex-center flex-shrink-0 bg-light rounded w-100px h-100px w-lg-150px h-lg-150px me-7 mb-4 p-3">
+                <div class="d-flex flex-center flex-shrink-0 bg-light rounded w-100px h-100px w-lg-150px h-lg-150px ms-7 mb-4 p-3">
                     <img class="w-100" src="{{ asset('storage/' . $project->qr_code) }}" alt="image" />
                 </div>
                 <!--end::Image-->
@@ -78,7 +78,7 @@
                         <!--begin::Stats-->
                         <div class="d-flex flex-wrap">
                             <!--begin::Stat-->
-                            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 ms-6 mb-3">
                                 <!--begin::Number-->
                                 <div class="d-flex align-items-center">
                                     <div class="fs-4 fw-bold">{{ $project->created_at->format('d M, Y') }}</div>
@@ -90,22 +90,22 @@
                             </div>
                             <!--end::Stat-->
                             <!--begin::Stat-->
-                            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 ms-6 mb-3">
                                 <!--begin::Number-->
                                 <div class="d-flex align-items-center">
-                                    <i class="ki-outline ki-sort fs-3 text-dark me-2"></i>
+                                    <i class="ki-outline ki-sort fs-3 text-dark ms-2"></i>
                                     <span class="me-2">الكل</span> <div class="fs-4 fw-bold me-2" data-kt-countup="true" data-kt-countup-value="{{ $project->units->count() }}">0</div>
                                 </div>
                                 <!--end::Number-->
                                 <!--begin::Label-->
-                                <div class="fw-semibold fs-6 text-gray-500">الوحدات <span class="badge badge-light-success fw-bold px-4 py-1">Sold <div class="ms-2" data-kt-countup="true" data-kt-countup-value="{{ $project->units->where('case', 1)->count() }}">0</div> </span></div>
+                                <div class="fw-semibold fs-6 text-gray-500">الوحدات <span class="badge badge-light-success fw-bold px-4 py-1">مباع <div class="ms-2" data-kt-countup="true" data-kt-countup-value="{{ $project->units->where('case', 1)->count() }}">0</div> </span></div>
                                 <!--end::Label-->
                             </div>
                             <!--begin::Stat-->
-                            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 ms-6 mb-3">
                                 <!--begin::Number-->
                                 <div class="d-flex align-items-center">
-                                    <i class="ki-outline ki-user fs-3 text-dark me-2"></i>
+                                    <i class="ki-outline ki-user fs-3 text-dark ms-2"></i>
                                     <div class="fs-4 fw-bold">{{ $project->developer->name }}</div>
                                 </div>
                                 <!--end::Number-->
@@ -126,7 +126,7 @@
     <!--end::Navbar-->
 
     <!--begin::Row-->
-    <div class="row g-5 g-xl-10 mb-5 mb-xl-10">
+    <div class="row g-5 g-xl-10 mb-5 mb-xl-10" dir="rtl">
         <!--begin::Col-->
         <div class="col-xl-4">
             <!--begin::List widget 11-->
@@ -135,7 +135,7 @@
                 <div class="card-header pt-7 mb-3">
                     <!--begin::Title-->
                     <h3 class="card-title align-items-start flex-column">
-                        <span class="card-label fw-bold text-gray-800">طلبات المشروع</span>
+                        <span class="card-label fw-bold text-gray-800 me-0">طلبات المشروع</span>
                         <span class="text-gray-500 mt-1 fw-semibold fs-6">كل {{ $orders->count() }} الطلبات</span>
                     </h3>
                     <!--end::Title-->
@@ -152,16 +152,16 @@
                     @foreach ($orders as $order)
                     <div class="d-flex flex-stack">
                         <!--begin::Section-->
-                        <div class="d-flex align-items-center me-5">
+                        <div class="d-flex align-items-center ms-5">
                             <!--begin::Symbol-->
-                            <div class="symbol symbol-40px me-4">
+                            <div class="symbol symbol-40px ms-4">
                                 <span class="symbol-label">
                                     <i class="ki-outline ki-flag text-gray-600 fs-1"></i>
                                 </span>
                             </div>
                             <!--end::Symbol-->
                             <!--begin::Content-->
-                            <div class="me-5">
+                            <div class="ms-5">
                                 <!--begin::Title-->
                                 <a href="#" class="text-gray-800 fw-bold text-hover-primary fs-6">{{ $order->user->username }}</a>
                                 <!--end::Title-->
@@ -169,7 +169,7 @@
                                 <span class="text-gray-500 fw-semibold fs-7 d-block text-start ps-0">{{ $order->user->phone }}</span>
                                 <!--end::Desc-->
                             </div>
-                            <div class="me-5">
+                            <div class="ms-5">
                                 <!--begin::Title-->
                                 <a href="#" class="text-gray-800 fw-bold text-hover-primary fs-6">{{ $order->unit->title }}</a>
                                 <!--end::Title-->
@@ -215,7 +215,7 @@
                     <!--begin::Nav-->
                     <ul class="nav nav-stretch nav-pills nav-pills-custom d-flex mt-3">
                         @foreach ($buildingNumbers as $buildingNumber)
-                        <li class="nav-item p-0 ms-0 me-8">
+                        <li class="nav-item p-0 me-0 ms-8">
                             <!--begin::Nav link-->
                             <a class="nav-link btn btn-color-muted px-0 {{ $loop->first ? 'show active' : '' }}" data-bs-toggle="tab" href="#kt_table_{{$buildingNumber}}">
                                 <!--begin::Title-->
@@ -232,7 +232,7 @@
                     <!--end::Nav-->
                     <!--begin::Toolbar-->
                     <div class="card-toolbar">
-                        <a href="#" class="btn btn-sm btn-light me-2" data-bs-toggle="modal" data-bs-target="#kt_modal_create_project">اضافة وحدة</a>
+                        <a href="#" class="btn btn-sm btn-light ms-2" data-bs-toggle="modal" data-bs-target="#kt_modal_create_project">اضافة وحدة</a>
                     </div>
                     <!--end::Toolbar-->
                 </div>
