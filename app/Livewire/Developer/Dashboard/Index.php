@@ -5,7 +5,7 @@ namespace App\Livewire\Developer\Dashboard;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use App\Models\UnitOrder;
-use App\Notifications\Developer\UnitOrderNotification;
+
 class Index extends Component
 {
     #[Layout('components.layouts.developer')]
@@ -19,12 +19,6 @@ class Index extends Component
     }
     public function prepareUnitsData()
     {
-        // $orderDetails = [
-        //     'developer_id' => auth()->user()->id,
-        //     'unit_name' => 'Unit 1'
-        // ];
-        // $notification = auth()->user()->notify(new UnitOrderNotification($orderDetails));
-
         $unitsSoldByMonth = [];
         $unitsNotSoldByMonth = [];
         $monthLabels = [];

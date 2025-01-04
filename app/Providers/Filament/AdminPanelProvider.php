@@ -61,12 +61,6 @@ class AdminPanelProvider extends PanelProvider
                     ->collapsed(),
             ])
             ->navigationItems([
-                // Navigation\NavigationItem::make('Log Viewer') // !! To-Do: lang
-                //     ->visible(fn(): bool => auth()->user()->can('access_log_viewer'))
-                //     ->url(config('app.url').'/'.config('log-viewer.route_path'), shouldOpenInNewTab: true)
-                //     ->icon('fluentui-document-bullet-list-multiple-20-o')
-                //     ->group(__('menu.nav_group.activities'))
-                //     ->sort(99),
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
@@ -97,12 +91,6 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 \TomatoPHP\FilamentArtisan\FilamentArtisanPlugin::make(),
                 ApiServicePlugin::make(),
-                // FilamentApexChartsPlugin::make(),
-
-                // \TomatoPHP\FilamentSettingsHub\FilamentSettingsHubPlugin::make()
-                //     ->allowShield()
-                //     ->allowSiteSettings()
-                //     ->allowSocialMenuSettings(),
                 \TomatoPHP\FilamentMediaManager\FilamentMediaManagerPlugin::make()
                     ->allowSubFolders(),
                 \BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin::make(),

@@ -53,6 +53,7 @@ class ManageGeneral extends SettingsPage
         $data['tw-config-editor'] = $fileService->readfile($this->twConfigPath);
 
         $data['serious_value_for_unit_reservation'] = $settings->serious_value_for_unit_reservation;
+        $data['payment_timeout_days'] = $settings->payment_timeout_days;
 
         $this->form->fill($data);
     }
@@ -61,16 +62,6 @@ class ManageGeneral extends SettingsPage
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Unit Reservation')
-                    ->label(fn () => __('page.general_settings.sections.unit_reservation.title'))
-                    ->description(fn () => __('page.general_settings.sections.unit_reservation.description'))
-                    ->schema([
-                        Forms\Components\TextInput::make('serious_value_for_unit_reservation')
-                            ->label(fn () => __('page.general_settings.fields.serious_value_for_unit_reservation'))
-                            ->prefix('SAR')
-                            ->required(),
-                    ]),
-
                 Forms\Components\Section::make('Site')
                     ->label(fn () => __('page.general_settings.sections.site'))
                     ->description(fn () => __('page.general_settings.sections.site.description'))

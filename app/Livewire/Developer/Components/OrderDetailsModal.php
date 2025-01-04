@@ -37,7 +37,7 @@ class OrderDetailsModal extends Component
         if ($order) {
             try {
                 $order->status = $this->status;
-
+                $order->paid_at = now();
                 if($this->status == 'confirmed'){
                     // update units as paid
                     $order->unit->case = '1';

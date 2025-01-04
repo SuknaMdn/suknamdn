@@ -118,11 +118,13 @@ class Project extends Model
 
     public function generateQrCode()
     {
+        $dynamicLink = env('APP_URL') . '/projects/' . $this->slug;
+
         $builder = new Builder(
             writer: new PngWriter(),
             writerOptions: [],
             validateResult: false,
-            data: $this->slug,
+            data: $dynamicLink,
             encoding: new Encoding('UTF-8'),
             errorCorrectionLevel: ErrorCorrectionLevel::High,
             labelText: 'Sukna - ' . $this->title,

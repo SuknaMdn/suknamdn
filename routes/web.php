@@ -3,8 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Livewire\Developer\Auth\Login;
-use App\Http\Controllers\Api\PaymentController;
-
+use App\Livewire\Frontend\ShowProject;
 use Illuminate\Support\Facades\Cache;
 /*
 |--------------------------------------------------------------------------
@@ -22,8 +21,7 @@ Route::get('/', function () {
     return redirect()->route('filament.admin.auth.login');
 });
 
-Route::get('/payments/webhook', [PaymentController::class, 'handleWebhook']);
-
+Route::get('/projects/{slug}', ShowProject::class)->name('projects.show');
 
 Route::get('/cache/all', function () {
     try {

@@ -16,6 +16,7 @@ class OrdersByMonth extends Component
     public $developer;
     public $projects;
 
+    public $dateRange;
     // Filter properties
     #[Url]
     public $filterStatus = [];
@@ -84,6 +85,12 @@ class OrdersByMonth extends Component
         $this->generateMonthlyOrderStats();
     }
 
+    public function updateDateRange($startDate, $endDate)
+    {
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
+    }
+
     public function render()
     {
         $unitIds = $this->projects->pluck('units')->flatten()->pluck('id');
@@ -100,6 +107,16 @@ class OrdersByMonth extends Component
 
         if ($this->filterProject != null) {
             $query->whereHas('unit', fn($unitQuery) => $unitQuery->whereIn('project_id', $this->filterProject));
+        }
+
+        if (!empty($this->dateRange)) {
+            $dates = explode(' to ', $this->dateRange);
+            $startDate = isset($dates[0]) ? Carbon::createFromFormat('Y-m-d', $dates[0])->startOfDay() : null;
+            $endDate = isset($dates[1]) ? Carbon::createFromFormat('Y-m-d', $dates[1])->endOfDay() : null;
+
+            if ($startDate && $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            }
         }
 
         if ($this->searchTerm != '') {

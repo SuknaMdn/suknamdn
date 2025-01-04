@@ -24,12 +24,12 @@ class CreatePaymentRequest extends FormRequest
         return [
             'amount' => 'required|numeric|min:0.01',
             'currency' => 'required|string|size:3|in:SAR,USD',
-            'payment_method' => 'required|string|in:credit_card,stc_pay,apple_pay',
-            'number' => 'required_if:payment_method,credit_card|nullable|string|digits_between:13,19',
-            'name' => 'required_if:payment_method,credit_card|nullable|string|max:255',
-            'month' => 'required_if:payment_method,credit_card|nullable|numeric|min:1|max:12',
-            'year' => 'required_if:payment_method,credit_card|nullable|numeric|min:' . date('Y') . '|max:' . (date('Y') + 10),
-            'cvc' => 'required_if:payment_method,credit_card|nullable|string|digits_between:3,4',
+            'payment_method' => 'required|string|in:creditcard,stc_pay,apple_pay',
+            'number' => 'required_if:payment_method,creditcard|nullable|string|digits_between:13,19',
+            'name' => 'required_if:payment_method,creditcard|nullable|string|max:255',
+            'month' => 'required_if:payment_method,creditcard|nullable|numeric|min:1|max:12',
+            'year' => 'required_if:payment_method,creditcard|nullable|numeric|min:' . date('Y') . '|max:' . (date('Y') + 10),
+            'cvc' => 'required_if:payment_method,creditcard|nullable|string|digits_between:3,4',
             'description' => 'nullable|string|max:1000',
             'unit_id' => 'required|exists:units,id',
             'mobile' => 'required_if:payment_method,stc_pay|nullable|string|regex:/^\+9665[0-9]{8}$/',
@@ -79,5 +79,16 @@ class CreatePaymentRequest extends FormRequest
             'mobile.string' => 'يجب أن يكون رقم الجوال نصًا.',
             'mobile.regex' => 'تنسيق رقم الجوال غير صالح.',
         ];
+    }
+
+    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        throw new \Illuminate\Http\Exceptions\HttpResponseException(
+            response()->json([
+                'status' => false,
+                'message' => 'فشل التحقق من البيانات',
+                'errors' => $validator->errors()
+            ], 422)
+        );
     }
 }

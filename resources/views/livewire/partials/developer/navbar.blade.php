@@ -48,6 +48,13 @@
                                 </span>
                             </a>
 
+                            <a href="{{ route('developer.customers.all') }}" class="menu-item menu-lg-down-accordion me-0 me-lg-2 {{ request()->is('developer/customers') ? 'here' : '' }}">
+                                <span class="menu-link">
+                                    <span class="menu-title">العملاء</span>
+                                    <span class="menu-arrow d-lg-none"></span>
+                                </span>
+                            </a>
+
                             {{-- <div data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-placement="bottom-start" class="menu-item show menu-here-bg menu-lg-down-accordion me-0 me-lg-2">
 
 
@@ -141,7 +148,7 @@
 
                             </div> --}}
 
-                            <div data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-placement="bottom-start" class="menu-item menu-lg-down-accordion menu-sub-lg-down-indention me-0 me-lg-2">
+                            <div data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-placement="bottom-end" class="menu-item menu-lg-down-accordion menu-sub-lg-down-indention me-0 me-lg-2">
 
                                 <span class="menu-link">
                                     <span class="menu-title">المساعدة</span>
@@ -154,7 +161,7 @@
                                     <div class="menu-item">
 
                                         <a class="menu-link" href="https://preview.keenthemes.com/html/metronic/docs/base/utilities" target="_blank" title="Check out over 200 in-house components, plugins and ready for use solutions" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
-                                            <span class="menu-icon">
+                                            <span class="menu-icon me-0 ms-2">
                                                 <i class="ki-outline ki-rocket fs-2"></i>
                                             </span>
                                             <span class="menu-title">Components</span>
@@ -166,7 +173,7 @@
                                     <div class="menu-item">
 
                                         <a class="menu-link" href="https://preview.keenthemes.com/html/metronic/docs" target="_blank" title="Check out the complete documentation" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
-                                            <span class="menu-icon">
+                                            <span class="menu-icon me-0 ms-2">
                                                 <i class="ki-outline ki-abstract-26 fs-2"></i>
                                             </span>
                                             <span class="menu-title">Documentation</span>
@@ -178,7 +185,7 @@
                                     <div class="menu-item">
 
                                         <a class="menu-link" href="https://preview.keenthemes.com/metronic8/demo44/layout-builder.html" title="Build your layout and export HTML for server side integration" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
-                                            <span class="menu-icon">
+                                            <span class="menu-icon me-0 ms-2">
                                                 <i class="ki-outline ki-switch fs-2"></i>
                                             </span>
                                             <span class="menu-title">Layout Builder</span>
@@ -190,7 +197,7 @@
                                     <div class="menu-item">
 
                                         <a class="menu-link" href="https://preview.keenthemes.com/html/metronic/docs/getting-started/changelog" target="_blank">
-                                            <span class="menu-icon">
+                                            <span class="menu-icon me-0 ms-2">
                                                 <i class="ki-outline ki-code fs-2"></i>
                                             </span>
                                             <span class="menu-title">Changelog v8.2.1</span>

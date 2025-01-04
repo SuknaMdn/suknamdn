@@ -2,10 +2,6 @@
 
 namespace App\Services;
 
-use Moyasar\Payment;
-use Moyasar\Source;
-use Illuminate\Support\Facades\Log;
-use Moyasar\Moyasar;
 use Moyasar\Payment as MoyasarPayment;
 use GuzzleHttp\Client;
 use Exception;

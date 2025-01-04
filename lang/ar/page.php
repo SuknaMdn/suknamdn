@@ -19,6 +19,10 @@ return [
                 'title' => 'حجز الوحدة',
                 'description' => 'إدارة إعدادات حجز الوحدة.',
             ],
+            'payment_timeout_days' => [
+                'title' => 'أيام انتهاء الوقت للدفع',
+                'description' => 'إدارة إعدادات أيام انتهاء الوقت للدفع.',
+            ],
         ],
         'fields' => [
             'brand_name' => 'اسم العلامة التجارية',
@@ -34,6 +38,7 @@ return [
             'info' => 'معلومات',
             'warning' => 'تحذير',
             'serious_value_for_unit_reservation' => 'قيمة الاهتمام الجاد لحجز الوحدة',
+            'payment_timeout_days' => 'أيام انتهاء الوقت للدفع',
         ],
     ],
     'mail_settings' => [

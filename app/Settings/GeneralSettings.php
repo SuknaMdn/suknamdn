@@ -13,6 +13,7 @@ class GeneralSettings extends Settings
     public ?string $site_favicon;
     public array $site_theme;
     public int $serious_value_for_unit_reservation;
+    public int $payment_timeout_days;
 
     public static function group(): string
     {

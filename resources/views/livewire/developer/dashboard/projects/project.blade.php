@@ -34,7 +34,7 @@
                             <!--begin::Status-->
                             <div class="d-flex align-items-center mb-1">
                                 <a href="#" class="text-gray-800 text-hover-primary fs-2 fw-bold me-3">{{ $project->title }}</a>
-                                <span class="badge badge-light-{{ $project->is_active ? 'success' : 'danger' }} me-auto">{{ $project->is_active ? 'Active' : 'Not Action' }}</span>
+                                <span class="badge badge-light-{{ $project->is_active ? 'success' : 'danger' }} ms-auto">{{ $project->is_active ? 'Active' : 'Not Action' }}</span>
                             </div>
                             <!--end::Status-->
                             <!--begin::Description-->
@@ -47,7 +47,7 @@
                             {{-- <a href="#" class="btn btn-sm btn-light-dark me-3" data-bs-toggle="modal" data-bs-target="#kt_modal_new_target">Add Target</a> --}}
                             <!--begin::Menu-->
                             <div class="me-0">
-                                <button class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+                                <button class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-start">
                                     <i class="ki-solid ki-dots-horizontal fs-2x"></i>
                                 </button>
                                 <div wire:loading wire:target="inactiveProject, activeProject" class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></div>
@@ -98,7 +98,7 @@
                                 </div>
                                 <!--end::Number-->
                                 <!--begin::Label-->
-                                <div class="fw-semibold fs-6 text-gray-500">الوحدات <span class="badge badge-light-success fw-bold px-4 py-1">مباع <div class="ms-2" data-kt-countup="true" data-kt-countup-value="{{ $project->units->where('case', 1)->count() }}">0</div> </span></div>
+                                <div class="fw-semibold fs-6 text-gray-500">الوحدات <span class="badge badge-light-success fw-bold px-4 py-1">مباع <div class="me-2" data-kt-countup="true" data-kt-countup-value="{{ $project->units->where('case', 1)->count() }}">0</div> </span></div>
                                 <!--end::Label-->
                             </div>
                             <!--begin::Stat-->
@@ -278,7 +278,8 @@
                                                 <span class="text-gray-800">= SAR {{ $unit->total_amount }}</span>
                                             </td>
                                             <td class="pe-0 text-end">
-                                                <button class="btn btn-sm btn-light">عرض</button>
+                                                {{-- <button class="btn btn-sm btn-primary">عرض</button> --}}
+                                                <button class="btn btn-sm btn-light"><i class="ki-solid ki-brush p-0"></i> تعديل</button>
                                             </td>
                                         </tr>
                                         <tr>
@@ -291,9 +292,9 @@
                                         </tr>
                                         @endif
                                         @empty
-                                        <tr>
-                                            <td colspan="4" class="text-center">لا يوجد وحدات</td>
-                                        </tr>
+                                            <tr>
+                                                <td colspan="4" class="text-center">لا يوجد وحدات</td>
+                                            </tr>
                                         @endforelse
                                     </tbody>
                                     <!--end::Table body-->

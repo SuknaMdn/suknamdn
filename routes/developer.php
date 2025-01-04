@@ -16,6 +16,7 @@ use App\Livewire\Developer\Dashboard\Units\EditUnit;
 use App\Livewire\Developer\Dashboard\Orders\AllOrders;
 use App\Livewire\Developer\Dashboard\Orders\Order;
 use App\Livewire\Developer\Dashboard\Projects\Fullmap;
+use App\Livewire\Developer\Dashboard\Customers\AllCustomers;
 
 Route::middleware(['auth', 'check.role'])->prefix('developer')->name('developer.')->group(function () {
     Route::get('/dashboard', Index::class)->name('dashboard');
@@ -45,6 +46,11 @@ Route::middleware(['auth', 'check.role'])->prefix('developer')->name('developer.
     // all orders
     Route::get('/orders', AllOrders::class)->name('orders');
     Route::get('/orders/{id}', Order::class)->name('orders.show');
+
+    // group of customers
+    Route::group(['prefix' => 'customers'], function () {
+        Route::get('/', AllCustomers::class)->name('customers.all');
+    });
 
 });
 

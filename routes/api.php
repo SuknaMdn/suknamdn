@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\MapController;
 use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\FilterController;
+use App\Http\Controllers\Api\NafathController;
 /*
 |--------------------------------------------------------------------------
 | Api Routes
@@ -32,16 +33,19 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
+
     Route::put('/profile/update', [ProfileController::class, 'updateProfile']);
     Route::put('/password/reset', [PasswordController::class, 'resetPassword']);
     Route::post('/payments', [PaymentController::class, 'createPayment']);
     Route::get('/payments', [PaymentController::class, 'listPayments']);
+    Route::get('/payments/{id}', [PaymentController::class, 'getPayment']);
+    Route::get('/payments-list', [PaymentController::class, 'listPayments']);
 
     // user address
     Route::get('/addresses/user', [AddressController::class, 'getUserAddress']);
 
     // createSTCPayment
-    Route::get('payments/stc-payment', [PaymentController::class, 'createSTCPayment']); // TODO: remove this
+    // Route::get('payments/stc-payment', [PaymentController::class, 'createSTCPayment']); // TODO: remove this
 
     // favorite
     Route::get('user/favorite/{user_id}', [FavoriteController::class, 'getUserFavorite']);
@@ -50,6 +54,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('user/toggleFavorite', [FavoriteController::class, 'toggleFavorite']);
     // search
     Route::get('/search', [SearchController::class, 'searchProjects']);
+
+    // nafath auth
+    Route::prefix('nafath')->group(function () {
+        Route::post('initiate', [NafathController::class, 'initiateAuth']);
+        Route::post('callback', [NafathController::class, 'callback']);
+    });
 
 });
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Livewire\Developer\Dashboard\Orders\Order;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasName;
@@ -121,5 +122,17 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
     public function favoritesUnits()
     {
         return $this->morphedByMany(Unit::class, 'favoritable', 'favorites');
+    }
+
+    public function orders(){
+        return $this->hasMany(UnitOrder::class, 'user_id');
+    }
+
+    // دالة للحصول على المستخدمين الذين اشتروا وحدات تابعة لمشاريع مطور معين
+    public static function usersWhoPurchasedFromDeveloper($developerId)
+    {
+        return self::whereHas('orders.unit.project.developer', function ($query) use ($developerId) {
+            $query->where('user_id', $developerId);
+        })->get();
     }
 }

@@ -38,6 +38,10 @@ return [
                 "title" => "Unit Reservation",
                 "description" => "Manage unit reservation settings."
             ],
+            "payment_timeout_days" => [
+                "title" => "Payment Timeout Days",
+                "description" => "Manage payment timeout days settings."
+            ],
         ],
         "fields" => [
             "brand_name" => "Brand Name",
@@ -53,6 +57,7 @@ return [
             "info" => "Info",
             "warning" => "Warning",
             "serious_value_for_unit_reservation" => "Serious Value for Unit Reservation",
+            'payment_timeout_days' => 'Payment Timeout Days',
         ]
     ],
 

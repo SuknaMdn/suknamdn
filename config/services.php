@@ -35,5 +35,12 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    'nafath' => [
+        'base_url' => env('NAFATH_BASE_URL', 'https://iam.elm.sa/authservice'),
+        'client_id' => env('NAFATH_CLIENT_ID'),
+        'redirect_uri' => env('NAFATH_REDIRECT_URI'),
+        'certificate_path' => env('NAFATH_CERTIFICATE_PATH'),
+        'private_key_path' => env('NAFATH_PRIVATE_KEY_PATH'),
+    ],
 
 ];

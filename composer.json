@@ -20,14 +20,12 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "awcodes/overlook": "^2.2",
         "bezhansalleh/filament-exceptions": "^2.1",
         "bezhansalleh/filament-language-switch": "^3.1",
         "bezhansalleh/filament-shield": "^3.3",
         "codeat3/blade-fluentui-system-icons": "^1.33",
         "datlechin/filament-menu-builder": "^0.5.2",
         "dotswan/filament-map-picker": "^1.4",
-        "eightynine/filament-advanced-widgets": "^3.0",
         "endroid/qr-code": "^6.0",
         "filament/filament": "^3.2",
         "filament/spatie-laravel-media-library-plugin": "^3.2",
@@ -38,17 +36,13 @@
         "jantinnerezo/livewire-alert": "^3.0",
         "jeffgreco13/filament-breezy": "^2.2",
         "josespinal/filament-record-navigation": "^2.0",
-        "khanamiryan/qrcode-detector-decoder": "^2.0",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.8",
         "league/commonmark": "^2.4",
-        "leandrocfe/filament-apex-charts": "^3.1",
         "livewire/livewire": "^3.5",
-        "moyasar/moyasar-php": "^1.1",
         "riodwanto/filament-ace-editor": "^1.0",
         "rupadana/filament-api-service": "^3.3",
-        "ryangjchandler/blade-tabler-icons": "^2.3",
         "sadiqsalau/laravel-otp": "^1.0",
         "stichoza/google-translate-php": "^5.2",
         "tomatophp/filament-artisan": "^1.1",
@@ -64,7 +58,8 @@
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^8.1",
         "phpunit/phpunit": "^10.1",
-        "spatie/laravel-ignition": "^2.0"
+        "spatie/laravel-ignition": "^2.0",
+        "laravel/tinker": "^2.8"
     },
     "autoload": {
         "psr-4": {

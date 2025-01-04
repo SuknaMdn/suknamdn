@@ -42,6 +42,7 @@ class UnitOrderNotification extends Notification
         return [
             'title' => 'تم تقديم طلب اهتمام جديد',
             'description' => 'تم تقديم طلبك للوحدة ' . $this->orderDetails['unit_name'],
+            'unit_id' => $this->orderDetails['unit_id'],
             'icon' => 'ki-abstract-28',
             'type' => 'order',
             'developer' => $this->orderDetails['developer_id'],

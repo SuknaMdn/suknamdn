@@ -39,7 +39,7 @@
             <div class="me-2">
                 <!--begin::Select-->
                 <select wire:model.live="selected_is_active" class="form-select form-select-sm form-select-solid w-125px">
-                    <option value="">الكل</option>
+                    <option value="">كل الحالات</option>
                     <option value="1">مفعل</option>
                     <option value="0">غير مفعل</option>
                 </select>
@@ -49,7 +49,7 @@
             <div class="me-4">
                 <!--begin::Select-->
                 <select wire:model.live="selected_project_type" class="form-select form-select-sm form-select-solid w-125px">
-                    <option value="">الكل</option>
+                    <option value="">كل الانواع</option>
                     @foreach ($projectTypes as $projectType)
                         <option value="{{ $projectType->id }}">{{ $projectType->name }}</option>
                     @endforeach
@@ -177,7 +177,7 @@
                     <!--begin::Card toolbar-->
                     <div class="card-toolbar">
                         <span class="badge badge-light-dark fw-bold me-auto px-4 py-3">{{ $project->propertyType->name }}</span>
-                        <span class="badge {{ $project->is_active ? 'badge-light-success' : 'badge-light-danger' }} fw-bold px-4 py-3 me-2">{{ $project->is_active ? 'active' : 'not Action' }}</span>
+                        <span class="badge {{ $project->is_active ? 'badge-light-success' : 'badge-light-danger' }} fw-bold px-4 py-3 me-2">{{ $project->is_active ? 'مفعل' : 'غير مفعل' }}</span>
                     </div>
 
                     <!--end::Card toolbar-->
