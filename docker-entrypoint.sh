@@ -28,7 +28,7 @@ try_command() {
 }
 
 # Run Composer install with verbose output
-try_command "composer install --verbose" "Composer installation failed"
+try_command "composer install --optimize-autoloader --no-dev" "Composer installation failed"
 
 # try_command "composer clear-cache" "Failed to clear composer cache"
 
