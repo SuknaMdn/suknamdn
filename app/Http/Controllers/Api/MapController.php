@@ -11,8 +11,12 @@ class MapController extends Controller
     public function index()
     {
         $projects = Project::where('is_active', true)
-        ->select('id', 'title',  'latitude', 'longitude', 'slug', 'images', 'area_range_from', 'area_range_to', 'is_active', 'is_featured', 'purpose', 'city_id', 'state_id', 'property_type_id')
+        ->select('id', 'title',  'latitude', 'longitude', 'slug', 'images', 'developer_id','area_range_from', 'area_range_to', 'is_active', 'is_featured', 'purpose', 'city_id', 'state_id', 'property_type_id')
         ->with([
+            'developer' => function($developerQuery){
+                $developerQuery->select('id', 'logo');
+            }
+            ,
             'units' => function ($unitQuery) {
                 $unitQuery->selectRaw('project_id, MIN(unit_price) as min_price, MAX(unit_price) as max_price')
                           ->groupBy('project_id');
@@ -33,8 +37,12 @@ class MapController extends Controller
         $projects->each(function ($project) {
 
             // Add starting price to the project
+            // $startingPrice = $project->units()->min('total_amount');
+            // $project->starting_from = $startingPrice ? number_format($startingPrice, 2, '.', ',') : null;
+
             $startingPrice = $project->units()->min('total_amount');
-            $project->starting_from = $startingPrice ? number_format($startingPrice, 2, '.', ',') : null;
+            $project->starting_from = $startingPrice ? formatToArabic($startingPrice) : null;
+
 
             // Check if the user is authenticated via API using Bearer token
             if (auth('api')->check()) {
@@ -56,7 +64,9 @@ class MapController extends Controller
             // Merge latitude and longitude into latlong
             $project->latlong = "({$project->latitude},{$project->longitude})";
 
-            $project->makeHidden('units','latitude', 'longitude'); // Hide the units field
+            // developer logo
+            $project->developer_logo = $project->developer->logo ?? null;
+            $project->makeHidden('units','latitude', 'longitude','developer'); // Hide the units field
 
         });
 
