@@ -170,7 +170,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\Filament\AdminPanelProvider::class,
         App\Providers\RouteServiceProvider::class,
-        TomatoPHP\FilamentSettingsHub\FilamentSettingsHubServiceProvider::class,
+        // TomatoPHP\FilamentSettingsHub\FilamentSettingsHubServiceProvider::class,
     ])->toArray(),
 
     /*

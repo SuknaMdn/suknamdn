@@ -87,8 +87,9 @@ return [
     | Setting this to true will render the view once more before redirecting
     |
     */
-
+    // 'middleware_group' => ['web'],
     'render_on_redirect' => false,
+    // 'back_button_cache' => false,
 
     /*
     |---------------------------------------------------------------------------

@@ -1,53 +1,40 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
-    <head>
-        <meta charset="utf-8">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="application-name" content="{{ config('app.name') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <meta name="application-name" content="{{ config('app.name') }}">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Security headers -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
 
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>{{ config('app.name') }} - @yield('title')</title>
 
-        <title>{{ config('app.name') }}</title>
+    <!-- Preload critical assets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap" as="style">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap">
 
-        <style>
-            [x-cloak] {
-                display: none !important;
-            }
-        </style>
+    <!-- Alpine.js hide -->
+    <style>[x-cloak] { display: none !important; }</style>
 
-        @filamentStyles
-        @vite('resources/css/app.css')
-        @livewireStyles
-    </head>
+    @filamentStyles
+    @vite('resources/css/app.css')
+    @livewireStyles
+</head>
+<body class="antialiased min-h-screen">
+    {{ $slot }}
 
-    <body class="antialiased">
-        {{ $slot }}
+    @livewire('notifications')
 
-        @livewire('notifications')
-
-        @filamentScripts
-        @vite('resources/js/app.js')
-        @vite(['resources/js/session-expired.js'])
-        @livewireScripts
-
-        <script>
-            document.addEventListener('livewire:init', () => {
-                console.log('Livewire initialized');
-                Livewire.hook('request', ({ fail }) => {
-                    fail(({ status, preventDefault }) => {
-                        if (status === 419) {
-                            if (confirm('Your custom page expiration behavior...')) {
-                                window.location.reload();
-                            }
-                            preventDefault();
-                        }
-                    });
-                });
-            });
-        </script>
-    </body>
+    <!-- Scripts -->
+    @filamentScripts
+    @vite(['resources/js/app.js'])
+    @vite(['resources/js/session-expired.js'])
+    @livewireScripts
+</body>
 </html>
