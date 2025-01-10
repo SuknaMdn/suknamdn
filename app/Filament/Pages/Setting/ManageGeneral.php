@@ -55,6 +55,13 @@ class ManageGeneral extends SettingsPage
         $data['serious_value_for_unit_reservation'] = $settings->serious_value_for_unit_reservation;
         $data['payment_timeout_days'] = $settings->payment_timeout_days;
 
+        // term and condition
+        $data['term_and_condition'] = $settings->term_and_condition;
+        // privacy policy
+        $data['privacy_policy'] = $settings->privacy_policy;
+
+        // about
+        $data['about'] = $settings->about;
         $this->form->fill($data);
     }
 

@@ -27,26 +27,19 @@ try_command() {
     fi
 }
 
+
+
 # Run Composer install with verbose output
 try_command "composer install --optimize-autoloader --no-dev" "Composer installation failed"
 
-# try_command "composer clear-cache" "Failed to clear composer cache"
+try_command "composer clear-cache" "Failed to clear composer cache"
 
-# try_command "composer dump-autoload" "Failed to dump autoload"
-
-# Generate application key
-try_command "php artisan key:generate" "Failed to generate application key"
-
-# Cache icons
-try_command "php artisan icon:cache" "Failed to cache icons"
-
-# Create storage link
-try_command "php artisan storage:link" "Failed to create storage link"
+try_command "composer dump-autoload" "Failed to dump autoload"
 
 # Run migrations and seed database
 try_command "php artisan migrate" "Database migration and seeding failed"
 
-# Additional Laravel optimization steps
+# # Additional Laravel optimization steps
 try_command "php artisan optimize:clear" "Failed to clear optimizations"
 try_command "php artisan config:clear" "Failed to clear configuration"
 try_command "php artisan cache:clear" "Failed to clear application cache"

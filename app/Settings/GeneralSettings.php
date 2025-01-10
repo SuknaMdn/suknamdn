@@ -15,6 +15,10 @@ class GeneralSettings extends Settings
     public int $serious_value_for_unit_reservation;
     public int $payment_timeout_days;
 
+    public string $term_and_condition;
+    public string $privacy_policy;
+    public string $about;
+
     public static function group(): string
     {
         return 'general';

@@ -38,6 +38,14 @@ return [
                 "title" => "Unit Reservation",
                 "description" => "Manage unit reservation settings."
             ],
+            "term_and_condition" => [
+                "title" => "Term and Condition",
+                "description" => "Manage term and condition settings."
+            ],
+            "privacy_policy" => [
+                "title" => "Privacy Policy",
+                "description" => "Manage privacy policy settings."
+            ],
             "payment_timeout_days" => [
                 "title" => "Payment Timeout Days",
                 "description" => "Manage payment timeout days settings."
@@ -57,6 +65,8 @@ return [
             "info" => "Info",
             "warning" => "Warning",
             "serious_value_for_unit_reservation" => "Serious Value for Unit Reservation",
+            "term_and_condition" => "Term and Condition",
+            "privacy_policy" => "Privacy Policy",
             'payment_timeout_days' => 'Payment Timeout Days',
         ]
     ],

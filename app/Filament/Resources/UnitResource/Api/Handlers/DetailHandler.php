@@ -24,12 +24,13 @@ class DetailHandler extends Handlers
         $query = QueryBuilder::for(
             $query->where(static::getKeyName(), $id)
         )
-            ->with(['images:id,unit_id,image_path', 'additionalFeatures', 'afterSalesServices', 'project:id,AdLicense'])
+            ->with(['images:id,unit_id,image_path', 'additionalFeatures', 'afterSalesServices', 'project:id,AdLicense,developer_id'])
             ->first();
 
         if (!$query) return static::sendNotFoundResponse();
 
         $transformedquery = tap($query, function ($item) {
+
 
             if ($item->qr_code) {
                 $item->qr_code = asset('storage/' . $item->qr_code);
@@ -59,11 +60,15 @@ class DetailHandler extends Handlers
                     return $afterSalesService;
                 });
             }
-
-            if ($item->project && $item->project->AdLicense) {
+            if ($item->project) {
                 $item->license = $item->project->AdLicense;
                 $item->operationalServices = $item->project->operationalServices;
+                $item->developer = $item->project->developer;
+                $item->developer_phone = $item->project->developer->phone;
             }
+            $item->makeHidden('project');
+
+
         });
 
         $transformer = static::getApiTransformer();

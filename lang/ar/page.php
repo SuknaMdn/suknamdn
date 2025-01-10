@@ -19,6 +19,14 @@ return [
                 'title' => 'حجز الوحدة',
                 'description' => 'إدارة إعدادات حجز الوحدة.',
             ],
+            'term_and_condition' => [
+                'title' => 'الشروط والأحكام',
+                'description' => 'إدارة إعدادات الشروط والأحكام.',
+            ],
+            'privacy_policy' => [
+                'title' => 'سياسة الخصوصية',
+                'description' => 'إدارة إعدادات سياسة الخصوصية.',
+            ],
             'payment_timeout_days' => [
                 'title' => 'أيام انتهاء الوقت للدفع',
                 'description' => 'إدارة إعدادات أيام انتهاء الوقت للدفع.',
@@ -38,6 +46,8 @@ return [
             'info' => 'معلومات',
             'warning' => 'تحذير',
             'serious_value_for_unit_reservation' => 'قيمة الاهتمام الجاد لحجز الوحدة',
+            'term_and_condition' => 'الشروط والأحكام',
+            'privacy_policy' => 'سياسة الخصوصية',
             'payment_timeout_days' => 'أيام انتهاء الوقت للدفع',
         ],
     ],

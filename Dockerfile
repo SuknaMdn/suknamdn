@@ -1,4 +1,4 @@
-FROM php:8.2-fpm
+FROM --platform=linux/amd64 php:8.2-fpm
 
 # Set working directory
 WORKDIR /var/www
@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y \
     vim \
     unzip \
     git \
+    gosu \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
@@ -46,6 +47,15 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Copy existing application directory contents
 COPY . /var/www
+
+# Set correct permissions
+RUN chown -R www-data:www-data /var/www
+RUN chmod -R 755 /var/www
+
+# Copy the .env file to .env.example
+RUN cp .env.example .env
+RUN chown -R www-data:www-data storage
+RUN chmod -R 775 storage
 
 # Copy existing application directory permissions
 COPY --chown=www-data:www-data . /var/www
