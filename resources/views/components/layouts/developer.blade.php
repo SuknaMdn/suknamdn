@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
 
-    <title>{{ config('app.name') }} - @yield('title')</title>
+    <title>{{ $title ?? '' }}</title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="{{ asset('developer/media/logos/favicon.svg') }}" />

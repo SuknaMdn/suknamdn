@@ -18,18 +18,18 @@ class PaginationHandler extends Handlers {
         $model = static::getModel();
 
         // Apply min/max filters for price and space
-        if (request()->has('price_min') && request()->price_min != null) {
-            $query->where('total_amount', '>=', request('price_min'));
-        }
-        if (request()->has('price_max') && request()->price_max != null) {
-            $query->where('total_amount', '<=', request('price_max'));
-        }
-        if (request()->has('space_min') && request()->space_min != null) {
-            $query->where('total_area', '>=', request('space_min'));
-        }
-        if (request()->has('space_max') && request()->space_max != null) {
-            $query->where('total_area', '<=', request('space_max'));
-        }
+        // if (request()->has('price_min') && request()->price_min != null) {
+        //     $query->where('total_amount', '>=', request('price_min'));
+        // }
+        // if (request()->has('price_max') && request()->price_max != null) {
+        //     $query->where('total_amount', '<=', request('price_max'));
+        // }
+        // if (request()->has('space_min') && request()->space_min != null) {
+        //     $query->where('total_area', '>=', request('space_min'));
+        // }
+        // if (request()->has('space_max') && request()->space_max != null) {
+        //     $query->where('total_area', '<=', request('space_max'));
+        // }
 
         $query = QueryBuilder::for($query)
             ->with(['images' => function ($query) {

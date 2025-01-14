@@ -12,7 +12,7 @@ use App\Models\UnitOrder;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
 #[Layout('components.layouts.developer')]
-#[Title('Project Details')]
+#[Title('تفاصيل المشروع')]
 
 class ProjectPage extends Component
 {

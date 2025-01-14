@@ -5,7 +5,7 @@ namespace App\Livewire\Developer\Dashboard\Orders;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
-#[Title('orders')]
+#[Title('الطلبات')]
 #[Layout('components.layouts.developer')]
 class AllOrders extends Component
 {

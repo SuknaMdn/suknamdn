@@ -12,16 +12,8 @@ use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\FilterController;
 use App\Http\Controllers\Api\NafathController;
-/*
-|--------------------------------------------------------------------------
-| Api Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register Api routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+use App\Http\Controllers\Api\NotificationController;
+
 
 Route::get('/verification/verify/{id}/{hash}', [AuthController::class, 'verify'])
     ->name('verification.verify');
@@ -57,9 +49,18 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // nafath auth
     Route::prefix('nafath')->group(function () {
-        Route::post('initiate', [NafathController::class, 'initiateAuth']);
-        Route::post('callback', [NafathController::class, 'callback']);
+        Route::post('/verify', [NafathController::class, 'initiateVerification'])
+            ->name('nafath.verify');
+        Route::post('/callback', [NafathController::class, 'handleCallback'])
+            ->name('nafath.callback');
+
     });
+
+    // notifications
+    Route::get('/notifications/{id}', [NotificationController::class, 'index']);
+    Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'makeAsRead']);
+    Route::post('/notifications/mark-all-as-read', [NotificationController::class, 'makeAllAsRead']);
+
 
 });
 

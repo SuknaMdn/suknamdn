@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 
 
 #[Layout('components.layouts.developer')]
-#[Title('Edit Profile')]
+#[Title('تعديل الملف الشخصي')]
 class EditProfile extends Component
 {
     use LivewireAlert, WithFileUploads;

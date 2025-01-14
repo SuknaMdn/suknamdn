@@ -37,7 +37,7 @@ try_command "composer clear-cache" "Failed to clear composer cache"
 try_command "composer dump-autoload" "Failed to dump autoload"
 
 # Run migrations and seed database
-try_command "php artisan migrate" "Database migration and seeding failed"
+try_command "php artisan migrate --seed" "Database migration and seeding failed"
 
 # # Additional Laravel optimization steps
 try_command "php artisan optimize:clear" "Failed to clear optimizations"
@@ -45,9 +45,9 @@ try_command "php artisan config:clear" "Failed to clear configuration"
 try_command "php artisan cache:clear" "Failed to clear application cache"
 
 # Run additional Shield-related commands if needed
-# try_command "php artisan shield:setup --force" "Failed to setup Shield"
-# try_command "php artisan shield:install admin" "Failed to install admin Shield"
-# try_command "php artisan shield:generate --all --no-interaction" "Failed to generate Shield configurations"
+try_command "php artisan shield:setup --force" "Failed to setup Shield"
+try_command "php artisan shield:install admin" "Failed to install admin Shield"
+try_command "php artisan shield:generate --all --no-interaction" "Failed to generate Shield configurations"
 
 # Start PHP-FPM
 log_success "Starting PHP-FPM"

@@ -6,7 +6,7 @@ use Livewire\Component;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
 
-#[Title('order')]
+#[Title('بيانات الطلب')]
 #[Layout('components.layouts.developer')]
 class Order extends Component
 {

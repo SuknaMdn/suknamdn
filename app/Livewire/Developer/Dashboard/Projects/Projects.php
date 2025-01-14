@@ -13,7 +13,7 @@ use Livewire\Attributes\URL;
 use App\Models\Project;
 use App\Models\ProjectType;
 
-#[Title('projects')]
+#[Title('المشاريع')]
 #[Layout('components.layouts.developer')]
 class Projects extends Component
 {

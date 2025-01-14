@@ -6,6 +6,8 @@ use Livewire\Component;
 use App\Models\UnitOrder;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use App\Notifications\OrderConfirmed;
+use App\Notifications\User\OrderStatusNotification;
+
 class OrderDetailsModal extends Component
 {
     use LivewireAlert;
@@ -35,24 +37,29 @@ class OrderDetailsModal extends Component
         $order = UnitOrder::find($this->orderId);
 
         if ($order) {
+            // التحقق من أن الأوردر ليس مكتملاً قبل السماح بالتعديل
+            if ($order->status === 'confirmed') {
+                $this->alert('error', 'لا يمكن تعديل طلب مكتمل');
+                $this->status = 'confirmed';
+                return;
+            }
+
             try {
                 $order->status = $this->status;
-                $order->paid_at = now();
+                // $order->payment->paid_at = now();
                 if($this->status == 'confirmed'){
                     // update units as paid
                     $order->unit->case = '1';
                     $order->unit->save();
-
-                    // Send email to client
-                    // $client = $order->user;
-                    // $client->notify(new OrderConfirmed($order));
                 }
                 $order->save();
                 $this->loadOrder();
                 $this->dispatch('order-status-updated', orderId: $this->orderId);
-                $this->alert('success', 'Order status updated successfully');
+                $this->alert('success', 'تم تحديث حالة الطلب بنجاح');
+
+                $order->user->notify(new OrderStatusNotification($order));
             } catch (\Exception $e) {
-                $this->alert('error', 'Failed to update order status');
+                $this->alert('error', 'فشل في تحديث حالة الطلب');
             }
         }
     }

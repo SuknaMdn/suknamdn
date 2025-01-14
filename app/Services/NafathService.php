@@ -5,117 +5,139 @@ namespace App\Services;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Exception;
+use Illuminate\Http\Client\ConnectionException;
 
 class NafathService
 {
     private $baseUrl;
-    private $clientId;
-    private $redirectUri;
-    private $certificate;
-    private $privateKey;
+    private $apiKey;
+    private $clientSecret;
+    private $maxRetries;
+    private $timeout;
+    private $retryDelay;
 
     public function __construct()
     {
-        $this->baseUrl = config('services.nafath.base_url', 'https://iam.elm.sa/authservice');
-        $this->clientId = config('services.nafath.client_id');
-        $this->redirectUri = config('services.nafath.redirect_uri');
-        $this->certificate = config('services.nafath.certificate_path');
-        $this->privateKey = config('services.nafath.private_key_path');
+        $this->baseUrl = config('services.nafath.base_url', 'https://iam.elm.sa');
+        $this->apiKey = config('services.nafath.api_key');
+        $this->clientSecret = config('services.nafath.client_secret');
+        $this->maxRetries = config('services.nafath.max_retries', 3);
+        $this->timeout = config('services.nafath.timeout', 30);
+        $this->retryDelay = config('services.nafath.retry_delay', 1000); // milliseconds
     }
 
-    public function initiateAuthentication()
+    /**
+     * Initiate Nafath verification with retry mechanism
+     *
+     * @param string $nationalId
+     * @param string $dateOfBirth
+     * @return array
+     * @throws Exception
+     */
+    public function initiateVerification(string $nationalId, string $dateOfBirth): array
     {
-        $nonce = Str::uuid()->toString();
-        $maxAge = time(); // Current time in seconds
+        $attempt = 1;
+        $lastException = null;
 
-        // Build the base authentication URL
-        $baseAuthUrl = "{$this->baseUrl}/authorize?" . http_build_query([
-            'scope' => 'openid',
-            'response_type' => 'id_token',
-            'response_mode' => 'form_post',
-            'client_id' => $this->clientId,
-            'redirect_uri' => $this->redirectUri,
-            'nonce' => $nonce,
-            'ui_locales' => 'ar',
-            'prompt' => 'login',
-            'max_age' => $maxAge,
-        ]);
+        while ($attempt <= $this->maxRetries) {
+            try {
+                Log::info("Attempting Nafath verification initiation - Attempt {$attempt}/{$this->maxRetries}");
 
-        // Sign the request
-        $signature = $this->signRequest($baseAuthUrl);
+                $response = Http::timeout($this->timeout)
+                    ->withHeaders([
+                        'x-api-key' => $this->apiKey,
+                        'Content-Type' => 'application/json'
+                    ])
+                    ->retry($this->maxRetries, $this->retryDelay, function ($exception) {
+                        return $exception instanceof ConnectionException;
+                    })
+                    ->post("{$this->baseUrl}/verify/init", [
+                        'national_id' => $nationalId,
+                        'date_of_birth' => $dateOfBirth,
+                        'callback_url' => route('nafath.callback'),
+                        'client_secret' => $this->clientSecret
+                    ]);
 
-        // Add the state parameter with the signature
-        $finalUrl = $baseAuthUrl . '&state=' . urlencode($signature);
+                if ($response->successful()) {
+                    Log::info('Nafath verification initiated successfully', [
+                        'attempt' => $attempt,
+                        'national_id' => substr($nationalId, 0, 4) . '****' // Log partial ID for security
+                    ]);
+                    return $response->json();
+                }
 
-        // Store nonce in session for validation
-        session(['nafath_nonce' => $nonce]);
-        session(['nafath_state' => hash('sha256', $signature)]);
+                Log::warning('Nafath verification failed with response', [
+                    'attempt' => $attempt,
+                    'status' => $response->status(),
+                    'body' => $response->json()
+                ]);
 
-        return $finalUrl;
+                throw new Exception('Failed to initiate verification: ' . $response->status());
+
+            } catch (ConnectionException $e) {
+                $lastException = $e;
+                Log::warning("Connection timeout on attempt {$attempt}", [
+                    'error' => $e->getMessage(),
+                    'attempt' => $attempt
+                ]);
+
+                if ($attempt === $this->maxRetries) {
+                    Log::error('All retry attempts exhausted', [
+                        'error' => $e->getMessage(),
+                        'total_attempts' => $this->maxRetries
+                    ]);
+                    throw new Exception('Service unavailable after ' . $this->maxRetries . ' attempts. Please try again later.', 503);
+                }
+
+                // Wait before next retry
+                usleep($this->retryDelay * 1000);
+                $attempt++;
+                continue;
+            }
+        }
+
+        throw $lastException ?? new Exception('Unknown error occurred during verification');
     }
 
-    public function verifyCallback($idToken, $state)
+    /**
+     * Check verification status with retry mechanism
+     *
+     * @param string $transactionId
+     * @return array
+     * @throws Exception
+     */
+    public function checkVerificationStatus(string $transactionId): array
     {
         try {
-            // Verify state matches stored state
-            if (hash('sha256', $state) !== session('nafath_state')) {
-                throw new \Exception('Invalid state parameter');
+            $response = Http::timeout($this->timeout)
+                ->withHeaders([
+                    'x-api-key' => $this->apiKey,
+                    'Content-Type' => 'application/json'
+                ])
+                ->retry($this->maxRetries, $this->retryDelay, function ($exception) {
+                    return $exception instanceof ConnectionException;
+                })
+                ->get("{$this->baseUrl}/verify/status/{$transactionId}");
+
+            if ($response->successful()) {
+                return $response->json();
             }
 
-            // Verify and decode the JWT token
-            $tokenParts = explode('.', $idToken);
-            if (count($tokenParts) !== 3) {
-                throw new \Exception('Invalid token format');
-            }
+            Log::error('Nafath status check failed', [
+                'transaction_id' => $transactionId,
+                'status' => $response->status(),
+                'response' => $response->json()
+            ]);
 
-            // Verify signature using Elm's public certificate
-            $this->verifyTokenSignature($idToken);
+            throw new Exception('Failed to check verification status: ' . $response->status());
 
-            // Decode the payload
-            $payload = json_decode(base64_decode($tokenParts[1]), true);
-
-            // Validate token
-            $this->validateToken($payload);
-
-            return $payload;
-        } catch (\Exception $e) {
-            Log::error('Nafath verification failed: ' . $e->getMessage());
-            throw $e;
-        }
-    }
-
-    private function signRequest($data)
-    {
-        // Load your private key
-        $privateKey = openssl_pkey_get_private(file_get_contents($this->privateKey));
-
-        // Create signature
-        openssl_sign($data, $signature, $privateKey, OPENSSL_ALGO_SHA256);
-
-        return base64_encode($signature);
-    }
-
-    private function verifyTokenSignature($token)
-    {
-        // Implement signature verification using Elm's public certificate
-        // This would use openssl_verify() with the appropriate public key
-    }
-
-    private function validateToken($payload)
-    {
-        // Validate expiration
-        if (isset($payload['exp']) && $payload['exp'] < time()) {
-            throw new \Exception('Token has expired');
-        }
-
-        // Validate audience
-        if (!isset($payload['aud']) || $payload['aud'] !== $this->redirectUri) {
-            throw new \Exception('Invalid audience');
-        }
-
-        // Validate issuer
-        if (!isset($payload['iss']) || $payload['iss'] !== 'https://www.iam.gov.sa/authservice') {
-            throw new \Exception('Invalid issuer');
+        } catch (ConnectionException $e) {
+            Log::error('Connection error during status check', [
+                'transaction_id' => $transactionId,
+                'error' => $e->getMessage()
+            ]);
+            throw new Exception('Service unavailable. Please try again later.', 503);
         }
     }
 }

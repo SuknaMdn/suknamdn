@@ -5,6 +5,7 @@ namespace App\Livewire\Developer\Dashboard;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use App\Models\UnitOrder;
+use Livewire\Attributes\Title;
 
 class Index extends Component
 {
@@ -45,6 +46,8 @@ class Index extends Component
             'monthLabels' => $monthLabels
         ];
     }
+
+    #[Title('لوحة التحكم')]
     public function render()
     {
         $unitsData = $this->prepareUnitsData();

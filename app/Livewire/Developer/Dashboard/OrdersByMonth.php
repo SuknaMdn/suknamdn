@@ -6,7 +6,7 @@ use Livewire\WithPagination;
 use App\Models\UnitOrder;
 use Carbon\Carbon;
 use Livewire\Attributes\Url;
-use phpDocumentor\Reflection\Types\This;
+use Livewire\Attributes\Title;
 
 class OrdersByMonth extends Component
 {
@@ -84,13 +84,7 @@ class OrdersByMonth extends Component
         $this->resetPage();
         $this->generateMonthlyOrderStats();
     }
-
-    public function updateDateRange($startDate, $endDate)
-    {
-        $this->startDate = $startDate;
-        $this->endDate = $endDate;
-    }
-
+    #[Title('الطلبات')]
     public function render()
     {
         $unitIds = $this->projects->pluck('units')->flatten()->pluck('id');

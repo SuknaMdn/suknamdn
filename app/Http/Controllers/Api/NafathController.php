@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Services\NafathService;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
+use Exception;
 
 class NafathController extends Controller
 {
@@ -19,46 +21,61 @@ class NafathController extends Controller
         $this->nafathService = $nafathService;
     }
 
-    // This is the endpoint that your frontend will call to initiate the authentication process
-    public function initiateAuth()
+    public function initiateVerification(Request $request)
     {
-        // try {
-            $authUrl = $this->nafathService->initiateAuthentication();
+        $validated = $request->validate([
+            'national_id' => 'required|string',
+            'date_of_birth' => 'required|date_format:Y-m-d',
+        ]);
+
+        try {
+            $result = $this->nafathService->initiateVerification(
+                $validated['national_id'],
+                $validated['date_of_birth']
+            );
+
+            // Store transaction ID in session for later verification
+            session(['nafath_transaction_id' => $result['transaction_id']]);
+
             return response()->json([
-                'status' => 'success',
-                'auth_url' => $authUrl
+                'success' => true,
+                'transaction_id' => $result['transaction_id'],
+                'message' => 'Verification initiated successfully'
             ]);
-        // } catch (\Exception $e) {
-        //     Log::error('Nafath initiation failed: ' . $e->getMessage());
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'message' => 'Failed to initiate authentication'
-        //     ], 500);
-        // }
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to initiate verification'
+            ], 500);
+        }
     }
 
-    // This is the callback URL that Nafath will redirect to after authentication
-    public function callback(Request $request)
+    public function handleCallback(Request $request)
     {
         try {
-            $idToken = $request->input('id_token');
-            $state = $request->input('state');
+            $transactionId = $request->input('transaction_id');
+            $status = $this->nafathService->checkVerificationStatus($transactionId);
 
-            $userInfo = $this->nafathService->verifyCallback($idToken, $state);
+            if ($status['status'] === 'VERIFIED') {
+                // Update user verification status
+                $user = User::where('national_id', $status['national_id'])->first();
+                $user->update(['verified' => true]);
 
-            // Store user information or update your database as needed
-            // You might want to associate this with your existing user model
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Verification successful'
+                ]);
+            }
 
             return response()->json([
-                'status' => 'success',
-                'user_info' => $userInfo
+                'success' => false,
+                'message' => 'Verification failed or pending'
             ]);
-        } catch (\Exception $e) {
-            Log::error('Nafath callback failed: ' . $e->getMessage());
+        } catch (Exception $e) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Authentication failed'
-            ], 401);
+                'success' => false,
+                'message' => 'Error processing verification callback'
+            ], 500);
         }
     }
 
