@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('model_has_roles', function (Blueprint $table) {
-            $table->uuid('model_id')->change();
+            // حذف العمود القديم إذا كان يحتوي على بيانات متوافقة
+            $table->dropColumn('model_id');
+            // إضافة العمود الجديد كـ UUID
+            $table->uuid('model_id');
         });
     }
 
@@ -22,7 +25,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('model_has_roles', function (Blueprint $table) {
-            $table->unsignedBigInteger('model_id')->change();
+            // العودة إلى النوع القديم
+            $table->dropColumn('model_id');
+            $table->unsignedBigInteger('model_id');
         });
     }
 };
