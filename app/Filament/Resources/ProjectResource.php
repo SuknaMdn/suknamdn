@@ -20,6 +20,7 @@ use Illuminate\Support\Str;
 use Filament\Actions\Action;
 use Filament\Tables\Actions\Action as TableAction;
 use Filament\Notifications\Notification;
+use Filament\Tables\Columns\ImageColumn;
 
 class ProjectResource extends Resource
 {
@@ -276,6 +277,9 @@ class ProjectResource extends Resource
     {
         return $table
             ->columns([
+                ImageColumn::make('images.0')
+                    ->label('Image')
+                    ->circular(),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('qr_code'),
@@ -290,8 +294,6 @@ class ProjectResource extends Resource
                 Tables\Columns\IconColumn::make('is_featured')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('purpose')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('video')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('city.name')
                     ->searchable(),
