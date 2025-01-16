@@ -20,16 +20,16 @@ return [
                 'description' => 'إدارة إعدادات حجز الوحدة.',
             ],
             'term_and_condition' => [
-                'title' => 'الشروط والأحكام',
-                'description' => 'إدارة إعدادات الشروط والأحكام.',
+                'title' => 'المصطلح والشرط',
+                'description' => 'إدارة إعدادات المصطلح والشروط.',
             ],
             'privacy_policy' => [
                 'title' => 'سياسة الخصوصية',
                 'description' => 'إدارة إعدادات سياسة الخصوصية.',
             ],
             'payment_timeout_days' => [
-                'title' => 'أيام انتهاء الوقت للدفع',
-                'description' => 'إدارة إعدادات أيام انتهاء الوقت للدفع.',
+                'title' => 'أيام مهلة الدفع',
+                'description' => 'إدارة إعدادات أيام مهلة الدفع.',
             ],
         ],
         'fields' => [
@@ -45,10 +45,10 @@ return [
             'danger' => 'خطر',
             'info' => 'معلومات',
             'warning' => 'تحذير',
-            'serious_value_for_unit_reservation' => 'قيمة الاهتمام الجاد لحجز الوحدة',
-            'term_and_condition' => 'الشروط والأحكام',
+            'serious_value_for_unit_reservation' => 'قيمة جدية لحجز الوحدة',
+            'term_and_condition' => 'المصطلح والشرط',
             'privacy_policy' => 'سياسة الخصوصية',
-            'payment_timeout_days' => 'أيام انتهاء الوقت للدفع',
+            'payment_timeout_days' => 'أيام مهلة الدفع',
         ],
     ],
     'mail_settings' => [
