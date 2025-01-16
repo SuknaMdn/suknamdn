@@ -54,12 +54,12 @@ class PaymentController extends Controller
                 'status' => 'initiated',
             ])->first();
 
-            if ($pendingPayment) {
-                return response()->json([
-                    'message' => 'يوجد عملية دفع معلقة لهذه الوحدة',
-                    'payment_data' => $pendingPayment
-                ], 400);
-            }
+            // if ($pendingPayment) {
+            //     return response()->json([
+            //         'message' => 'يوجد عملية دفع معلقة لهذه الوحدة',
+            //         'payment_data' => $pendingPayment
+            //     ], 400);
+            // }
 
             // Check if there's an order in 'processing' status or created more than timeout days ago
             $unitOrder = UnitOrder::where('unit_id', $request->unit_id)
