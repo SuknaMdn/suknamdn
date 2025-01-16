@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AboutSuknaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
@@ -74,3 +75,8 @@ Route::post('/payments/webhook', [PaymentController::class, 'handleWebhook']);
 // filter parameters
 Route::get('/projects-filter-parameters', [FilterController::class, 'getProjectsFilterParameters']);
 Route::get('/units-filter-parameters/{project_id}', [FilterController::class, 'getUnitsFilterParameters']);
+
+
+Route::get('/content/about', [AboutSuknaController::class, 'about']);
+Route::get('/content/term_and_condition', [AboutSuknaController::class, 'term_and_condition']);
+Route::get('/content/privacy_policy', [AboutSuknaController::class, 'privacy_policy']);
