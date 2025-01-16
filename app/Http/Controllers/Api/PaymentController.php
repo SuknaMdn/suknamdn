@@ -47,19 +47,19 @@ class PaymentController extends Controller
                 ], 400);
             }
             // التحقق من وجود عملية دفع معلقة لنفس الوحدة
-            $pendingPayment = Payment::where([
-                'user_id' => $user->id,
-                'payable_type' => get_class($unit),
-                'payable_id' => $request->unit_id,
-                'status' => 'initiated',
-            ])->first();
+            // $pendingPayment = Payment::where([
+            //     'user_id' => $user->id,
+            //     'payable_type' => get_class($unit),
+            //     'payable_id' => $request->unit_id,
+            //     'status' => 'initiated',
+            // ])->first();
 
-            if ($pendingPayment) {
-                return response()->json([
-                    'message' => 'يوجد عملية دفع معلقة لهذه الوحدة',
-                    'payment_data' => $pendingPayment
-                ], 400);
-            }
+            // if ($pendingPayment) {
+            //     return response()->json([
+            //         'message' => 'يوجد عملية دفع معلقة لهذه الوحدة',
+            //         'payment_data' => $pendingPayment
+            //     ], 400);
+            // }
 
             // Check if there's an order in 'processing' status or created more than timeout days ago
             $unitOrder = UnitOrder::where('unit_id', $request->unit_id)
@@ -69,12 +69,12 @@ class PaymentController extends Controller
             })
             ->first();
 
-            if ($unitOrder) {
-                return response()->json([
-                    'message' => 'يوجد طلب حجز لهذه الوحدة',
-                    'order_data' => $unitOrder
-                ], 400);
-            }
+            // if ($unitOrder) {
+            //     return response()->json([
+            //         'message' => 'يوجد طلب حجز لهذه الوحدة',
+            //         'order_data' => $unitOrder
+            //     ], 400);
+            // }
 
             // Create a new payment
             $payment = new Payment([
