@@ -123,7 +123,7 @@ class OrdersByMonth extends Component
             });
         }
 
-        $orders = $query->paginate(1);
+        $orders = $query->paginate(15);
         // dd($orders);
 
         return view('livewire.developer.dashboard.orders-by-month', [
