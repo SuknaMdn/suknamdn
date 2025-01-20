@@ -38,7 +38,7 @@
                                 </span>
                             </a>
 
-                            <a href="{{ route('developer.orders') }}" class="menu-item menu-lg-down-accordion me-0 me-lg-2 {{ request()->is('developer/orders') ? 'here' : '' }}">
+                            <a href="{{ route('developer.orders') }}"  class="menu-item menu-lg-down-accordion me-0 me-lg-2 {{ request()->is('developer/orders') ? 'here' : '' }}">
                                 <span class="menu-link">
                                     <span class="menu-title">الطلبات</span>
                                     <span class="menu-arrow d-lg-none"></span>

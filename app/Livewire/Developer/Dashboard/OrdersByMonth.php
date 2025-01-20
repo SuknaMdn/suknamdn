@@ -124,7 +124,9 @@ class OrdersByMonth extends Component
             });
         }
 
-        $orders = $query->paginate(9);
+        $orders = $query->paginate(1);
+        // dd($orders);
+
         return view('livewire.developer.dashboard.orders-by-month', [
             'orders' => $orders,
             'statusOptions' => ['pending', 'processing', 'confirmed', 'cancelled'],

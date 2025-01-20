@@ -57,7 +57,7 @@ class OrderDetailsModal extends Component
                 $this->dispatch('order-status-updated', orderId: $this->orderId);
                 $this->alert('success', 'تم تحديث حالة الطلب بنجاح');
 
-                $order->user->notify(new OrderStatusNotification($order));
+                // $order->user->notify(new OrderStatusNotification($order));
             } catch (\Exception $e) {
                 $this->alert('error', 'فشل في تحديث حالة الطلب');
             }
