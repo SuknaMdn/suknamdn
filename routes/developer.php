@@ -54,6 +54,6 @@ Route::middleware(['auth', 'check.role'])->prefix('developer')->name('developer.
 
 });
 
-Route::get('developer/login', Login::class);
+Route::get('developer/login', Login::class)->middleware('guest');
 Route::get('developer/forgot-password', ForgotPassword::class)->name('developer.forgot-password');
 Route::get('developer/reset-password/{token}', ResetPassword::class)->name('password.reset');

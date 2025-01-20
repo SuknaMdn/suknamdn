@@ -7,11 +7,12 @@ use App\Models\UnitOrder;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use App\Notifications\OrderConfirmed;
 use App\Notifications\User\OrderStatusNotification;
+use Livewire\WithPagination;
 
 class OrderDetailsModal extends Component
 {
     use LivewireAlert;
-
+    use WithPagination;
     public $orderId;
     public $order;
     public $status;

@@ -34,7 +34,6 @@ class OrdersByMonth extends Component
         'filterPaymentPlan' => ['except' => []],
         'searchTerm' => ['except' => ''],
         'filterProject' => ['except' => []],
-        'page' => ['except' => 1]
     ];
 
     public function openOrderDetails($orderId)
