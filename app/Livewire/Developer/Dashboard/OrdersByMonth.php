@@ -34,7 +34,6 @@ class OrdersByMonth extends Component
         'filterPaymentPlan' => ['except' => []],
         'searchTerm' => ['except' => ''],
         'filterProject' => ['except' => []],
-        'page' => ['except' => 1]
     ];
 
     public function openOrderDetails($orderId)
@@ -69,7 +68,7 @@ class OrdersByMonth extends Component
         $unitIds = $this->projects->pluck('units')->flatten()->pluck('id');
 
         $this->ordersByMonth = UnitOrder::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
-            // ->where('payment_status', 'paid')
+            ->where('payment_status', 'paid')
             ->whereIn('unit_id', $unitIds)
             ->when(!empty($this->filterStatus), fn($query) => $query->whereIn('status', $this->filterStatus))
             ->groupBy('month')
@@ -89,7 +88,7 @@ class OrdersByMonth extends Component
     {
         $unitIds = $this->projects->pluck('units')->flatten()->pluck('id');
 
-        $query = UnitOrder::whereIn('unit_id', $unitIds)->orderBy('created_at', 'desc'); // ->where('payment_status', 'paid')
+        $query = UnitOrder::whereIn('unit_id', $unitIds)->where('payment_status', 'paid')->orderBy('created_at', 'desc'); // ->where('payment_status', 'paid')
 
         if ($this->filterStatus != null) {
             $query->whereIn('status', $this->filterStatus);
@@ -124,7 +123,9 @@ class OrdersByMonth extends Component
             });
         }
 
-        $orders = $query->paginate(9);
+        $orders = $query->paginate(15);
+        // dd($orders);
+
         return view('livewire.developer.dashboard.orders-by-month', [
             'orders' => $orders,
             'statusOptions' => ['pending', 'processing', 'confirmed', 'cancelled'],

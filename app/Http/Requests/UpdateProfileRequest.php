@@ -47,7 +47,15 @@ class UpdateProfileRequest extends FormRequest
                 'max:20',
                 Rule::unique('users')->ignore($userId)
             ],
-            'avatar' => 'sometimes|image|max:2048'
+            'avatar' => 'sometimes|image|max:2048',
+
+            'addresses' => 'sometimes|array',
+            'addresses.*.id' => 'sometimes|exists:addresses,id',
+            'addresses.*.city_id' => 'required|max:255',
+            'addresses.*.state_id' => 'required|max:255',
+            'addresses.*.postal_code' => 'required|string|max:20',
+            'addresses.*.country' => 'required|string|max:255',
+            'addresses.*.is_default' => 'sometimes|boolean',
         ];
     }
 
@@ -65,6 +73,19 @@ class UpdateProfileRequest extends FormRequest
             'phone.unique' => 'رقم الهاتف مستخدم بالفعل.',
             'avatar.image' => 'يجب أن تكون الصورة من نوع صورة.',
             'avatar.max' => 'يجب ألا يتجاوز حجم الصورة 2048 كيلوبايت.',
+
+            // Address validation messages
+            'addresses.array' => 'يجب أن تكون العناوين على شكل مصفوفة.',
+            'addresses.*.id.exists' => 'معرف العنوان غير موجود.',
+            'addresses.*.city_id.required' => 'المدينة مطلوبة.',
+            'addresses.*.state_id.required' => 'المنطقة/المحافظة مطلوبة.',
+            'addresses.*.postal_code.required' => 'الرمز البريدي مطلوب.',
+            'addresses.*.postal_code.string' => 'يجب أن يكون الرمز البريدي نصًا.',
+            'addresses.*.postal_code.max' => 'يجب ألا يتجاوز الرمز البريدي 20 حرفًا.',
+            'addresses.*.country.required' => 'الدولة مطلوبة.',
+            'addresses.*.country.string' => 'يجب أن تكون الدولة نصًا.',
+            'addresses.*.country.max' => 'يجب ألا يتجاوز اسم الدولة 255 حرفًا.',
+            'addresses.*.is_default.boolean' => 'يجب أن تكون قيمة العنوان الافتراضي صح أو خطأ.',
         ];
     }
 }

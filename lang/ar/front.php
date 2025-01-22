@@ -1,18 +1,16 @@
 <?php
 
 return [
-    'pending' => 'قيد الانتظار',
+    'pending' => 'قدرة الانتظار',
     'initiated' => 'بدأ',
-    'processing' => 'معالجة',
+    'processing' => 'ك',
     'approved' => 'موافقة',
     'completed' => 'مكتمل',
     'cancelled' => 'ملغى',
-    'confirmed' => 'مؤكد',
+    'confirmed' => 'بالتأكيد',
     'rejected' => 'مرفوض',
-
     'cash' => 'نقدا',
-    'installments' => 'أقساط',
+    'installments' => 'أكساط',
     'bank' => 'بنك',
-    'credit_card' => 'بطاقة ائتمان',
-
-];
+    'credit_card' => 'بطاقة الائتمان'
+    ];

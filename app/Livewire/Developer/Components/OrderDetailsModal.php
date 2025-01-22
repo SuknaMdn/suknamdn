@@ -7,11 +7,12 @@ use App\Models\UnitOrder;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use App\Notifications\OrderConfirmed;
 use App\Notifications\User\OrderStatusNotification;
+use Livewire\WithPagination;
 
 class OrderDetailsModal extends Component
 {
     use LivewireAlert;
-
+    use WithPagination;
     public $orderId;
     public $order;
     public $status;
@@ -57,7 +58,7 @@ class OrderDetailsModal extends Component
                 $this->dispatch('order-status-updated', orderId: $this->orderId);
                 $this->alert('success', 'تم تحديث حالة الطلب بنجاح');
 
-                $order->user->notify(new OrderStatusNotification($order));
+                // $order->user->notify(new OrderStatusNotification($order));
             } catch (\Exception $e) {
                 $this->alert('error', 'فشل في تحديث حالة الطلب');
             }

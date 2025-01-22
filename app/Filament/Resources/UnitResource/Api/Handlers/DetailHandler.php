@@ -24,13 +24,20 @@ class DetailHandler extends Handlers
         $query = QueryBuilder::for(
             $query->where(static::getKeyName(), $id)
         )
-            ->with(['images:id,unit_id,image_path', 'additionalFeatures', 'afterSalesServices', 'project:id,AdLicense,developer_id'])
+            ->with([
+                'images:id,unit_id,image_path',
+                'additionalFeatures',
+                'afterSalesServices',
+                'project:id,AdLicense,developer_id',
+                'project.operationalServices',
+                'project.developer'
+            ])
+            // ->with(['images:id,unit_id,image_path', 'additionalFeatures','project.operationalServices', 'afterSalesServices', 'project:id,AdLicense,developer_id'])
             ->first();
 
         if (!$query) return static::sendNotFoundResponse();
 
         $transformedquery = tap($query, function ($item) {
-
 
             if ($item->qr_code) {
                 $item->qr_code = asset('storage/' . $item->qr_code);
@@ -60,9 +67,22 @@ class DetailHandler extends Handlers
                     return $afterSalesService;
                 });
             }
+
             if ($item->project) {
                 $item->license = $item->project->AdLicense;
-                $item->operationalServices = $item->project->operationalServices;
+                // $item->operationalServices = $item->project->operationalServices;
+
+                if ($item->project->operationalServices) {
+                    $item->operationalServices = $item->project->operationalServices->map(function ($service) {
+                        if ($service->icon && !filter_var($service->icon, FILTER_VALIDATE_URL)) {
+                            $service->icon = asset('storage/' . $service->icon);
+                        }
+                        return $service;
+                    });
+                } else {
+                    $item->operationalServices = collect([]);
+                }
+
                 $item->developer = $item->project->developer;
                 $item->developer_phone = $item->project->developer->phone;
             }

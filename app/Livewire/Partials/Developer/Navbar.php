@@ -25,7 +25,7 @@ class Navbar extends Component
 
         foreach ($this->projects as $project) {
             foreach ($project->units as $unit) {
-                $this->ordersCount += $unit->orders->where('status', 'pending')->count();
+                $this->ordersCount += $unit->orders->where('status', 'pending')->where('payment_status', 'paid')->count();
             }
         }
     }

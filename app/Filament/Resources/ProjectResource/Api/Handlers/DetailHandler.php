@@ -53,6 +53,36 @@ class DetailHandler extends Handlers
             }
         }
 
+        // Transform facilities icons
+        if ($query->facilities) {
+            $query->facilities->transform(function ($facility) {
+                if ($facility->icon) {
+                    $facility->icon = asset('storage/' . $facility->icon);
+                }
+                return $facility;
+            });
+        }
+
+        // Transform operational services icons
+        if ($query->operationalServices) {
+            $query->operationalServices->transform(function ($service) {
+                if ($service->icon) {
+                    $service->icon = asset('storage/' . $service->icon);
+                }
+                return $service;
+            });
+        }
+
+        // Transform warranties icons
+        if ($query->warranties) {
+            $query->warranties->transform(function ($warranty) {
+                if ($warranty->icon) {
+                    $warranty->icon = asset('storage/' . $warranty->icon);
+                }
+                return $warranty;
+            });
+        }
+
         if ($query->mediaPDF) {
             $query->mediaPDF = asset('storage/' . $query->mediaPDF);  // Adjust path as needed
         }

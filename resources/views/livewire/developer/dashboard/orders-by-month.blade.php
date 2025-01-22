@@ -194,13 +194,8 @@
 
             </div>
 
-            <div class=" d-flex align-items-center justify-content-between">
-                <div>{{ $orders->links('pagination::bootstrap-4') }}</div>
-                <div>
-                    @if($currentRoute !== 'developer.orders')
-                        <a href="{{ route('developer.orders') }}" class="btn btn-sm btn-light me-2">عرض الكل</a>
-                    @endif
-                </div>
+            <div class="w-100 d-flex align-items-center justify-content-between">
+                <div class="w-100">{{ $orders->links('pagination::bootstrap-4') }}</div>
             </div>
             <!--end::Action-->
         </div>
