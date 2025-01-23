@@ -15,7 +15,8 @@ class MoyasarPaymentService
 
     public function __construct()
     {
-        $this->callbackUrl = config('app.url') . '/api/payments/webhook';
+        // $this->callbackUrl = config('app.url') . '/api/payments/webhook';
+        $this->callbackUrl = config('app.url') . '/payments/handelreturndata';
         // Initialize Guzzle HTTP client
         $this->client = new Client([
             'base_uri' => $this->apiUrl,
