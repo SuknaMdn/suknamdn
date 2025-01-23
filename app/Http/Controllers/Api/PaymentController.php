@@ -277,4 +277,11 @@ class PaymentController extends Controller
         return response()->json(['message' => 'Payment not found'], 404);
     }
 
+    public function handelReturnData(Request $request)
+    {
+        $data = $request->all();
+        return response()->json([
+            'data' => $data
+        ], 200);
+    }
 }

@@ -48,9 +48,14 @@ class OrderDetailsModal extends Component
             try {
                 $order->status = $this->status;
                 // $order->payment->paid_at = now();
+                if($this->status == 'processing'){
+                    // update units as محجوزة
+                    $order->unit->case = '1';
+                    $order->unit->save();
+                }
                 if($this->status == 'confirmed'){
                     // update units as paid
-                    $order->unit->case = '1';
+                    $order->unit->case = '2';
                     $order->unit->save();
                 }
                 $order->save();

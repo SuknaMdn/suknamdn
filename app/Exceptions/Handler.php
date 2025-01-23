@@ -6,7 +6,7 @@ use BezhanSalleh\FilamentExceptions\FilamentExceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
-
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 class Handler extends ExceptionHandler
 {
     /**
@@ -30,6 +30,18 @@ class Handler extends ExceptionHandler
                 FilamentExceptions::report($e);
             }
         });
+    }
+
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof ThrottleRequestsException) {
+            // Return a JSON response instead of a view
+            return response()->json([
+                'message' => 'Too many requests. Please try again later.'
+            ], 429); // 429 is the HTTP status code for Too Many Requests
+        }
+
+        return parent::render($request, $exception);
     }
 
 }

@@ -16,16 +16,7 @@ use App\Http\Controllers\Api\NafathController;
 use App\Http\Controllers\Api\NotificationController;
 
 
-Route::get('/verification/verify/{id}/{hash}', [AuthController::class, 'verify'])
-    ->name('verification.verify');
-
-Route::prefix('auth')->group(function () {
-    Route::post('/send-otp', [AuthController::class, 'requestOtp']);
-    Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
-
-});
-
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
 
     Route::put('/profile/update', [ProfileController::class, 'updateProfile']);
     Route::put('/password/reset', [PasswordController::class, 'resetPassword']);
@@ -65,18 +56,30 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 });
 
-Route::get('/addresses/cities', [AddressController::class, 'getCities']);
-Route::get('/addresses/areas', [AddressController::class, 'getAreas']);
-Route::get('/maps/allprojects', [MapController::class, 'index']);
+Route::middleware('throttle:60,1')->group(function () {
 
-// payment webhook
-Route::post('/payments/webhook', [PaymentController::class, 'handleWebhook']);
+    Route::get('/verification/verify/{id}/{hash}', [AuthController::class, 'verify'])
+    ->name('verification.verify');
 
-// filter parameters
-Route::get('/projects-filter-parameters', [FilterController::class, 'getProjectsFilterParameters']);
-Route::get('/units-filter-parameters/{project_id}', [FilterController::class, 'getUnitsFilterParameters']);
+    Route::prefix('auth')->group(function () {
+        Route::post('/send-otp', [AuthController::class, 'requestOtp']);
+        Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
+    });
+
+    Route::get('/addresses/cities', [AddressController::class, 'getCities']);
+    Route::get('/addresses/areas', [AddressController::class, 'getAreas']);
+    Route::get('/maps/allprojects', [MapController::class, 'index']);
+
+    // payment webhook
+    Route::post('/payments/webhook', [PaymentController::class, 'handleWebhook']);
+
+    // filter parameters
+    Route::get('/projects-filter-parameters', [FilterController::class, 'getProjectsFilterParameters']);
+    Route::get('/units-filter-parameters/{project_id}', [FilterController::class, 'getUnitsFilterParameters']);
 
 
-Route::get('/content/about', [AboutSuknaController::class, 'about']);
-Route::get('/content/term_and_condition', [AboutSuknaController::class, 'term_and_condition']);
-Route::get('/content/privacy_policy', [AboutSuknaController::class, 'privacy_policy']);
+    Route::get('/content/about', [AboutSuknaController::class, 'about']);
+    Route::get('/content/term_and_condition', [AboutSuknaController::class, 'term_and_condition']);
+    Route::get('/content/privacy_policy', [AboutSuknaController::class, 'privacy_policy']);
+});
+
