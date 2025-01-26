@@ -41,11 +41,8 @@ Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
 
     // nafath auth
     Route::prefix('nafath')->group(function () {
-        Route::post('/verify', [NafathController::class, 'initiateVerification'])
-            ->name('nafath.verify');
-        Route::post('/callback', [NafathController::class, 'handleCallback'])
-            ->name('nafath.callback');
-
+        Route::post('/create-mfa-request', [NafathController::class, 'createMfaRequest']);
+        Route::post('/get-mfa-status', [NafathController::class, 'getMfaRequestStatus']);
     });
 
     // notifications
