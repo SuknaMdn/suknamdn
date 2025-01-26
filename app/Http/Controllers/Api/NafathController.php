@@ -21,62 +21,35 @@ class NafathController extends Controller
         $this->nafathService = $nafathService;
     }
 
-    public function initiateVerification(Request $request)
+
+    public function createMfaRequest(Request $request)
     {
-        $validated = $request->validate([
-            'national_id' => 'required|string',
-            'date_of_birth' => 'required|date_format:Y-m-d',
-        ]);
+        $nationalId = $request->input('nationalId');
+        $service = $request->input('service');
+        $requestId = $request->input('requestId');
+        $local = $request->input('local', 'ar');
 
-        try {
-            $result = $this->nafathService->initiateVerification(
-                $validated['national_id'],
-                $validated['date_of_birth']
-            );
+        $response = $this->nafathService->createMfaRequest($nationalId, $service, $requestId, $local);
 
-            // Store transaction ID in session for later verification
-            session(['nafath_transaction_id' => $result['transaction_id']]);
-
-            return response()->json([
-                'success' => true,
-                'transaction_id' => $result['transaction_id'],
-                'message' => 'Verification initiated successfully'
-            ]);
-        } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to initiate verification'
-            ], 500);
+        if ($response['success']) {
+            return response()->json($response['data'], 200);
+        } else {
+            return response()->json($response['error'], $response['error']['code'] ?? 500);
         }
     }
 
-    public function handleCallback(Request $request)
+    public function getMfaRequestStatus(Request $request)
     {
-        try {
-            $transactionId = $request->input('transaction_id');
-            $status = $this->nafathService->checkVerificationStatus($transactionId);
+        $nationalId = $request->input('nationalId');
+        $transId = $request->input('transId');
+        $random = $request->input('random');
 
-            if ($status['status'] === 'VERIFIED') {
-                // Update user verification status
-                $user = User::where('national_id', $status['national_id'])->first();
-                $user->update(['verified' => true]);
+        $response = $this->nafathService->getMfaRequestStatus($nationalId, $transId, $random);
 
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Verification successful'
-                ]);
-            }
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Verification failed or pending'
-            ]);
-        } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error processing verification callback'
-            ], 500);
+        if ($response['success']) {
+            return response()->json($response['data'], 200);
+        } else {
+            return response()->json($response['error'], $response['error']['code'] ?? 500);
         }
     }
-
 }
