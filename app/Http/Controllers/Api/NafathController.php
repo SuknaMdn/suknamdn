@@ -52,4 +52,48 @@ class NafathController extends Controller
             return response()->json($response['error'], $response['error']['code'] ?? 500);
         }
     }
+
+    public function handleCallback(Request $request)
+    {
+        // Log the incoming request for debugging
+        Log::info('Nafath Callback Received:', $request->all());
+
+        // Validate the request
+        $request->validate([
+            'transId' => 'required|string',
+            'status' => 'required|string|in:ACCEPTED,REJECTED',
+            'userInfo' => 'nullable|array', // Optional user information
+        ]);
+
+        // Extract data from the request
+        $transId = $request->input('transId');
+        $status = $request->input('status');
+        $userInfo = $request->input('userInfo', []);
+
+        // Handle the callback based on the status
+        if ($status === 'ACCEPTED') {
+            // User accepted the request
+            Log::info("User accepted the MFA request. Transaction ID: $transId");
+            Log::info('User Information:', $userInfo);
+
+            // Process the user information (e.g., save to database, log in the user, etc.)
+            $this->processUserInfo($userInfo);
+        } else {
+            // User rejected the request
+            Log::info("User rejected the MFA request. Transaction ID: $transId");
+        }
+
+        // Return a success response to Nafath
+        return response()->json(['success' => true]);
+    }
+
+    protected function processUserInfo($userInfo)
+    {
+        // Process the user information
+        // User::updateOrCreate(['national_id' => $userInfo['nationalId']], $userInfo);
+
+        // Log the user information for debugging
+        Log::info('User information processed successfully.');
+    }
+
 }

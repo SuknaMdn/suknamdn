@@ -30,7 +30,7 @@ class DetailHandler extends Handlers
                 'state:id,name',
                 'facilities:id,title,icon,project_id',
                 'operationalServices:id,title,icon,project_id',
-                'warranties:id,title,icon,project_id',
+                'warranties:id,title,content,icon,project_id',
                 'landmarks:id,title,distance,project_id',
             ])
             ->where('is_active', true)
@@ -94,7 +94,7 @@ class DetailHandler extends Handlers
 
         // Calculate available units and total units
         $totalUnits = $query->units()->count();
-        $availableUnits = $query->units()->where('status', 1)->where('case', 1)->count();
+        $availableUnits = $query->units()->where('status', 1)->where('case', 0)->count();
 
         // Add available units and total units to the project
         $query->available_units = $availableUnits;

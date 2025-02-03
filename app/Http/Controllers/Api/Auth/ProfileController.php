@@ -74,8 +74,12 @@ class ProfileController extends Controller
         try {
 
             $user->save();
+
             // Load the updated user with addresses
-            $user->load('address');
+            $user->load(['address' => function ($query) {
+                $query->select('id', 'user_id', 'city_id', 'state_id', 'is_default')
+                      ->with(['city:id,name', 'state:id,name']);
+            }]);
 
             return response()->json([
                 'message' => 'Profile updated successfully',

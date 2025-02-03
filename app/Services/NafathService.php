@@ -36,6 +36,7 @@ class NafathService
                 'json' => [
                     'nationalId' => $nationalId,
                     'service' => $service,
+                    'callbackUrl' => config('nafath.callback_url'),
                 ],
             ]);
 

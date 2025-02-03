@@ -28,6 +28,6 @@ class DeleteHandler extends Handlers {
 
         $model->delete();
 
-        return static::sendSuccessResponse($model, "Successfully Delete Resource");
+        return static::sendSuccessResponse("Successfully Delete Resource");
     }
 }

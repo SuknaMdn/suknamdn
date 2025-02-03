@@ -36,13 +36,12 @@ Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
     Route::post('user/favorite', [FavoriteController::class, 'createFavorite']);
     Route::delete('user/favorite/{id}', [FavoriteController::class, 'deleteFavorite']);
     Route::post('user/toggleFavorite', [FavoriteController::class, 'toggleFavorite']);
-    // search
-    Route::get('/search', [SearchController::class, 'searchProjects']);
 
     // nafath auth
     Route::prefix('nafath')->group(function () {
         Route::post('/create-mfa-request', [NafathController::class, 'createMfaRequest']);
         Route::post('/get-mfa-status', [NafathController::class, 'getMfaRequestStatus']);
+        Route::post('/callback', [NafathController::class, 'handleCallback']);
     });
 
     // notifications
@@ -78,5 +77,9 @@ Route::middleware('throttle:60,1')->group(function () {
     Route::get('/content/about', [AboutSuknaController::class, 'about']);
     Route::get('/content/term_and_condition', [AboutSuknaController::class, 'term_and_condition']);
     Route::get('/content/privacy_policy', [AboutSuknaController::class, 'privacy_policy']);
+
+    // search
+    Route::get('/search', [SearchController::class, 'searchProjects']);
+
 });
 
