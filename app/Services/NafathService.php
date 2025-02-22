@@ -39,7 +39,7 @@ class NafathService
                     'callbackUrl' => config('nafath.callback_url'),
                 ],
             ]);
-
+            // dd($response);
             return [
                 'success' => true,
                 'data' => json_decode($response->getBody(), true),

@@ -266,7 +266,9 @@
                                             <td class="fs-6 fw-bold text-gray-500">الحالة:
                                                 <span class="text-gray-800">
                                                     @if ($unit->case == 1)
-                                                        <span class="badge badge-light-success">مباعة</span>
+                                                        <span class="badge badge-light-success">محجوزة</span>
+                                                    @elseif ($unit->case == 2)
+                                                        <span class="badge badge-light-primary">مباعة</span>
                                                     @else
                                                         <span class="badge badge-light-danger">غير مباعة</span>
                                                     @endif

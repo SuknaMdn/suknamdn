@@ -198,6 +198,15 @@ class UnitResource extends Resource
                             ->relationship('additionalFeatures', 'title')
                             ->preload()
                             ->searchable(),
+                        Forms\Components\Select::make('case')
+                            ->label('unit Case')
+                            ->default(0)
+                            ->options([
+                                0 => 'جديد',
+                                1 => 'محجوز',
+                                2 => 'مباع',
+                            ]),
+
                     ])
                     ->columns(2),
 
