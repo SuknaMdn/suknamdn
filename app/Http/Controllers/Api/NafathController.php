@@ -43,15 +43,19 @@ class NafathController extends Controller
 
             $response = $this->nafathService->createMfaRequest($nationalId, $service, $requestId, $local);
 
-            if ($response['success']) {
+            if (isset($response['success']) && $response['success']) {
                 return response()->json($response['data'], 200);
             } else {
-                return response()->json($response['error'], $response['error']['code'] ?? 500);
+                // Return the error message from the service
+                return response()->json([
+                    'message' => $response['error']['message'] ?? 'Error occurred',
+                ], $response['error']['code'] ?? 500);
             }
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }
+
 
 
     public function getMfaRequestStatus(Request $request)
