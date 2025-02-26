@@ -28,7 +28,8 @@ class NafathService
     public function createMfaRequest($nationalId, $service, $requestId, $local = 'ar')
     {
         try {
-            $response = $this->client->post('/api/v1/mfa/request', [
+            // Add more debugging options to Guzzle
+            $options = [
                 'query' => [
                     'local' => $local,
                     'requestId' => $requestId,
@@ -38,13 +39,32 @@ class NafathService
                     'service' => $service,
                     'callbackUrl' => config('nafath.callback_url'),
                 ],
-            ]);
-            // dd($response);
+                'connect_timeout' => 10,    // Separate connect timeout
+                'timeout' => 30,            // Overall timeout
+                'debug' => false,            // Enable Guzzle debugging
+                'verify' => true,           // SSL certificate verification
+            ];
+
+            Log::info("Attempting Nafath API request to: " . config('nafath.api_url') . '/api/v1/mfa/request');
+            $response = $this->client->post('/api/v1/mfa/request', $options);
+
             return [
                 'success' => true,
                 'data' => json_decode($response->getBody(), true),
             ];
         } catch (RequestException $e) {
+            // Enhance exception handling to capture connection issues
+            if (!$e->hasResponse()) {
+                Log::error("Nafath API connection error: " . $e->getMessage());
+                return [
+                    'success' => false,
+                    'error' => [
+                        'code' => 0,
+                        'message' => 'Cannot connect to the Nafath API. Please check API URL and network connectivity.',
+                        'details' => $e->getMessage(),
+                    ],
+                ];
+            }
             return $this->handleException($e, 'createMfaRequest');
         }
     }
