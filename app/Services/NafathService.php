@@ -27,6 +27,7 @@ class NafathService
     public function createMfaRequest($nationalId, $service, $requestId, $local = 'ar')
     {
         try {
+            // Make the request
             $response = $this->client->post('/api/v1/mfa/request', [
                 'query' => [
                     'local' => $local,
@@ -39,27 +40,51 @@ class NafathService
                 ],
             ]);
 
-            $body = $response->getBody()->getContents();  // Get the full response body
+            // Get the response body
+            $body = $response->getBody()->getContents();
+
+            // Log the response
             Log::info('Nafath API Response:', ['body' => $body]);
 
-            if (!empty($body)) {
-                return [
-                    'success' => true,
-                    'data' => json_decode($body, true),
-                ];
-            } else {
+            return json_decode($body, true);
+
+        } catch (RequestException $e) {
+            Log::error('Nafath API Request Exception:', [
+                'message' => $e->getMessage(),
+                'response' => $e->getResponse() ? $e->getResponse()->getBody()->getContents() : null
+            ]);
+
+            // If there's an HTTP response, return it as the error message
+            if ($e->hasResponse()) {
                 return [
                     'success' => false,
                     'error' => [
-                        'message' => 'Empty response from Nafath API',
+                        'message' => $e->getResponse()->getBody()->getContents(),
+                        'code' => $e->getResponse()->getStatusCode(),
                     ]
                 ];
             }
-        } catch (RequestException $e) {
-            return $this->handleException($e, 'createMfaRequest');
-        }
 
+            // Return the general error
+            return [
+                'success' => false,
+                'error' => [
+                    'message' => 'An error occurred while processing the request.',
+                    'code' => 500,
+                ]
+            ];
+        } catch (\Exception $e) {
+            Log::error('General Exception in createMfaRequest:', ['message' => $e->getMessage()]);
+            return [
+                'success' => false,
+                'error' => [
+                    'message' => $e->getMessage(),
+                    'code' => 500,
+                ]
+            ];
+        }
     }
+
 
     public function getMfaRequestStatus($nationalId, $transId, $random)
     {
