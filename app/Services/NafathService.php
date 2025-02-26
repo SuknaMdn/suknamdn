@@ -20,16 +20,14 @@ class NafathService
                 'APP-ID' => $config['app_id'],
                 'APP-KEY' => $config['app_key'],
                 'Content-Type' => 'application/json;charset=utf-8',
-            ],
-            'timeout' => $config['timeout'],
+            ]
         ]);
     }
 
     public function createMfaRequest($nationalId, $service, $requestId, $local = 'ar')
     {
         try {
-            // Add more debugging options to Guzzle
-            $options = [
+            $response = $this->client->post('/api/v1/mfa/request', [
                 'query' => [
                     'local' => $local,
                     'requestId' => $requestId,
@@ -39,34 +37,28 @@ class NafathService
                     'service' => $service,
                     'callbackUrl' => config('nafath.callback_url'),
                 ],
-                'connect_timeout' => 10,    // Separate connect timeout
-                'timeout' => 30,            // Overall timeout
-                'debug' => false,            // Enable Guzzle debugging
-                'verify' => true,           // SSL certificate verification
-            ];
+            ]);
 
-            Log::info("Attempting Nafath API request to: " . config('nafath.api_url') . '/api/v1/mfa/request');
-            $response = $this->client->post('/api/v1/mfa/request', $options);
+            $body = $response->getBody()->getContents();  // Get the full response body
+            Log::info('Nafath API Response:', ['body' => $body]);
 
-            return [
-                'success' => true,
-                'data' => json_decode($response->getBody(), true),
-            ];
-        } catch (RequestException $e) {
-            // Enhance exception handling to capture connection issues
-            if (!$e->hasResponse()) {
-                Log::error("Nafath API connection error: " . $e->getMessage());
+            if (!empty($body)) {
+                return [
+                    'success' => true,
+                    'data' => json_decode($body, true),
+                ];
+            } else {
                 return [
                     'success' => false,
                     'error' => [
-                        'code' => 0,
-                        'message' => 'Cannot connect to the Nafath API. Please check API URL and network connectivity.',
-                        'details' => $e->getMessage(),
-                    ],
+                        'message' => 'Empty response from Nafath API',
+                    ]
                 ];
             }
+        } catch (RequestException $e) {
             return $this->handleException($e, 'createMfaRequest');
         }
+
     }
 
     public function getMfaRequestStatus($nationalId, $transId, $random)
