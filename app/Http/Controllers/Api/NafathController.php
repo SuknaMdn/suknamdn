@@ -24,19 +24,35 @@ class NafathController extends Controller
 
     public function createMfaRequest(Request $request)
     {
-        $nationalId = $request->input('nationalId');
-        $service = $request->input('service');
-        $requestId = $request->input('requestId');
-        $local = $request->input('local', 'ar');
+        try {
+            $validator = Validator::make($request->all(), [
+                'nationalId' => 'required|string',
+                'service' => 'required|string',
+                'requestId' => 'required|string',
+                'local' => 'nullable|string',
+            ]);
 
-        $response = $this->nafathService->createMfaRequest($nationalId, $service, $requestId, $local);
-        // dd($response);
-        if ($response['success']) {
-            return response()->json($response['data'], 200);
-        } else {
-            return response()->json($response['error'], $response['error']['code'] ?? 500);
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 400);
+            }
+
+            $nationalId = $request->input('nationalId');
+            $service = $request->input('service');
+            $requestId = $request->input('requestId');
+            $local = $request->input('local', 'ar');
+
+            $response = $this->nafathService->createMfaRequest($nationalId, $service, $requestId, $local);
+
+            if ($response['success']) {
+                return response()->json($response['data'], 200);
+            } else {
+                return response()->json($response['error'], $response['error']['code'] ?? 500);
+            }
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
         }
     }
+
 
     public function getMfaRequestStatus(Request $request)
     {
