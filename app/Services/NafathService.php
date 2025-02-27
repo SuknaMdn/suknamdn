@@ -141,7 +141,7 @@ class NafathService
             // TODO: Implement JWT verification with the JWK
             // This would require a JWT library like firebase/php-jwt
 
-            // For now, just decode the token without verification
+            // decode the token without verification
             $tokenParts = explode('.', $token);
             if (count($tokenParts) !== 3) {
                 return [
@@ -195,9 +195,10 @@ class NafathService
             // Log the error for debugging
             Log::error("Nafath API Error in $method: Status Code $statusCode, Response: $body");
 
-            // Add more details to the error response
             $errorDetails['error']['code'] = $statusCode;
             $errorDetails['error']['details'] = json_decode($body, true);
+
+            return $errorDetails;
         } else {
             // Log the error for debugging
             Log::error("Nafath API Error in $method: " . $e->getMessage());
