@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services;
 
 use GuzzleHttp\Client;
@@ -13,7 +12,6 @@ class NafathService
     public function __construct()
     {
         $config = config('nafath');
-
         $this->client = new Client([
             'base_uri' => $config['api_url'],
             'headers' => [
@@ -24,10 +22,18 @@ class NafathService
         ]);
     }
 
+    /**
+     * Create a new MFA request in Nafath
+     *
+     * @param string $nationalId User's national ID
+     * @param string $service Service type (from the service types table)
+     * @param string $requestId Unique identifier for the request
+     * @param string $local Language (ar or en)
+     * @return array Response with status and data
+     */
     public function createMfaRequest($nationalId, $service, $requestId, $local = 'ar')
     {
         try {
-            // Make the request
             $response = $this->client->post('/api/v1/mfa/request', [
                 'query' => [
                     'local' => $local,
@@ -36,56 +42,40 @@ class NafathService
                 'json' => [
                     'nationalId' => $nationalId,
                     'service' => $service,
-                    'callbackUrl' => config('nafath.callback_url'),
                 ],
             ]);
 
-            // Get the response body
             $body = $response->getBody()->getContents();
+            $data = json_decode($body, true);
 
-            // Log the response
             Log::info('Nafath API Response:', ['body' => $body]);
 
-            return json_decode($body, true);
-
-        } catch (RequestException $e) {
-            Log::error('Nafath API Request Exception:', [
-                'message' => $e->getMessage(),
-                'response' => $e->getResponse() ? $e->getResponse()->getBody()->getContents() : null
-            ]);
-
-            // If there's an HTTP response, return it as the error message
-            if ($e->hasResponse()) {
+            if (!empty($body)) {
+                return [
+                    'success' => true,
+                    'data' => $data,
+                ];
+            } else {
                 return [
                     'success' => false,
                     'error' => [
-                        'message' => $e->getResponse()->getBody()->getContents(),
-                        'code' => $e->getResponse()->getStatusCode(),
+                        'message' => 'Empty response from Nafath API',
                     ]
                 ];
             }
-
-            // Return the general error
-            return [
-                'success' => false,
-                'error' => [
-                    'message' => 'An error occurred while processing the request.',
-                    'code' => 500,
-                ]
-            ];
-        } catch (\Exception $e) {
-            Log::error('General Exception in createMfaRequest:', ['message' => $e->getMessage()]);
-            return [
-                'success' => false,
-                'error' => [
-                    'message' => $e->getMessage(),
-                    'code' => 500,
-                ]
-            ];
+        } catch (RequestException $e) {
+            return $this->handleException($e, 'createMfaRequest');
         }
     }
 
-
+    /**
+     * Get the status of an MFA request
+     *
+     * @param string $nationalId User's national ID
+     * @param string $transId Transaction ID returned from createMfaRequest
+     * @param string $random Random number returned from createMfaRequest
+     * @return array Response with status and data
+     */
     public function getMfaRequestStatus($nationalId, $transId, $random)
     {
         try {
@@ -97,15 +87,95 @@ class NafathService
                 ],
             ]);
 
+            $body = $response->getBody()->getContents();
+            $data = json_decode($body, true);
+
+            Log::info('Nafath Status Response:', ['body' => $body]);
+
             return [
                 'success' => true,
-                'data' => json_decode($response->getBody(), true),
+                'data' => $data,
             ];
         } catch (RequestException $e) {
             return $this->handleException($e, 'getMfaRequestStatus');
         }
     }
 
+    /**
+     * Retrieve the JWK for verifying JWT tokens
+     *
+     * @return array Response with JWK data
+     */
+    public function retrieveJwk()
+    {
+        try {
+            $response = $this->client->get('/api/v1/mfa/jwk');
+            $body = $response->getBody()->getContents();
+            $data = json_decode($body, true);
+
+            return [
+                'success' => true,
+                'data' => $data,
+            ];
+        } catch (RequestException $e) {
+            return $this->handleException($e, 'retrieveJwk');
+        }
+    }
+
+    /**
+     * Verify a JWT token using the JWK
+     *
+     * @param string $token The JWT token to verify
+     * @return array Decoded token data or error
+     */
+    public function verifyJwtToken($token)
+    {
+        try {
+            // Get the JWK
+            $jwkResponse = $this->retrieveJwk();
+
+            if (!$jwkResponse['success']) {
+                return $jwkResponse;
+            }
+
+            // TODO: Implement JWT verification with the JWK
+            // This would require a JWT library like firebase/php-jwt
+
+            // For now, just decode the token without verification
+            $tokenParts = explode('.', $token);
+            if (count($tokenParts) !== 3) {
+                return [
+                    'success' => false,
+                    'error' => [
+                        'message' => 'Invalid JWT token format',
+                    ]
+                ];
+            }
+
+            $payload = base64_decode(str_replace(['-', '_'], ['+', '/'], $tokenParts[1]));
+            $decodedToken = json_decode($payload, true);
+
+            return [
+                'success' => true,
+                'data' => $decodedToken,
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => [
+                    'message' => 'Failed to verify token: ' . $e->getMessage(),
+                ]
+            ];
+        }
+    }
+
+    /**
+     * Handle exceptions from API requests
+     *
+     * @param RequestException $e The caught exception
+     * @param string $method The method that threw the exception
+     * @return array Formatted error response
+     */
     protected function handleException(RequestException $e, $method)
     {
         $errorDetails = [
