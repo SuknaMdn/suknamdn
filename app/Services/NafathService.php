@@ -31,7 +31,7 @@ class NafathService
      * @param string $local Language (ar or en)
      * @return array Response with status and data
      */
-    public function createMfaRequest($nationalId, $service, $requestId, $local = 'ar')
+    public function createMfaRequest($nationalId, $service, $requestId, $local = 'en')
     {
         try {
             $response = $this->client->post('/api/v1/mfa/request', [
@@ -122,12 +122,6 @@ class NafathService
         }
     }
 
-    /**
-     * Verify a JWT token using the JWK
-     *
-     * @param string $token The JWT token to verify
-     * @return array Decoded token data or error
-     */
     public function verifyJwtToken($token)
     {
         try {
@@ -138,10 +132,19 @@ class NafathService
                 return $jwkResponse;
             }
 
-            // TODO: Implement JWT verification with the JWK
-            // This would require a JWT library like firebase/php-jwt
+            // Extract the JWK set from the response
+            $jwks = $jwkResponse['data']['keys'] ?? null;
 
-            // decode the token without verification
+            if (!$jwks) {
+                return [
+                    'success' => false,
+                    'error' => [
+                        'message' => 'Invalid JWK set received from Nafath API',
+                    ]
+                ];
+            }
+
+            // Get the token header to identify which key to use
             $tokenParts = explode('.', $token);
             if (count($tokenParts) !== 3) {
                 return [
@@ -152,14 +155,72 @@ class NafathService
                 ];
             }
 
-            $payload = base64_decode(str_replace(['-', '_'], ['+', '/'], $tokenParts[1]));
-            $decodedToken = json_decode($payload, true);
+            $headerJson = base64_decode(str_replace(['-', '_'], ['+', '/'], $tokenParts[0]));
+            $header = json_decode($headerJson, true);
+
+            // Get the key ID from the token header
+            $kid = $header['kid'] ?? null;
+
+            // Find the corresponding key in the JWK set
+            $key = null;
+            foreach ($jwks as $jwk) {
+                if (isset($jwk['kid']) && $jwk['kid'] === $kid) {
+                    $key = $jwk;
+                    break;
+                }
+            }
+
+            if (!$key) {
+                return [
+                    'success' => false,
+                    'error' => [
+                        'message' => 'Unable to find a matching JWK for the provided token',
+                    ]
+                ];
+            }
+
+            // Convert JWK to PEM format for verification
+            $pem = $this->jwkToPem($key);
+
+            if (!$pem) {
+                return [
+                    'success' => false,
+                    'error' => [
+                        'message' => 'Failed to convert JWK to PEM format',
+                    ]
+                ];
+            }
+
+            // Verify and decode the token
+            $decodedToken = \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key($pem, $header['alg']));
+
+            // Convert object to array for consistent response
+            $tokenData = json_decode(json_encode($decodedToken), true);
 
             return [
                 'success' => true,
-                'data' => $decodedToken,
+                'data' => $tokenData,
+            ];
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            Log::error('JWT token expired: ' . $e->getMessage());
+            return [
+                'success' => false,
+                'error' => [
+                    'message' => 'Token has expired',
+                    'details' => $e->getMessage(),
+                ]
+            ];
+        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+            Log::error('JWT signature invalid: ' . $e->getMessage());
+            return [
+                'success' => false,
+                'error' => [
+                    'message' => 'Invalid token signature',
+                    'details' => $e->getMessage(),
+                ]
             ];
         } catch (\Exception $e) {
+            Log::error('Failed to verify token: ' . $e->getMessage());
             return [
                 'success' => false,
                 'error' => [
@@ -167,6 +228,97 @@ class NafathService
                 ]
             ];
         }
+    }
+
+    /**
+     * Convert a JWK to PEM format for use with JWT verification
+     *
+     * @param array $jwk The JWK to convert
+     * @return string|false The PEM string or false on failure
+     */
+    protected function jwkToPem($jwk)
+    {
+        // Only handling RSA keys for now
+        if ($jwk['kty'] !== 'RSA') {
+            Log::error('Unsupported key type: ' . $jwk['kty']);
+            return false;
+        }
+
+        // Required parameters for RSA
+        if (!isset($jwk['n']) || !isset($jwk['e'])) {
+            Log::error('Missing required JWK parameters');
+            return false;
+        }
+
+        // Decode the base64url encoded modulus and exponent
+        $modulus = $this->base64UrlDecode($jwk['n']);
+        $exponent = $this->base64UrlDecode($jwk['e']);
+
+        // Convert modulus and exponent to binary
+        $modulusHex = bin2hex($modulus);
+        $exponentHex = bin2hex($exponent);
+
+        // Create a resource from the modulus and exponent
+        $rsa = openssl_pkey_new([
+            'n' => hex2bin($modulusHex),
+            'e' => hex2bin($exponentHex),
+        ]);
+
+        if ($rsa === false) {
+            // Try alternative approach if openssl_pkey_new fails
+            // Create PEM using details directly
+            $modulus = $this->chopPKCS1Padding(base64_encode($modulus));
+            $exponent = base64_encode($exponent);
+
+            $pemKey = "-----BEGIN PUBLIC KEY-----\n" .
+                     "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA" . $modulus . "\n" .
+                     "IDAQAB\n" .
+                     "-----END PUBLIC KEY-----";
+
+            return $pemKey;
+        }
+
+        // Get public key details
+        $details = openssl_pkey_get_details($rsa);
+        if ($details === false) {
+            Log::error('Failed to get public key details');
+            return false;
+        }
+
+        // Return the PEM format
+        return $details['key'];
+    }
+
+    /**
+     * Decode a base64url encoded string
+     *
+     * @param string $input Base64url encoded input
+     * @return string Decoded string
+     */
+    protected function base64UrlDecode($input)
+    {
+        $remainder = strlen($input) % 4;
+        if ($remainder) {
+            $padlen = 4 - $remainder;
+            $input .= str_repeat('=', $padlen);
+        }
+        return base64_decode(strtr($input, '-_', '+/'));
+    }
+
+    /**
+     * Remove PKCS1 padding from base64 encoded string
+     *
+     * @param string $str Base64 encoded string
+     * @return string String with padding removed
+     */
+    protected function chopPKCS1Padding($str)
+    {
+        $str = base64_decode($str);
+        $start = strpos($str, "\x00");
+        if ($start !== false) {
+            $str = substr($str, $start + 1);
+        }
+        return base64_encode($str);
     }
 
     /**
