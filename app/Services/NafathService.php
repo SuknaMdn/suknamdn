@@ -3,6 +3,7 @@ namespace App\Services;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class NafathService
@@ -108,15 +109,20 @@ class NafathService
      */
     public function retrieveJwk()
     {
+        if (Cache::has('nafath_jwk')) {
+            return Cache::get('nafath_jwk');
+        }
+
         try {
             $response = $this->client->get('/api/v1/mfa/jwk');
             $body = $response->getBody()->getContents();
             $data = json_decode($body, true);
-
-            return [
+            Cache::put('nafath_jwk', [
                 'success' => true,
                 'data' => $data,
-            ];
+            ], now()->addMinutes(10)); // Cache for 10 minutes
+
+            return ['success' => true, 'data' => $data];
         } catch (RequestException $e) {
             return $this->handleException($e, 'retrieveJwk');
         }
@@ -344,15 +350,17 @@ class NafathService
             $statusCode = $response->getStatusCode();
             $body = $response->getBody()->getContents();
 
-            // Log the error for debugging
             Log::error("Nafath API Error in $method: Status Code $statusCode, Response: $body");
 
-            $errorDetails['error']['code'] = $statusCode;
-            $errorDetails['error']['details'] = json_decode($body, true);
+            // Provide minimal details in production
+            if (config('app.debug')) {
+                $errorDetails['error']['details'] = json_decode($body, true);
+            } else {
+                $errorDetails['error']['details'] = ['message' => 'Please check the logs for more details.'];
+            }
 
             return $errorDetails;
         } else {
-            // Log the error for debugging
             Log::error("Nafath API Error in $method: " . $e->getMessage());
         }
 

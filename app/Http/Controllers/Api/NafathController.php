@@ -175,7 +175,6 @@ class NafathController extends Controller
     protected function processUserInfo($userInfo)
     {
         try {
-            // Example: Update or create user
             // User::updateOrCreate(['national_id' => $userInfo['nin'] ?? $userInfo['iqamaNumber']], [
             //     'name' => $userInfo['firstName'] . ' ' . $userInfo['familyName'],
             //     'email' => $userInfo['email'] ?? null,
