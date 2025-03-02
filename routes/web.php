@@ -22,7 +22,7 @@ Route::middleware('throttle:60,1')->group(function () {
     Route::get('/login', Login::class)->name('login');
 
     Route::get('/', function () {
-        return redirect()->route('filament.admin.auth.login');
+        return redirect()->route('developer-gate.login');
     });
 
     Route::get('/projects/{slug}', ShowProject::class)->name('projects.show');

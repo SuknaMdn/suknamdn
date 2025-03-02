@@ -46,7 +46,6 @@ class NafathController extends Controller
 
             $response = $this->nafathService->createMfaRequest($nationalId, $service, $requestId, $local);
 
-            // Remove dd() in production
             // dd($response);
 
             if ($response['success']) {
