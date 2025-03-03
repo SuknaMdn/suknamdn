@@ -13,12 +13,11 @@ class NafathService
     public function __construct()
     {
         $config = config('nafath');
-        dd($config);
         $this->client = new Client([
-            'base_uri' => $config['api_stg_url'],
+            'base_uri' => env('NAFATH_API_STG_URL', 'https://nafath.api.elm.sa/stg'),
             'headers' => [
-                'APP-ID' => $config['app_id'],
-                'APP-KEY' => $config['app_key'],
+                'APP-ID' => env('NAFATH_APP_ID', 'a99667c2'),
+                'APP-KEY' => env('NAFATH_APP_KEY', '0ac6e0d1a3185a1afdfd1954ba9846af'),
                 'Content-Type' => 'application/json;charset=utf-8',
             ]
         ]);
