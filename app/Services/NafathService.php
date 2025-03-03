@@ -352,12 +352,7 @@ class NafathService
 
             Log::error("Nafath API Error in $method: Status Code $statusCode, Response: $body");
 
-            // Provide minimal details in production
-            if (config('app.debug')) {
-                $errorDetails['error']['details'] = json_decode($body, true);
-            } else {
-                $errorDetails['error']['details'] = ['message' => 'Please check the logs for more details.'];
-            }
+            $errorDetails['error']['details'] = json_decode($body, true);
 
             return $errorDetails;
         } else {
