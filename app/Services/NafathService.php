@@ -13,7 +13,7 @@ class NafathService
     public function __construct()
     {
         $config = config('nafath');
-        // dd($config);
+        dd($config);
         $this->client = new Client([
             'base_uri' => $config['api_stg_url'],
             'headers' => [
