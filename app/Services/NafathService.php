@@ -16,8 +16,8 @@ class NafathService
         $this->client = new Client([
             'base_uri' => 'https://nafath.api.elm.sa/stg',
             'headers' => [
-                'APP-ID' => 'cd901716',
-                'APP-KEY' => '38a6924d7a2c7c977a07bf5393994663',
+                'APP-ID' => '0d47c960',
+                'APP-KEY' => 'f77ee9a3121448e244e24c08275f9081',
                 'Content-Type' => 'application/json;charset=utf-8',
             ]
         ]);
