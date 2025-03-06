@@ -22,7 +22,8 @@ class NafathService
             ]
         ]);
     }
-
+    // 0d47c960
+    // f77ee9a3121448e244e24c08275f9081
     /**
      * Create a new MFA request in Nafath
      *
@@ -350,9 +351,22 @@ class NafathService
             $statusCode = $response->getStatusCode();
             $body = $response->getBody()->getContents();
 
+            // Log the error
             Log::error("Nafath API Error in $method: Status Code $statusCode, Response: $body");
 
-            $errorDetails['error']['details'] = json_decode($body, true);
+            // Parse body if it's valid JSON
+            $decodedBody = json_decode($body, true);
+
+            // Create a more readable error message
+            $errorMessage = "Error {$statusCode} {$response->getReasonPhrase()}";
+
+            if ($decodedBody && isset($decodedBody['message'])) {
+                $errorMessage .= ": {$decodedBody['message']}";
+            }
+
+            // Update the error message in the response
+            $errorDetails['error']['message'] = $errorMessage;
+            $errorDetails['error']['details'] = $decodedBody;
 
             return $errorDetails;
         } else {

@@ -46,8 +46,6 @@ class NafathController extends Controller
 
             $response = $this->nafathService->createMfaRequest($nationalId, $service, $requestId, $local);
 
-            // dd($response);
-
             if ($response['success']) {
                 return response()->json($response['data'], 200);
             } else {
