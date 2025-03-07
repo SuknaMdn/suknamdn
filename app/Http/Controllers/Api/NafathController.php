@@ -31,7 +31,6 @@ class NafathController extends Controller
             $validator = Validator::make($request->all(), [
                 'nationalId' => 'required|string',
                 'service' => 'required|string',
-                'requestId' => 'required|string',
                 'local' => 'nullable|string|in:ar,en',
             ]);
 
@@ -41,10 +40,9 @@ class NafathController extends Controller
 
             $nationalId = $request->input('nationalId');
             $service = $request->input('service');
-            $requestId = $request->input('requestId');
             $local = $request->input('local', 'ar');
 
-            $response = $this->nafathService->createMfaRequest($nationalId, $service, $requestId, $local);
+            $response = $this->nafathService->createMfaRequest($nationalId, $service, $local);
             if ($response['success']) {
                 return response()->json($response['data'], 200);
             } else {
