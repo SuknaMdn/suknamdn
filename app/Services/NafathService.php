@@ -49,7 +49,6 @@ class NafathService
 
             $body = $response->getBody()->getContents();
             $data = json_decode($body, true);
-            return $data;
             Log::info('Nafath API Response:', ['body' => $body]);
 
             if (!empty($body)) {
