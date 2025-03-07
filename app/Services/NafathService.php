@@ -14,7 +14,7 @@ class NafathService
     {
         $config = config('nafath');
         $this->client = new Client([
-            'base_uri' => 'https://nafath.api.elm.sa',
+            'base_uri' => 'https://nafath.api.elm.sa/stg/',
             'headers' => [
                 'APP-ID' => '0d47c960',
                 'APP-KEY' => 'f77ee9a3121448e244e24c08275f9081',
@@ -24,19 +24,24 @@ class NafathService
     }
     // 0d47c960
     // f77ee9a3121448e244e24c08275f9081
+
+
     /**
      * Create a new MFA request in Nafath
      *
      * @param string $nationalId User's national ID
      * @param string $service Service type (from the service types table)
-     * @param string $requestId Unique identifier for the request
+     * @param string|null $requestId Optional unique identifier for the request
      * @param string $local Language (ar or en)
      * @return array Response with status and data
      */
-    public function createMfaRequest($nationalId, $service, $requestId, $local = 'en')
+    public function createMfaRequest($nationalId, $service, $local = 'en')
     {
         try {
-            $response = $this->client->post('/stg/api/v1/mfa/request', [
+            // Generate a UUID if none is provided
+            $requestId = $this->generateUuid();
+            // dd($requestId);
+            $response = $this->client->post('api/v1/mfa/request', [
                 'query' => [
                     'local' => $local,
                     'requestId' => $requestId,
@@ -49,24 +54,61 @@ class NafathService
 
             $body = $response->getBody()->getContents();
             $data = json_decode($body, true);
-            Log::info('Nafath API Response:', ['body' => $body]);
+
+            Log::info('Nafath API Response:', [
+                'requestId' => $requestId,
+                'body' => $body
+            ]);
 
             if (!empty($body)) {
                 return [
                     'success' => true,
                     'data' => $data,
+                    'requestId' => $requestId // Return the generated requestId
                 ];
             } else {
                 return [
                     'success' => false,
                     'error' => [
                         'message' => 'Empty response from Nafath API',
-                    ]
+                    ],
+                    'requestId' => $requestId
                 ];
             }
         } catch (RequestException $e) {
-            return $this->handleException($e, 'createMfaRequest');
+            return $this->handleException($e, 'createMfaRequest', [
+                'requestId' => $requestId
+            ]);
         }
+    }
+
+    /**
+     * Generate a UUID v4
+     *
+     * @return string
+     */
+    protected function generateUuid()
+    {
+        // Simple implementation of UUID v4
+        if (function_exists('random_bytes')) {
+            $data = random_bytes(16);
+        } elseif (function_exists('openssl_random_pseudo_bytes')) {
+            $data = openssl_random_pseudo_bytes(16);
+        } else {
+            // Fallback if secure random functions are not available
+            $data = '';
+            for ($i = 0; $i < 16; $i++) {
+                $data .= chr(mt_rand(0, 255));
+            }
+        }
+
+        // Set version to 0100
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+        // Set bits 6-7 to 10
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+
+        // Output the 36 character UUID
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 
     /**
@@ -80,7 +122,7 @@ class NafathService
     public function getMfaRequestStatus($nationalId, $transId, $random)
     {
         try {
-            $response = $this->client->post('/stg/api/v1/mfa/request/status', [
+            $response = $this->client->post('api/v1/mfa/request/status', [
                 'json' => [
                     'nationalId' => $nationalId,
                     'transId' => $transId,
