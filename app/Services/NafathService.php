@@ -14,7 +14,7 @@ class NafathService
     {
         $config = config('nafath');
         $this->client = new Client([
-            'base_uri' => 'https://nafath.api.elm.sa/stg',
+            'base_uri' => 'https://nafath.api.elm.sa',
             'headers' => [
                 'APP-ID' => '0d47c960',
                 'APP-KEY' => 'f77ee9a3121448e244e24c08275f9081',
@@ -36,7 +36,7 @@ class NafathService
     public function createMfaRequest($nationalId, $service, $requestId, $local = 'en')
     {
         try {
-            $response = $this->client->post('/api/v1/mfa/request', [
+            $response = $this->client->post('/stg/api/v1/mfa/request', [
                 'query' => [
                     'local' => $local,
                     'requestId' => $requestId,
@@ -49,7 +49,7 @@ class NafathService
 
             $body = $response->getBody()->getContents();
             $data = json_decode($body, true);
-
+            return $data;
             Log::info('Nafath API Response:', ['body' => $body]);
 
             if (!empty($body)) {
@@ -81,7 +81,7 @@ class NafathService
     public function getMfaRequestStatus($nationalId, $transId, $random)
     {
         try {
-            $response = $this->client->post('/api/v1/mfa/request/status', [
+            $response = $this->client->post('/stg/api/v1/mfa/request/status', [
                 'json' => [
                     'nationalId' => $nationalId,
                     'transId' => $transId,
