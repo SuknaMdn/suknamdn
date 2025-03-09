@@ -32,6 +32,7 @@ class NafathController extends Controller
                 'nationalId' => 'required|string',
                 'service' => 'required|string',
                 'local' => 'nullable|string|in:ar,en',
+                'user_id' => 'required|string',
             ]);
 
             if ($validator->fails()) {
@@ -44,7 +45,16 @@ class NafathController extends Controller
 
             $response = $this->nafathService->createMfaRequest($nationalId, $service, $local);
             if ($response['success']) {
+                // save national id to this user
+                if ($request->has('user_id')) {
+                    $user = User::find($request->input('user_id'));
+                    if ($user) {
+                        $user->national_id = $nationalId;
+                        $user->save();
+                    }
+                }
                 return response()->json($response['data'], 200);
+
             } else {
                 return response()->json($response['error'], $response['error']['code'] ?? 500);
             }
