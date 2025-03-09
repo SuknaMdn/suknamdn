@@ -170,11 +170,22 @@ class NafathController extends Controller
     protected function processUserInfo($userInfo)
     {
         try {
-            // User::updateOrCreate(['national_id' => $userInfo['nin'] ?? $userInfo['iqamaNumber']], [
-            //     'name' => $userInfo['firstName'] . ' ' . $userInfo['familyName'],
-            //     'email' => $userInfo['email'] ?? null,
-            //     // Add other fields as needed
-            // ]);
+            User::updateOrCreate(['national_id' => $userInfo['nin'] ?? $userInfo['iqamaNumber']], [
+                'firstname'   => $userInfo['firstName'],
+                'lastname'    => $userInfo['lastName'],
+                'family_name' => $userInfo['familyName'],
+                'nationality' => $userInfo['nationality'],
+                'gender'      => $userInfo['gender'],
+                'birth_date'  => $userInfo['birthgDate'],
+                'birth_place' => $userInfo['placeOfBirth'],
+                'social_status' => $userInfo['socialStatus'],
+                'national_address' => $userInfo['nationalAddress'],
+                'iqama_number' => $userInfo['iqamaNumber'] ?? $userInfo['nin'],
+                'city'        => $userInfo['city'],
+                'region_id'   => $userInfo['regionId'],
+                'district_id' => $userInfo['districID'],
+                'street_name' => $userInfo['streetName'],
+            ]);
 
             // Log the user information for debugging
             Log::info('User information processed successfully.', $userInfo);
