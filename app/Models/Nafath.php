@@ -7,9 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 class Nafath extends Model
 {
     protected $fillable = [
-        'user_id', 'transaction_id', 'national_id', 'id_type',
-        'full_name', 'date_of_birth', 'gender', 'nationality',
-        'status', 'response_data', 'verified_at', 'expires_at'
+        'user_id',
+        'national_id',
+        'id_type',
+        'full_name',
+        'date_of_birth',
+        'gender',
+        'nationality',
+        'status',
+        'response_data',
+        'verified_at',
+        'expires_at',
+        'request_id',
+        'transaction_id',
+        'random_number',
     ];
 
     protected $casts = [

@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use Exception;
+use GuzzleHttp\Client;
+use Firebase\JWT\JWT;
+use App\Models\Nafath;
+use Firebase\JWT\Key;
 
 class NafathController extends Controller
 {
@@ -51,6 +55,15 @@ class NafathController extends Controller
                     if ($user) {
                         $user->national_id = $nationalId;
                         $user->save();
+                        // save the transaction id
+                        Nafath::create([
+                            'transaction_id' => $response['data']['transId'],
+                            'national_id' => $nationalId,
+                            'user_id' => $user->id,
+                            'request_id' => $response['requestId'],
+                            'status' => 'PENDING',
+                            'random_number' => $response['data']['random'],
+                        ]);
                     }
                 }
                 return response()->json($response['data'], 200);
@@ -104,103 +117,198 @@ class NafathController extends Controller
      * Handle Nafath callback
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return Response
      */
     public function handleCallback(Request $request)
     {
         // Log the incoming request for debugging
-        Log::info('Nafath Callback Received:', $request->all());
+        Log::info('Nafath callback received', $request->all());
 
+        // Extract data from the request
+        $token = $request->input('token');
+        $transId = $request->input('transId');
+        $requestId = $request->input('requestId');
+
+        // Verify the token
+        $userData = $this->verifyToken($token);
+
+        if (!$userData) {
+            Log::error('Invalid JWT token received');
+            // update the request status
+            $this->updateRequestStatus($requestId, 'REJECTED');
+            return response()->json(['status' => 'error', 'message' => 'Invalid token'], 400);
+        }
+
+        // Check the status from the JWT
+        if ($userData['status'] === 'COMPLETED') {
+            // User accepted the request, save the user data
+            $this->saveUserData($userData, $transId, $requestId);
+
+            // Return a success response
+            return response()->json(['status' => 'success'], 200);
+        } else if ($userData['status'] === 'REJECTED') {
+            // User rejected the request
+            Log::info('User rejected the authentication request', ['transId' => $transId]);
+
+            // Update your database to reflect the rejection
+            $this->updateRequestStatus($requestId, 'REJECTED');
+
+            return response()->json(['status' => 'success'], 200);
+        }
+
+        // For other statuses, just acknowledge
+        return response()->json(['status' => 'success'], 200);
+    }
+
+
+
+    /**
+     * Verify the JWT token from Nafath
+     *
+     * @param string $token
+     * @return array|false Decoded token payload or false on failure
+     */
+    protected function verifyToken($token)
+    {
         try {
-            // Validate the request
-            $validator = Validator::make($request->all(), [
-                'token' => 'required|string',
-                'transId' => 'required|string',
-                'requestId' => 'required|string',
-            ]);
+            // Fetch the JWK from Nafath
+            $jwk = $this->fetchJwk();
 
-            if ($validator->fails()) {
-                Log::error('Nafath Callback Validation Error: ', $validator->errors()->toArray());
-                return response()->json($validator->errors(), 400);
+            if (!$jwk) {
+                Log::error('Failed to fetch JWK');
+                return false;
             }
 
-            $token = $request->input('token');
-            $transId = $request->input('transId');
-            $requestId = $request->input('requestId');
+            // Convert JWK to PEM
+            $publicKey = $this->jwkToPem($jwk);
 
-            // Verify and decode the JWT token
-            $tokenData = $this->nafathService->verifyJwtToken($token);
-
-            if (!$tokenData['success']) {
-                Log::error('Nafath Token Verification Error: ', $tokenData['error']);
-                return response()->json($tokenData['error'], 400);
+            if (!$publicKey) {
+                Log::error('Failed to convert JWK to PEM');
+                return false;
             }
 
-            $tokenInfo = $tokenData['data'];
-            $status = $tokenInfo['status'] ?? null;
-
-            // Handle the callback based on the status
-            if ($status === 'COMPLETED') {
-                // User accepted the request
-                Log::info("User accepted the MFA request. Transaction ID: $transId");
-
-                // Process user information if available
-                if (isset($tokenInfo['userInfo'])) {
-                    $userInfo = $tokenInfo['userInfo'];
-                    Log::info('User Information:', $userInfo);
-                    $this->processUserInfo($userInfo);
-                }
-
-                // Optionally broadcast an event
-                // event(new NafathStatusUpdated($requestId, $transId, $status, $userInfo ?? null));
-            } elseif ($status === 'REJECTED') {
-                // User rejected the request
-                Log::info("User rejected the MFA request. Transaction ID: $transId");
-
-                // Optionally broadcast an event
-                // event(new NafathStatusUpdated($requestId, $transId, $status, null));
-            } else {
-                Log::warning("Unexpected status in Nafath callback: $status");
+            // Parse the token to get the header
+            $tokenParts = explode('.', $token);
+            if (count($tokenParts) !== 3) {
+                Log::error('Invalid JWT format');
+                return false;
             }
 
-            // Return a success response to Nafath
-            return response()->json(['success' => true]);
-        } catch (Exception $e) {
-            Log::error('Nafath Callback Error: ' . $e->getMessage());
-            return response()->json(['message' => 'Internal server error'], 500);
+            // Verify the token
+            $payload = JWT::decode($token, new Key($publicKey, 'RS256'));
+
+            // Convert the payload to an array
+            return (array) $payload;
+
+        } catch (\Exception $e) {
+            Log::error('JWT verification failed: ' . $e->getMessage());
+            return false;
         }
     }
 
     /**
-     * Process user information received from Nafath
+     * Fetch JWK from Nafath API
      *
-     * @param array $userInfo
-     * @return void
+     * @return array|false The first JWK or false on failure
      */
-    protected function processUserInfo($userInfo)
+    protected function fetchJwk()
     {
         try {
-            User::updateOrCreate(['national_id' => $userInfo['nin'] ?? $userInfo['iqamaNumber']], [
-                'firstname'   => $userInfo['firstName'],
-                'lastname'    => $userInfo['lastName'],
-                'family_name' => $userInfo['familyName'],
-                'nationality' => $userInfo['nationality'],
-                'gender'      => $userInfo['gender'],
-                'birth_date'  => $userInfo['birthgDate'],
-                'birth_place' => $userInfo['placeOfBirth'],
-                'social_status' => $userInfo['socialStatus'],
-                'national_address' => $userInfo['nationalAddress'],
-                'iqama_number' => $userInfo['iqamaNumber'] ?? $userInfo['nin'],
-                'city'        => $userInfo['city'],
-                'region_id'   => $userInfo['regionId'],
-                'district_id' => $userInfo['districID'],
-                'street_name' => $userInfo['streetName'],
+            $client = new Client();
+            $response = $client->get(config('services.nafath.base_url') . '/api/v1/mfa/jwk', [
+                'headers' => [
+                    'APP-ID' => config('services.nafath.api_id'),
+                    'APP-KEY' => config('services.nafath.api_key'),
+                    'Content-Type' => 'application/json'
+                ]
             ]);
 
-            // Log the user information for debugging
-            Log::info('User information processed successfully.', $userInfo);
-        } catch (Exception $e) {
-            Log::error('Error processing user information: ' . $e->getMessage());
+            $data = json_decode($response->getBody(), true);
+
+            if (isset($data['keys']) && !empty($data['keys'])) {
+                return $data['keys'][0]; // Return the first key
+            }
+
+            return false;
+        } catch (\Exception $e) {
+            Log::error('Failed to fetch JWK: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Save user data to database
+     *
+     * @param array $userData Decoded JWT data
+     * @param string $transId Transaction ID
+     * @param string $requestId Request ID
+     */
+    protected function saveUserData($userData, $transId, $requestId)
+    {
+        // Find if we have a pending request with this ID
+        $pendingRequest = Nafath::where('request_id', $requestId)
+            ->where('trans_id', $transId)
+            ->first();
+
+        if (!$pendingRequest) {
+            Log::warning('No pending request found for requestId: ' . $requestId);
+            // You might want to create one here or handle this case
+
+        }
+
+        // Create or update the user record
+        // Note: The exact fields will depend on what's in the JWT and your database structure
+        $user = User::updateOrCreate(
+            ['national_id' => $userData['nin'] ?? null],
+            [
+                'first_name' => $userData['firstName'] ?? null,
+                'lastname'    => $userData['lastName'],
+                'gender' => $userData['gender'] ?? null,
+                'nationality' => $userData['nationality'] ?? null,
+                'birth_date'  => $userData['birthgDate'],
+                'birth_place' => $userData['placeOfBirth'],
+                'social_status' => $userData['socialStatus'],
+                'national_address' => $userData['nationalAddress'],
+                'iqama_number' => $userInfo['iqamaNumber'] ?? $userData['nin'],
+                'city'        => $userData['city'],
+                'region_id'   => $userData['regionId'],
+                'district_id' => $userData['districID'],
+                'street_name' => $userData['streetName'],
+
+            ]
+        );
+
+        // Update the request status
+        $this->updateRequestStatus($requestId, 'COMPLETED', $user->id);
+
+        // Log the successful authentication
+        Log::info('User authenticated successfully', [
+            'user_id' => $user->id,
+            'national_id' => $userData['nin'] ?? null,
+            'request_id' => $requestId
+        ]);
+
+        return $user;
+    }
+
+    /**
+     * Update the request status in the database
+     *
+     * @param string $requestId
+     * @param string $status
+     * @param int|null $userId
+     */
+    protected function updateRequestStatus($requestId, $status, $userId = null)
+    {
+        $request = Nafath::where('request_id', $requestId)->first();
+
+        if ($request) {
+            $request->status = $status;
+            if ($userId) {
+                $request->user_id = $userId;
+            }
+            $request->completed_at = now();
+            $request->save();
         }
     }
 }

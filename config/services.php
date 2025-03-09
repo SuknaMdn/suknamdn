@@ -38,15 +38,12 @@ return [
     'nafath' => [
         'base_url' => env('NAFATH_BASE_URL', 'https://nafath.api.elm.sa/stg'),
         'api_key' => env('NAFATH_API_KEY'),
+        'api_id' => env('NAFATH_APP_ID'),
         'client_secret' => env('NAFATH_CLIENT_SECRET'),
         'max_retries' => env('NAFATH_MAX_RETRIES', 3), // number of retries
         'timeout' => env('NAFATH_TIMEOUT', 10000), // seconds (10 seconds)
         'retry_delay' => env('NAFATH_RETRY_DELAY', 1000), // milliseconds
         'api_stg_url' => env('NAFATH_API_STG_URL', 'https://nafath.api.elm.sa/stg'),
-        // 'client_id' => env('NAFATH_CLIENT_ID'),
-        // 'redirect_uri' => env('NAFATH_REDIRECT_URI'),
-        // 'certificate_path' => env('NAFATH_CERTIFICATE_PATH'),
-        // 'private_key_path' => env('NAFATH_PRIVATE_KEY_PATH'),
 
     ],
 
