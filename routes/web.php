@@ -6,6 +6,8 @@ use App\Livewire\Developer\Auth\Login;
 use App\Livewire\Frontend\ShowProject;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\Api\PaymentController;
+use App\Livewire\Frontend\HomePage;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,9 +23,11 @@ Route::middleware('throttle:60,1')->group(function () {
 
     Route::get('/login', Login::class)->name('login');
 
-    Route::get('/', function () {
-        return redirect()->route('login');
-    });
+    // Route::get('/', function () {
+    //     return redirect()->route('login');
+    // });
+
+    Route::get('/', HomePage::class)->name('home');
 
     Route::get('/projects/{slug}', ShowProject::class)->name('projects.show');
 
