@@ -86,6 +86,16 @@ class PaginationHandler extends Handlers {
     protected function transformResults($paginatedResults)
     {
         $paginatedResults->getCollection()->transform(function ($item) {
+
+            // Get unit counts
+            $totalUnits = $item->units()->count();
+            $availableUnits = $item->units()->where('status', 1)->where('case', 0)->count();
+
+            // Add counts to the item
+            $item->available_units = $availableUnits;
+            $item->total_units = $totalUnits;
+
+
             $item->starting_from = $this->getFormattedStartingPrice($item);
             $item->is_favorite = $this->checkIfFavorite($item);
             $item->images = $this->transformImages($item->images);
@@ -121,7 +131,7 @@ class PaginationHandler extends Handlers {
 
     protected function generateCacheKey()
     {
-        return 'projects_' . md5(json_encode([
+        return 'projects_1' . md5(json_encode([
             request()->all(),
             auth('api')->id()
         ]));
