@@ -38,19 +38,19 @@ class AuthController extends Controller
     public function requestOtp(Request $request)
     {
 
-        // try {
+        try {
             return $this->otpService->sendOtp($request->input('phone'));
 
-        // } catch (OtpException $e) {
-        //     return match($e->getErrorCode()) {
-        //         OtpException::ERROR_INVALID_PHONE =>
-        //             response()->json(['error' => 'Invalid Saudi phone number'], 400),
-        //         OtpException::ERROR_TOO_MANY_ATTEMPTS =>
-        //             response()->json(['error' => 'Too many OTP attempts'], 429),
-        //         default =>
-        //             response()->json(['error' => 'OTP request failed'], 500)
-        //     };
-        // }
+        } catch (OtpException $e) {
+            return match($e->getErrorCode()) {
+                OtpException::ERROR_INVALID_PHONE =>
+                    response()->json(['error' => 'Invalid Saudi phone number'], 400),
+                OtpException::ERROR_TOO_MANY_ATTEMPTS =>
+                    response()->json(['error' => 'Too many OTP attempts'], 429),
+                default =>
+                    response()->json(['error' => 'OTP request failed'], 500)
+            };
+        }
     }
 
         /**
