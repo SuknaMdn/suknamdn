@@ -40,6 +40,7 @@ class AuthController extends Controller
 
         try {
             return $this->otpService->sendOtp($request->input('phone'));
+
         } catch (OtpException $e) {
             return match($e->getErrorCode()) {
                 OtpException::ERROR_INVALID_PHONE =>
