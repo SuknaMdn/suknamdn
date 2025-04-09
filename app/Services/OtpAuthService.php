@@ -73,7 +73,8 @@ class OtpAuthService
 
             // Send OTP via Msegat
             $response = Msegat::numbers([$formattedPhone])
-            ->message('رمز الدخول : ' . $otp);
+            ->message('رمز الدخول : ' . $otp)
+            ->sendWithDefaultSender();
 
             // $response = Msegat::getSenders();
 
