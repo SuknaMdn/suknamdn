@@ -72,11 +72,14 @@ class OtpAuthService
             $otp = $this->generateOtp($formattedPhone);
 
             // Send OTP via Msegat
-            // $response = Msegat::numbers([$formattedPhone])
-            // ->sendOTP('OTP');
+            $response = Msegat::numbers([$formattedPhone])
+            ->message('رمز الدخول : ' . $otp)
+            ->sendWithDefaultSender();
+
+            // $response = Msegat::getSenders();
 
             return response()->json([
-                // 'status' => $response,
+                'status' => $response,
                 'otp' => $otp
             ]);
 

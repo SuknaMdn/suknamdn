@@ -46,5 +46,10 @@ return [
         'api_stg_url' => env('NAFATH_API_STG_URL', 'https://nafath.api.elm.sa/stg'),
 
     ],
+    'msegat' => [
+        'username' => env('MSEGAT_USERNAME'),
+        'api_key'  => env('MSEGAT_API_KEY'),
+        'sender'   => env('MSEGAT_DEFAULT_SENDER'),
+    ],
 
 ];
