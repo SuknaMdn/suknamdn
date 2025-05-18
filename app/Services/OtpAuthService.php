@@ -99,10 +99,30 @@ class OtpAuthService
     }
 
     /**
-     * Verify OTP with enhanced security
+     * Verify OTP with enhanced security and virtual account support
      */
     public function verifyOtp(string $phoneNumber, string $userOtp): bool
     {
+        // --- BEGIN VIRTUAL ACCOUNT CHECK ---
+        // Get virtual account credentials from environment variables
+        $virtualPhone = env('VIRTUAL_OTP_PHONE');
+        $virtualOtp = env('VIRTUAL_OTP_CODE');
+
+        // Only proceed with virtual account check if both environment variables are set
+        if ($virtualPhone && $virtualOtp) {
+            // Format both phone numbers using the same prepareSaudiPhoneNumber method
+            // to ensure consistent comparison with the '+' prefix
+            $formattedInputPhone = OtpException::prepareSaudiPhoneNumber($phoneNumber);
+            $formattedVirtualPhone = OtpException::prepareSaudiPhoneNumber($virtualPhone);
+
+            // Check if the formatted input matches the formatted virtual phone and OTP
+            if ($formattedInputPhone === $formattedVirtualPhone && $userOtp === $virtualOtp) {
+                // Virtual account credentials match - bypass normal OTP verification
+                return true;
+            }
+        }
+        // --- END VIRTUAL ACCOUNT CHECK ---
+
         try {
             // Validate and prepare phone number
             $formattedPhone = OtpException::prepareSaudiPhoneNumber($phoneNumber);
@@ -169,11 +189,9 @@ class OtpAuthService
                 'trace' => $e->getTraceAsString()
             ]);
 
-            return response()->json([
-                'status' => 'error',
-                'message' => 'An unexpected error occurred',
-                'error_code' => 500,
-            ]);
+            // Throw a generic OtpException instead of returning a response
+            // This maintains the expected return type contract (bool or exception)
+            throw new OtpException('An unexpected error occurred during OTP verification.', 500, $e);
         }
     }
 
