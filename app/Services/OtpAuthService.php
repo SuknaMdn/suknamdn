@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use HossamMonir\Msegat\Facades\Msegat;
+use Illuminate\Support\Facades\Hash;
 
 class OtpAuthService
 {
@@ -198,6 +199,31 @@ class OtpAuthService
     /**
      * Create or find user securely
      */
+    // public function authenticateUser(string $phoneNumber): User
+    // {
+    //     // Validate and prepare phone number
+    //     $formattedPhone = OtpException::prepareSaudiPhoneNumber($phoneNumber);
+
+    //     // Ensure phone number is valid
+    //     if (!OtpException::validateSaudiPhoneNumber($formattedPhone)) {
+    //         throw OtpException::log(
+    //             'Invalid phone number',
+    //             OtpException::ERROR_INVALID_PHONE,
+    //             $phoneNumber
+    //         );
+    //     }
+
+    //     return User::firstOrCreate(
+    //         ['phone' => $formattedPhone],
+    //         [
+    //             'username' => 'User_' . Str::random(5),
+    //             'password' => bcrypt(Str::random(40)),
+    //         ]
+    //     );
+    // }
+    /**
+     * Authenticate or create user after OTP verification
+     */
     public function authenticateUser(string $phoneNumber): User
     {
         // Validate and prepare phone number
@@ -212,12 +238,54 @@ class OtpAuthService
             );
         }
 
-        return User::firstOrCreate(
-            ['phone' => $formattedPhone],
-            [
-                'username' => 'User_' . Str::random(5),
-                'password' => bcrypt(Str::random(40)),
-            ]
-        );
+        // First, check if user exists (including soft deleted)
+        $user = User::withTrashed()->where('phone', $phoneNumber)->first();
+
+        if ($user) {
+            if ($user->trashed()) {
+                // Restore soft deleted user
+                $user->restore();
+
+                // Optionally regenerate username and password for security
+                $user->update([
+                    'username' => $this->generateUsername(),
+                    'password' => Hash::make(Str::random(16)), // Random password
+                ]);
+
+                return $user;
+            }
+
+            // User exists and is not soft deleted
+            return $user;
+        }
+
+        // Create new user
+        return $this->createNewUser($phoneNumber);
     }
+
+    /**
+     * Create a new user
+     */
+    private function createNewUser($phone)
+    {
+        return User::create([
+            'id' => Str::uuid(),
+            'phone' => $phone,
+            'username' => $this->generateUsername(),
+            'password' => Hash::make(Str::random(16)), // Random password since using OTP
+        ]);
+    }
+
+    /**
+     * Generate unique username
+     */
+    private function generateUsername()
+    {
+        do {
+            $username = 'User_' . Str::random(5);
+        } while (User::withTrashed()->where('username', $username)->exists());
+
+        return $username;
+    }
+
 }

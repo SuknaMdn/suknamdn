@@ -18,17 +18,25 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail, HasAvatar, HasName, HasMedia
 {
     use InteractsWithMedia;
     use HasUuids, HasRoles;
     use HasApiTokens, HasFactory, Notifiable;
     use Notifiable;
+    use SoftDeletes;
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
+
+    protected $keyType = 'string';
+    public $incrementing = false;
+
+
     protected $fillable = [
         'username',
         'email',
@@ -58,6 +66,68 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    protected $dates = ['deleted_at'];
+
+        /**
+     * Boot method to handle model events
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // When creating a user, check for soft deleted records with same phone
+        static::creating(function ($user) {
+            // Check if there's a soft deleted user with the same phone
+            $existingUser = static::withTrashed()->where('phone', $user->phone)->first();
+
+            if ($existingUser && $existingUser->trashed()) {
+                // Restore the soft deleted user instead of creating new one
+                $existingUser->restore();
+
+                // Update the restored user with new data if needed
+                $existingUser->update([
+                    'username' => $user->username,
+                    'password' => $user->password,
+                    // Add other fields you want to update
+                ]);
+
+                // Return the restored user (this prevents the new user creation)
+                return $existingUser;
+            }
+        });
+    }
+
+    /**
+     * Find user by phone including soft deleted ones
+     */
+    public static function findByPhoneWithTrashed($phone)
+    {
+        return static::withTrashed()->where('phone', $phone)->first();
+    }
+
+    /**
+     * Restore or create user by phone
+     */
+    public static function restoreOrCreate($phone, $attributes = [])
+    {
+        $user = static::withTrashed()->where('phone', $phone)->first();
+
+        if ($user && $user->trashed()) {
+            // Restore soft deleted user
+            $user->restore();
+
+            // Update with new attributes if provided
+            if (!empty($attributes)) {
+                $user->update($attributes);
+            }
+
+            return $user;
+        }
+
+        // Create new user if none exists
+        return static::create(array_merge(['phone' => $phone], $attributes));
+    }
 
     public function getFilamentName(): string
     {
