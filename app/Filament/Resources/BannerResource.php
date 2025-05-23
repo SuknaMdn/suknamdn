@@ -80,6 +80,7 @@ class BannerResource extends Resource
                                             ->schema([
                                             ])
                                             ->defaultItems(1)
+                                            ->downloadable()
                                             ->minItems(1),
                                     ])
                                     ->compact(),
