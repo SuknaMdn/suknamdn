@@ -8,7 +8,10 @@ use App\Http\Requests\UpdateProfileRequest;
 use App\Models\Address;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 class ProfileController extends Controller
 {
     public function __construct()
@@ -93,5 +96,70 @@ class ProfileController extends Controller
             ], 500);
         }
 
+    }
+
+
+    /**
+     * Delete the authenticated user's account
+     */
+    public function destroy(Request $request): JsonResponse
+    {
+        try {
+            // Get authenticated user
+            $user = Auth::user();
+
+            // Check if user exists (safety check)
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not authenticated'
+                ], 401);
+            }
+
+            DB::beginTransaction();
+
+            try {
+
+                // Revoke all tokens
+                if ($user->tokens()) {
+                    $user->tokens()->delete();
+                }
+
+                // Remove user roles
+                if ($user->roles()) {
+                    $user->roles()->detach();
+                }
+
+                // Delete the user account
+                $user->delete();
+
+                DB::commit();
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Account deleted successfully'
+                ], 200);
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('Account deletion failed during transaction', [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage()
+                ]);
+                throw $e;
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Account deletion failed', [
+                'user_id' => $user->id ?? 'unknown',
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to delete account',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

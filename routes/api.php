@@ -20,6 +20,10 @@ Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
 
     Route::put('/profile/update', [ProfileController::class, 'updateProfile']);
     Route::put('/password/reset', [PasswordController::class, 'resetPassword']);
+
+    // remove acount
+    Route::delete('/account/destroy', [ProfileController::class, 'destroy']);
+
     Route::post('/payments', [PaymentController::class, 'createPayment']);
     Route::get('/payments', [PaymentController::class, 'listPayments']);
     Route::get('/payments/{id}', [PaymentController::class, 'getPayment']);
@@ -54,8 +58,7 @@ Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
 
 Route::middleware('throttle:60,1')->group(function () {
 
-    Route::get('/verification/verify/{id}/{hash}', [AuthController::class, 'verify'])
-    ->name('verification.verify');
+    Route::get('/verification/verify/{id}/{hash}', [AuthController::class, 'verify'])->name('verification.verify');
 
     Route::prefix('auth')->group(function () {
         Route::post('/send-otp', [AuthController::class, 'requestOtp']);
