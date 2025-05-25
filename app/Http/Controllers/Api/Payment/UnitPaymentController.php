@@ -32,7 +32,7 @@ class UnitPaymentController extends Controller
             return DB::transaction(function () use ($validatedData, $user) {
 
                 // Find and validate unit
-                $unit = $this->findAndValidateUnit($validatedData['unit_id']);
+                // $unit = $this->findAndValidateUnit($validatedData['unit_id']);
 
                 // Create payment record
                 $payment = $this->createPayment($validatedData, $user, $unit);
@@ -173,32 +173,38 @@ class UnitPaymentController extends Controller
     /**
      * Find and validate unit
      */
-    private function findAndValidateUnit(int $unitId): Unit
+    public function findAndValidateUnit(int $unitId): array
     {
-        try {
-            $unit = Unit::findOrFail($unitId);
+        $unit = Unit::find($unitId);
 
-            // Check if unit is already sold
-            if ($unit->case == 1) {
-                throw new \Exception('هذه الوحدة محجوزة بالفعل', 400);
-            }
-
-            // Check if unit is available for reservation
-            if (isset($unit->status) && !in_array($unit->status, [1, 0])) {
-                throw new \Exception('الوحدة غير متاحة للحجز حالياً', 400);
-            }
-
-            // Check if unit is reserved by another user
-            if ($unit->case == 2 && $unit->reserved_by !== auth()->id()) {
-                throw new \Exception('الوحدة مباعة من قبل مستخدم آخر', 400);
-            }
-
-            return $unit;
-
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            throw new \Exception('الوحدة المحددة غير موجودة', 404);
+        if (!$unit) {
+            return [
+                'success' => false,
+                'message' => 'الوحدة المحددة غير موجودة',
+            ];
         }
+
+        if ($unit->case == 1) {
+            return [
+                'success' => false,
+                'message' => 'هذه الوحدة محجوزة بالفعل',
+            ];
+        }
+
+        if ($unit->case == 2) {
+            return [
+                'success' => false,
+                'message' => 'الوحدة مباعة من قبل مستخدم آخر',
+            ];
+        }
+
+        return [
+            'success' => true,
+            'message' => 'هذة الوحدة ماحة',
+            // 'unit' => $unit,
+        ];
     }
+
 
     /**
      * Create payment record

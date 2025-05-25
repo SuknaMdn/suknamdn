@@ -32,6 +32,8 @@ Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
     // callback to handle payment response from app
     Route::post('/payments/handlePaymentDueToUnitReservation', [UnitPaymentController::class, 'handlePaymentDueToUnitReservation']);
 
+    // check if unit is reserved
+    Route::get('/units/{unit_id}/find', [UnitPaymentController::class, 'findAndValidateUnit']);
     // user address
     Route::get('/addresses/user', [AddressController::class, 'getUserAddress']);
 
