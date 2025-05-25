@@ -284,4 +284,5 @@ class PaymentController extends Controller
             'data' => $data
         ], 200);
     }
+
 }

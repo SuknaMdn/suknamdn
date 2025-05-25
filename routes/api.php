@@ -14,7 +14,7 @@ use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\FilterController;
 use App\Http\Controllers\Api\NafathController;
 use App\Http\Controllers\Api\NotificationController;
-
+use App\Http\Controllers\Api\Payment\UnitPaymentController;
 
 Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
 
@@ -28,6 +28,9 @@ Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
     Route::get('/payments', [PaymentController::class, 'listPayments']);
     Route::get('/payments/{id}', [PaymentController::class, 'getPayment']);
     Route::get('/payments-list', [PaymentController::class, 'listPayments']);
+
+    // callback to handle payment response from app
+    Route::post('/payments/handlePaymentDueToUnitReservation', [UnitPaymentController::class, 'handlePaymentDueToUnitReservation']);
 
     // user address
     Route::get('/addresses/user', [AddressController::class, 'getUserAddress']);
@@ -52,6 +55,9 @@ Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
     Route::get('/notifications/{id}', [NotificationController::class, 'index']);
     Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'makeAsRead']);
     Route::post('/notifications/mark-all-as-read', [NotificationController::class, 'makeAllAsRead']);
+
+    // unit value for unit reservation
+    Route::get('/unit-value-for-unit-reservation', [AboutSuknaController::class, 'getUnitValueForUnitReservation']);
 
 
 });
