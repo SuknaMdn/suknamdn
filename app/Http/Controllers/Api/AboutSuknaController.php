@@ -32,4 +32,17 @@ class AboutSuknaController extends Controller
         }
     }
 
+
+    /**
+     * Get the unit value for unit reservation.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getUnitValueForUnitReservation(GeneralSettings $settings)
+    {
+        return response()->json([
+            'unit_value_for_unit_reservation' => $settings->serious_value_for_unit_reservation,
+        ], 200);
+    }
+
 }
