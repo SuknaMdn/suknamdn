@@ -32,7 +32,14 @@ class UnitPaymentController extends Controller
             return DB::transaction(function () use ($validatedData, $user) {
 
                 // Find and validate unit
-                // $unit = $this->findAndValidateUnit($validatedData['unit_id']);
+                $result = $this->findAndValidateUnit($validatedData['unit_id']);
+
+                if (!$result['success']) {
+                    // Handle error (e.g., show alert or return)
+                    return session()->flash('error', $result['message']);
+                }
+
+                $unit = $result['unit'];
 
                 // Create payment record
                 $payment = $this->createPayment($validatedData, $user, $unit);
@@ -201,7 +208,7 @@ class UnitPaymentController extends Controller
         return [
             'success' => true,
             'message' => 'هذة الوحدة ماحة',
-            // 'unit' => $unit,
+            'unit' => $unit,
         ];
     }
 
