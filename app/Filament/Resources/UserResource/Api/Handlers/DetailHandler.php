@@ -22,11 +22,14 @@ class DetailHandler extends Handlers
         $query = QueryBuilder::for(
             static::getEloquentQuery()->where('id', $user->id)
         )
-            ->with(['address' => function ($query) {
+        ->with([
+            'address' => function ($query) {
                 $query->select('id', 'user_id', 'city_id', 'state_id', 'is_default')
                       ->with(['city:id,name', 'state:id,name']);
-            }])
-            ->first();
+            }
+        ])
+        ->withCount(['favorites', 'orders'])
+        ->first();
 
         if (!$query) return static::sendNotFoundResponse();
 
