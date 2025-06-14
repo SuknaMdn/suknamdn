@@ -143,7 +143,11 @@ class BannerResource extends Resource
                     ->collection('images')
                     ->wrap(),
                 Tables\Columns\TextColumn::make('title')
-                    ->description(fn(Model $record): string => strip_tags((new CommonMarkConverter())->convert($record->description)->getContent()))
+                    ->description(fn(Model $record): string => 
+                        $record->description 
+                            ? strip_tags((new CommonMarkConverter())->convert($record->description)->getContent()) 
+                            : ''
+                    )
                     ->lineClamp(2)
                     ->wrap()
                     ->searchable()
