@@ -29,7 +29,11 @@ class PaginationHandler extends Handlers {
         ->allowedIncludes($this->getAllowedIncludes() ?? [])
         ->paginate(request()->query('per_page'))
         ->appends(request()->query());
-
+        // هنا بنعدل بيانات كل عنصر في الصفحة
+        $query->getCollection()->transform(function ($item) {
+            $item->bannerable_type = class_basename($item->bannerable_type);
+            return $item;
+        });
         return static::getApiTransformer()::collection($query);
     }
 }
