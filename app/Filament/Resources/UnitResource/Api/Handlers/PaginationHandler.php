@@ -66,8 +66,10 @@ class PaginationHandler extends Handlers
 
         $query->getCollection()->transform(function ($item) {
             if ($item->images->isNotEmpty()) {
-                $firstImage = $item->images->first();
-                $item->image = asset('storage/' . $firstImage->image_path);
+                $item->images = $item->images->map(function ($image) {
+                    $image->image_path = asset('storage/' . $image->image_path);
+                    return $image;
+                });
             }
             return $item;
         });

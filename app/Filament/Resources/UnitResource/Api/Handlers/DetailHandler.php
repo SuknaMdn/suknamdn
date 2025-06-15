@@ -70,7 +70,6 @@ class DetailHandler extends Handlers
 
             if ($item->project) {
                 $item->license = $item->project->AdLicense;
-                // $item->operationalServices = $item->project->operationalServices;
 
                 if ($item->project->operationalServices) {
                     $item->operationalServices = $item->project->operationalServices->map(function ($service) {
@@ -84,8 +83,14 @@ class DetailHandler extends Handlers
                 }
 
                 $item->developer = $item->project->developer;
-                $item->developer_phone = $item->project->developer->phone;
+
+                if ($item->developer && $item->developer->logo && !filter_var($item->developer->logo, FILTER_VALIDATE_URL)) {
+                    $item->developer->logo = asset('storage/' . $item->developer->logo);
+                }
+
+                $item->developer_phone = $item->developer->phone;
             }
+
             $item->makeHidden('project');
 
 

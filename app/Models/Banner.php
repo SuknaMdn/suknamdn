@@ -30,6 +30,8 @@ class Banner extends Model implements HasMedia
         'is_visible',
         'start_date',
         'end_date',
+        'bannerable_type',
+        'bannerable_id',
     ];
 
     /**
@@ -57,4 +59,8 @@ class Banner extends Model implements HasMedia
             ->singleFile();
     }
 
+    public function bannerable()
+    {
+        return $this->morphTo();
+    }
 }

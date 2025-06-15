@@ -47,6 +47,10 @@ class UnitPaymentController extends Controller
                 // Create unit order
                 $unitOrder = $this->createUnitOrder($validatedData, $user, $payment);
 
+                // Update unit case to 1 (reserved)
+                $unit->case = 1;
+                $unit->save();
+                
                 // Log successful transaction
                 Log::info('Payment processed successfully', [
                     'user_id' => $user->id,

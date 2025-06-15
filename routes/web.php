@@ -28,7 +28,7 @@ Route::middleware('throttle:60,1')->group(function () {
     //     return redirect()->route('login');
     // });
 
-    Route::get('/', HomePage::class)->name('home');
+    // Route::get('/', HomePage::class)->name('home');
     Route::get('/privacy', Privacy::class)->name('privacy');
     Route::get('/projects/{slug}', ShowProject::class)->name('projects.show');
 

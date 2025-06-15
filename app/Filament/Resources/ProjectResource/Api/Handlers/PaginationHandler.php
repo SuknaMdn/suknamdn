@@ -6,7 +6,6 @@ use Rupadana\ApiService\Http\Handlers;
 use Spatie\QueryBuilder\QueryBuilder;
 use App\Filament\Resources\ProjectResource;
 use App\Models\Project;
-use Illuminate\Support\Facades\Cache;
 
 class PaginationHandler extends Handlers {
 
@@ -22,16 +21,12 @@ class PaginationHandler extends Handlers {
 
     public function handler()
     {
-        $cacheKey = $this->generateCacheKey();
+        $query = $this->buildBaseQuery();
+        $query = $this->applyFilters($query);
+        $paginatedResults = $this->paginateResults($query);
+        $this->transformResults($paginatedResults);
 
-        return Cache::remember($cacheKey, 3600, function () {
-            $query = $this->buildBaseQuery();
-            $query = $this->applyFilters($query);
-            $paginatedResults = $this->paginateResults($query);
-            $this->transformResults($paginatedResults);
-
-            return static::getApiTransformer()::collection($paginatedResults);
-        });
+        return static::getApiTransformer()::collection($paginatedResults);
     }
 
     protected function buildBaseQuery()
@@ -95,7 +90,6 @@ class PaginationHandler extends Handlers {
             $item->available_units = $availableUnits;
             $item->total_units = $totalUnits;
 
-
             $item->starting_from = $this->getFormattedStartingPrice($item);
             $item->is_favorite = $this->checkIfFavorite($item);
             $item->images = $this->transformImages($item->images);
@@ -127,14 +121,6 @@ class PaginationHandler extends Handlers {
     protected function transformImages($images)
     {
         return $images ? collect($images)->map(fn($image) => asset('storage/' . $image)) : null;
-    }
-
-    protected function generateCacheKey()
-    {
-        return 'projects_1' . md5(json_encode([
-            request()->all(),
-            auth('api')->id()
-        ]));
     }
 
     public function getAllowedSorts(): array
