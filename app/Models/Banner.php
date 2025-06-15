@@ -63,4 +63,9 @@ class Banner extends Model implements HasMedia
     {
         return $this->morphTo();
     }
+
+    public function getBannerableTypeNameAttribute()
+    {
+        return class_basename($this->bannerable_type);
+    }
 }
