@@ -94,7 +94,9 @@ class PaginationHandler extends Handlers {
             $item->is_favorite = $this->checkIfFavorite($item);
             $item->images = $this->transformImages($item->images);
             $item->property_type = $item->propertyType?->name;
-
+            if ($item->developer && $item->developer->logo) {
+                $item->developer->logo = asset('storage/' . $item->developer->logo);
+            }
             return $item;
         });
     }

@@ -92,6 +92,10 @@ class DetailHandler extends Handlers
             $query->qr_code = asset('storage/' . $query->qr_code);  // Adjust path as needed
         }
 
+        if ($query->developer && $query->developer->logo) {
+            $query->developer->logo = asset('storage/' . $query->developer->logo);
+        }
+
         // Calculate available units and total units
         $totalUnits = $query->units()->count();
         $availableUnits = $query->units()->where('status', 1)->where('case', 0)->count();
