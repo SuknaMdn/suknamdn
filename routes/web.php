@@ -4,8 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Livewire\Developer\Auth\Login;
 use App\Livewire\Frontend\ShowProject;
-use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\Api\PaymentController;
+use App\Livewire\Frontend\Auth\DeleteAccountForm;
 use App\Livewire\Frontend\HomePage;
 use App\Livewire\Frontend\Privacy;
 
@@ -30,8 +30,9 @@ Route::middleware('throttle:60,1')->group(function () {
 
     Route::get('/', HomePage::class)->name('home');
     Route::get('/privacy', Privacy::class)->name('privacy');
-
     Route::get('/projects/{slug}', ShowProject::class)->name('projects.show');
+
+    Route::get('/account/deletion', DeleteAccountForm::class)->name('account.deletion');
 
     Route::get('/cache/all', function () {
         try {
