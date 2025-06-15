@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Nafath extends Model
 {
@@ -32,5 +33,15 @@ class Nafath extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function authentications(): HasMany
+    {
+        return $this->hasMany(NafathAuthentication::class, 'nafath_request_id', 'request_id');
+    }
+
+    public function nationalAddresses(): HasMany
+    {
+        return $this->hasMany(NafathNationalAddress::class, 'nafath_request_id', 'request_id');
     }
 }

@@ -103,6 +103,7 @@ class BannerResource extends Resource
                         Forms\Components\Tabs\Tab::make('Additional Settings')
                             ->icon('heroicon-o-cog')
                             ->schema([
+                                
                                 Forms\Components\Section::make('Settings')
                                     ->description('Additional settings for the banner')
                                     ->schema([
@@ -127,6 +128,28 @@ class BannerResource extends Resource
                                                 '_top' => 'Full Body of the Window'
                                             ])
                                             ->native(false),
+                                        Forms\Components\Select::make('bannerable_type')
+                                        ->label('Related Type')
+                                        ->options([
+                                            \App\Models\Project::class => 'Project',
+                                            \App\Models\Developer::class => 'Developer',
+                                            \App\Models\Unit::class => 'Units',
+                                        ])
+                                        ->reactive() // مهم لجعل الحقل يسبب تحديث للحقول الأخرى
+                                        ->required(),
+
+                                    Forms\Components\Select::make('bannerable_id')
+                                        ->label('Related Record')
+                                        ->options(fn (callable $get) => match ($get('bannerable_type')) {
+                                            \App\Models\Project::class => \App\Models\Project::pluck('title', 'id')->toArray(),
+                                            \App\Models\Developer::class => \App\Models\Developer::pluck('name', 'id')->toArray(),
+                                            \App\Models\Unit::class => \App\Models\Unit::pluck('title', 'id')->toArray(),
+                                            default => [],
+                                        })
+                                        ->required()
+                                        ->searchable()
+                                        ->disabled(fn (callable $get) => !$get('bannerable_type'))
+                                        ->reactive(),
                                     ])
                                     ->compact(),
                             ]),

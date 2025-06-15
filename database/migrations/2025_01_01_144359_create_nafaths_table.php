@@ -22,7 +22,7 @@ return new class extends Migration
             $table->date('date_of_birth')->nullable();
             $table->enum('gender', ['MALE', 'FEMALE'])->nullable();
             $table->string('nationality')->nullable();
-            $table->enum('status', ['PENDING', 'COMPLETED', 'REJECTED', 'EXPIRED'])->default('PENDING');
+            $table->enum('status', ['PENDING', 'COMPLETED', 'REJECTED', 'EXPIRED'])->default('PENDING'); // PENDING, COMPLETED, REJECTED, EXPIRED
             $table->json('response_data')->nullable();
             $table->timestamp('verified_at')->nullable();
             $table->timestamp('expires_at')->nullable();

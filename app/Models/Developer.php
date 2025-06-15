@@ -39,11 +39,6 @@ class Developer extends Model
         'is_active' => 'boolean',
     ];
 
-    public function getLogoAttribute($value)
-    {
-        return asset('storage/' . $value);
-    }
-
     public function projects()
     {
         return $this->hasMany(Project::class);

@@ -18,7 +18,7 @@ class PaginationHandler extends Handlers {
         $model = static::getModel();
 
         $query = QueryBuilder::for($query)
-        ->select('id', 'title', 'description', 'is_visible', 'sort','click_url_target', 'click_url')
+        ->select('id', 'title', 'description', 'is_visible', 'sort','click_url_target', 'click_url','bannerable_type', 'bannerable_id')
         ->with('media')
         // ->with(['media' => function ($query) {
         //     $query->select('id', 'disk', 'model_type', 'model_id', 'conversions_disk', 'generated_conversions', 'file_name', 'collection_name');

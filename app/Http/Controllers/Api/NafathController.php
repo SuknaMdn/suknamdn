@@ -13,6 +13,8 @@ use GuzzleHttp\Client;
 use Firebase\JWT\JWT;
 use App\Models\Nafath;
 use Firebase\JWT\Key;
+use Illuminate\Support\Facades\DB;
+use Firebase\JWT\JWK;
 
 class NafathController extends Controller
 {
@@ -121,101 +123,133 @@ class NafathController extends Controller
      */
     public function handleCallback(Request $request)
     {
-        // Log the incoming request for debugging
-        Log::info('Nafath callback received', $request->all());
-
-        // Extract data from the request
-        $token = $request->input('token');
-        $transId = $request->input('transId');
-        $requestId = $request->input('requestId');
-
-        // Verify the token
-        $userData = $this->verifyToken($token);
-
-        if (!$userData) {
-            Log::error('Invalid JWT token received');
-            // update the request status
-            $this->updateRequestStatus($requestId, 'REJECTED');
-            return response()->json(['status' => 'error', 'message' => 'Invalid token'], 400);
-        }
-
-        // Check the status from the JWT
-        if ($userData['status'] === 'COMPLETED') {
-            // User accepted the request, save the user data
-            $this->saveUserData($userData, $transId, $requestId);
-
-            // Return a success response
-            return response()->json(['status' => 'success'], 200);
-        } else if ($userData['status'] === 'REJECTED') {
-            // User rejected the request
-            Log::info('User rejected the authentication request', ['transId' => $transId]);
-
-            // Update your database to reflect the rejection
-            $this->updateRequestStatus($requestId, 'REJECTED');
-
-            return response()->json(['status' => 'success'], 200);
-        }
-
-        // For other statuses, just acknowledge
-        return response()->json(['status' => 'success'], 200);
-    }
-
-
-
-    /**
-     * Verify the JWT token from Nafath
-     *
-     * @param string $token
-     * @return array|false Decoded token payload or false on failure
-     */
-    protected function verifyToken($token)
-    {
         try {
-            // Fetch the JWK from Nafath
-            $jwk = $this->fetchJwk();
+            // Log the incoming request for debugging
+            Log::info('Nafath callback received', $request->all());
 
-            if (!$jwk) {
-                Log::error('Failed to fetch JWK');
-                return false;
-            }
+            // Extract data from the request
+            $token = $request->input('token');
+            $transId = $request->input('transId');
+            $requestId = $request->input('requestId');
 
-            // Convert JWK to PEM
-            $publicKey = $this->jwkToPem($jwk);
-
-            if (!$publicKey) {
-                Log::error('Failed to convert JWK to PEM');
-                return false;
-            }
-
-            // Parse the token to get the header
-            $tokenParts = explode('.', $token);
-            if (count($tokenParts) !== 3) {
-                Log::error('Invalid JWT format');
-                return false;
+            if (!$token || !$transId || !$requestId) {
+                Log::error('Missing required fields in callback', $request->all());
+                return response()->json(['status' => 'error', 'message' => 'Missing required fields'], 400);
             }
 
             // Verify the token
-            $payload = JWT::decode($token, new Key($publicKey, 'RS256'));
+            // $userData = $this->verifyToken($token);
 
-            // Convert the payload to an array
-            return (array) $payload;
+            // Verify and decode the JWT token
+            $userData = $this->verifyAndDecodeToken($token);
+
+            if (!$userData) {
+                Log::error('Invalid JWT token received');
+                // update the request status
+                $this->updateRequestStatus($requestId, 'REJECTED');
+                return response()->json(['status' => 'error', 'message' => 'Invalid token'], 400);
+            }
+
+            // Process based on status
+            switch ($userData['status']) {
+                case 'COMPLETED':
+                    $this->handleCompletedRequest($userData, $transId, $requestId);
+                    break;
+                
+                case 'REJECTED':
+                    $this->handleRejectedRequest($transId, $requestId);
+                    break;
+                
+                case 'EXPIRED':
+                    $this->handleExpiredRequest($transId, $requestId);
+                    break;
+                
+                default:
+                    Log::info('Callback received with status: ' . $userData['status'], ['transId' => $transId]);
+                    break;
+            }
+
+            // For other statuses, just acknowledge
+            return response()->json(['status' => 'success'], 200);
+        } catch (\Exception $e) {
+            Log::error('Error processing Nafath callback', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'request' => $request->all()
+            ]);
+
+            // Still return success to avoid retries from Nafath
+            return response()->json(['status' => 'success'], 200);
+        }
+    }
+
+
+    /**
+     * Verify and decode JWT token
+     *
+     * @param string $token
+     * @return array|null
+     */
+    private function verifyAndDecodeToken($token)
+    {
+        try {
+            // Get JWK from Nafath
+            $jwkData = $this->getJWK();
+            if (!$jwkData) {
+                Log::error('Failed to retrieve JWK');
+                return null;
+            }
+
+            // Decode JWT header to get kid
+            $headerData = json_decode(base64_decode(explode('.', $token)[0]), true);
+            $kid = $headerData['kid'] ?? null;
+
+            if (!$kid) {
+                Log::error('JWT token missing kid in header');
+                return null;
+            }
+
+            // Find the matching key
+            $matchingKey = null;
+            foreach ($jwkData['keys'] as $key) {
+                if ($key['kid'] === $kid) {
+                    $matchingKey = $key;
+                    break;
+                }
+            }
+
+            if (!$matchingKey) {
+                Log::error('No matching JWK found for kid: ' . $kid);
+                return null;
+            }
+
+            // Convert JWK to PEM format
+            $publicKey = JWK::parseKey($matchingKey);
+
+            // Decode and verify JWT
+            $decoded = JWT::decode($token, new Key($publicKey, 'RS256'));
+
+            return (array) $decoded;
 
         } catch (\Exception $e) {
-            Log::error('JWT verification failed: ' . $e->getMessage());
-            return false;
+            Log::error('JWT verification failed', [
+                'error' => $e->getMessage(),
+                'token' => substr($token, 0, 50) . '...'
+            ]);
+            return null;
         }
     }
 
     /**
-     * Fetch JWK from Nafath API
+     * Get JWK from Nafath API
      *
-     * @return array|false The first JWK or false on failure
+     * @return array|null
      */
-    protected function fetchJwk()
+    private function getJWK()
     {
         try {
             $client = new Client();
-            $response = $client->get(config('services.nafath.base_url') . '/api/v1/mfa/jwk', [
+            $response = $client->get(config('services.nafath.base_url') . 'api/v1/mfa/jwk', [
                 'headers' => [
                     'APP-ID' => config('services.nafath.api_id'),
                     'APP-KEY' => config('services.nafath.api_key'),
@@ -223,92 +257,279 @@ class NafathController extends Controller
                 ]
             ]);
 
-            $data = json_decode($response->getBody(), true);
-
-            if (isset($data['keys']) && !empty($data['keys'])) {
-                return $data['keys'][0]; // Return the first key
+            if ($response->getStatusCode() === 200) {
+                return json_decode($response->getBody(), true);
             }
 
-            return false;
+            return null;
         } catch (\Exception $e) {
-            Log::error('Failed to fetch JWK: ' . $e->getMessage());
-            return false;
+            Log::error('Failed to get JWK', ['error' => $e->getMessage()]);
+            return null;
         }
     }
 
-    /**
-     * Save user data to database
+        /**
+     * Handle completed authentication request
      *
-     * @param array $userData Decoded JWT data
-     * @param string $transId Transaction ID
-     * @param string $requestId Request ID
+     * @param array $userData
+     * @param string $transId
+     * @param string $requestId
      */
-    protected function saveUserData($userData, $transId, $requestId)
+    private function handleCompletedRequest($userData, $transId, $requestId)
     {
-        // Find if we have a pending request with this ID
-        $pendingRequest = Nafath::where('request_id', $requestId)
-            ->where('trans_id', $transId)
-            ->first();
+        Log::info('User completed authentication', ['transId' => $transId]);
 
-        if (!$pendingRequest) {
-            Log::warning('No pending request found for requestId: ' . $requestId);
-            // You might want to create one here or handle this case
+        // Save user data
+        $this->saveUserData($userData, $transId, $requestId);
 
-        }
+        // Update request status
+        $this->updateRequestStatus($requestId, 'COMPLETED', 'Authentication successful');
+    }
 
-        // Create or update the user record
-        // Note: The exact fields will depend on what's in the JWT and your database structure
-        $user = User::updateOrCreate(
-            ['national_id' => $userData['nin'] ?? null],
-            [
-                'first_name' => $userData['firstName'] ?? null,
-                'lastname'    => $userData['lastName'],
-                'gender' => $userData['gender'] ?? null,
-                'nationality' => $userData['nationality'] ?? null,
-                'birth_date'  => $userData['birthgDate'],
-                'birth_place' => $userData['placeOfBirth'],
-                'social_status' => $userData['socialStatus'],
-                'national_address' => $userData['nationalAddress'],
-                'iqama_number' => $userInfo['iqamaNumber'] ?? $userData['nin'],
-                'city'        => $userData['city'],
-                'region_id'   => $userData['regionId'],
-                'district_id' => $userData['districID'],
-                'street_name' => $userData['streetName'],
-
-            ]
-        );
-
-        // Update the request status
-        $this->updateRequestStatus($requestId, 'COMPLETED', $user->id);
-
-        // Log the successful authentication
-        Log::info('User authenticated successfully', [
-            'user_id' => $user->id,
-            'national_id' => $userData['nin'] ?? null,
-            'request_id' => $requestId
-        ]);
-
-        return $user;
+        /**
+     * Handle rejected authentication request
+     *
+     * @param string $transId
+     * @param string $requestId
+     */
+    private function handleRejectedRequest($transId, $requestId)
+    {
+        Log::info('User rejected authentication', ['transId' => $transId]);
+        $this->updateRequestStatus($requestId, 'REJECTED', 'User rejected authentication');
     }
 
     /**
-     * Update the request status in the database
+     * Handle expired authentication request
+     *
+     * @param string $transId
+     * @param string $requestId
+     */
+    private function handleExpiredRequest($transId, $requestId)
+    {
+        Log::info('Authentication request expired', ['transId' => $transId]);
+        $this->updateRequestStatus($requestId, 'EXPIRED', 'Authentication request expired');
+    }
+
+    /**
+     * Save user data from Nafath response
+     *
+     * @param array $userData
+     * @param string $transId
+     * @param string $requestId
+     */
+    private function saveUserData($userData, $transId, $requestId)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Determine user type based on available data
+            $userType = $this->determineUserType($userData);
+
+            // my database structure expects the following fields:
+            // user_id transaction_id national_id id_type full_name date_of_birth gender nationality status response_data request_id random_number verified_at expires_at
+
+            // Prepare user data for saving
+            $userDataToSave = [
+                'nafath_request_id' => $requestId,
+                'nafath_trans_id' => $transId,
+                'user_type' => $userType,
+                'authentication_status' => 'COMPLETED',
+                'authenticated_at' => now(),
+                'raw_data' => json_encode($userData),
+                'created_at' => now(),
+                'updated_at' => now()
+            ];
+
+            // Add user-specific data based on type
+            switch ($userType) {
+                case 'national_id':
+                    $userDataToSave = array_merge($userDataToSave, [
+                        'national_id' => $userData['nin'] ?? null,
+                        'first_name' => $userData['firstName'] ?? null,
+                        'father_name' => $userData['fatherName'] ?? null,
+                        'grandfather_name' => $userData['grandFatherName'] ?? null,
+                        'family_name' => $userData['familyName'] ?? null,
+                        'english_first_name' => $userData['englishFirstName'] ?? null,
+                        'english_second_name' => $userData['englishSecondName'] ?? null,
+                        'english_third_name' => $userData['englishThirdName'] ?? null,
+                        'english_last_name' => $userData['englishLastName'] ?? null,
+                        'gender' => $userData['gender'] ?? null,
+                        'nationality' => $userData['nationality'] ?? null,
+                        'nationality_code' => $userData['nationalityCode'] ?? null,
+                        'date_of_birth_g' => $userData['dateOfBirthG'] ?? null,
+                        'date_of_birth_h' => $userData['dateOfBirthH'] ?? null,
+                        'id_issue_date_g' => $userData['idIssueDateG'] ?? null,
+                        'id_issue_date_h' => $userData['idIssueDate'] ?? null,
+                        'id_expiry_date_g' => $userData['idExpiryDateG'] ?? null,
+                        'id_expiry_date_h' => $userData['idExpiryDate'] ?? null,
+                        'id_version_number' => $userData['idVersionNumber'] ?? null,
+                        'id_issue_place' => $userData['idIssuePlace'] ?? null,
+                        'social_status_code' => $userData['socialStatusCode'] ?? null,
+                        'social_status_desc' => $userData['socialStatusDesc'] ?? null,
+                        'occupation_code' => $userData['occupationCode'] ?? null,
+                        'place_of_birth' => $userData['placeOfBirth'] ?? null,
+                        'passport_number' => $userData['passportNumber'] ?? null,
+                        'is_minor' => $userData['isMinor'] ?? false,
+                    ]);
+                    break;
+
+                case 'iqama':
+                    $userDataToSave = array_merge($userDataToSave, [
+                        'iqama_number' => $userData['iqamaNumber'] ?? null,
+                        'first_name' => $userData['firstName'] ?? null,
+                        'second_name' => $userData['secondName'] ?? null,
+                        'third_name' => $userData['thirdName'] ?? null,
+                        'last_name' => $userData['lastName'] ?? null,
+                        'english_first_name' => $userData['englishFirstName'] ?? null,
+                        'english_second_name' => $userData['englishSecondName'] ?? null,
+                        'english_third_name' => $userData['englishThirdName'] ?? null,
+                        'english_last_name' => $userData['englishLastName'] ?? null,
+                        'gender' => $userData['gender'] ?? null,
+                        'nationality_code' => $userData['nationalityCode'] ?? null,
+                        'nationality_desc' => $userData['nationalityDesc'] ?? null,
+                        'date_of_birth_g' => $userData['dateOfBirthG'] ?? null,
+                        'date_of_birth_h' => $userData['dateOfBirthH'] ?? null,
+                        'iqama_version_number' => $userData['iqamaVersionNumber'] ?? null,
+                        'iqama_expiry_date_g' => $userData['iqamaExpiryDateG'] ?? null,
+                        'iqama_expiry_date_h' => $userData['iqamaExpiryDateH'] ?? null,
+                        'iqama_issue_date_g' => $userData['iqamaIssueDateG'] ?? null,
+                        'iqama_issue_date_h' => $userData['iqamaIssueDateH'] ?? null,
+                        'iqama_issue_place_code' => $userData['iqamaIssuePlaceCode'] ?? null,
+                        'iqama_issue_place_desc' => $userData['iqamaIssuePlaceDesc'] ?? null,
+                        'social_status_code' => $userData['socialStatusCode'] ?? null,
+                        'occupation_code' => $userData['occupationCode'] ?? null,
+                        'sponsor_name' => $userData['sponsorName'] ?? null,
+                        'legal_status' => $userData['legalStatus'] ?? null,
+                    ]);
+                    break;
+
+                case 'visa':
+                    $userDataToSave = array_merge($userDataToSave, [
+                        'first_name' => $userData['firstName'] ?? null,
+                        'second_name' => $userData['secondName'] ?? null,
+                        'third_name' => $userData['thirdName'] ?? null,
+                        'last_name' => $userData['lastName'] ?? null,
+                        'gender' => $userData['gender'] ?? null,
+                        'nationality_code' => $userData['nationalityCode'] ?? null,
+                        'nationality_desc' => $userData['nationalityDesc'] ?? null,
+                        'date_of_birth_g' => $userData['birthgDate'] ?? null,
+                        'date_of_birth_h' => $userData['birthhDate'] ?? null,
+                    ]);
+                    break;
+            }
+
+            // Save to database
+            DB::table('nafath_authentications')->insert($userDataToSave);
+
+            // Save national address if available
+            if (isset($userData['nationalAddress']) && is_array($userData['nationalAddress'])) {
+                $this->saveNationalAddress($userData['nationalAddress'], $requestId);
+            }
+
+            DB::commit();
+
+            Log::info('User data saved successfully', [
+                'requestId' => $requestId,
+                'userType' => $userType
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error('Failed to save user data', [
+                'error' => $e->getMessage(),
+                'requestId' => $requestId,
+                'userData' => $userData
+            ]);
+        }
+    }
+
+    /**
+     * Determine user type based on available data
+     *
+     * @param array $userData
+     * @return string
+     */
+    private function determineUserType($userData)
+    {
+        if (isset($userData['nin'])) {
+            return 'national_id';
+        } elseif (isset($userData['iqamaNumber'])) {
+            return 'iqama';
+        } else {
+            return 'visa';
+        }
+    }
+
+    /**
+     * Save national address data
+     *
+     * @param array $addresses
+     * @param string $requestId
+     */
+    private function saveNationalAddress($addresses, $requestId)
+    {
+        try {
+            foreach ($addresses as $address) {
+                DB::table('nafath_national_addresses')->insert([
+                    'nafath_request_id' => $requestId,
+                    'street_name' => $address['streetName'] ?? null,
+                    'city' => $address['city'] ?? null,
+                    'additional_number' => $address['additionalNumber'] ?? null,
+                    'district' => $address['district'] ?? null,
+                    'unit_number' => $address['unitNumber'] ?? null,
+                    'building_number' => $address['buildingNumber'] ?? null,
+                    'post_code' => $address['postCode'] ?? null,
+                    'location_coordinates' => $address['locationCoordinates'] ?? null,
+                    'is_primary_address' => $address['isPrimaryAddress'] ?? false,
+                    'city_id' => $address['cityId'] ?? null,
+                    'region_id' => $address['regionId'] ?? null,
+                    'district_id' => $address['districID'] ?? null,
+                    'region_name_l2' => $address['regionNameL2'] ?? null,
+                    'city_l2' => $address['cityL2'] ?? null,
+                    'street_l2' => $address['streetL2'] ?? null,
+                    'district_l2' => $address['districtL2'] ?? null,
+                    'region_name' => $address['regionName'] ?? null,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to save national address', [
+                'error' => $e->getMessage(),
+                'requestId' => $requestId
+            ]);
+        }
+    }
+
+      /**
+     * Update request status in database
      *
      * @param string $requestId
      * @param string $status
-     * @param int|null $userId
+     * @param string $message
      */
-    protected function updateRequestStatus($requestId, $status, $userId = null)
+    private function updateRequestStatus($requestId, $status, $message = null)
     {
-        $request = Nafath::where('request_id', $requestId)->first();
+        try {
+            DB::table('nafaths')
+                ->where('request_id', $requestId)
+                ->update([
+                    'status' => $status,
+                    'updated_at' => now()
+                ]);
 
-        if ($request) {
-            $request->status = $status;
-            if ($userId) {
-                $request->user_id = $userId;
-            }
-            $request->completed_at = now();
-            $request->save();
+            Log::info('Request status updated', [
+                'requestId' => $requestId,
+                'status' => $status,
+                'message' => $message
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Failed to update request status', [
+                'error' => $e->getMessage(),
+                'requestId' => $requestId,
+                'status' => $status
+            ]);
         }
     }
 }
