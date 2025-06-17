@@ -22,7 +22,11 @@ class FilterController extends Controller
             $developers = Developer::whereHas('projects')
                 ->where('is_active', 1)
                 ->select('id', 'name', 'is_active', 'logo')
-                ->get();
+                ->get()
+                ->map(function ($developer) {
+                    $developer->logo = $developer->logo ? asset('storage/' . $developer->logo)  : null;
+                    return $developer;
+                });
 
             return response()->json([
                 'cities' => $cities,
