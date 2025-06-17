@@ -6,6 +6,7 @@ use Rupadana\ApiService\Http\Handlers;
 use Spatie\QueryBuilder\QueryBuilder;
 use App\Filament\Resources\ProjectResource;
 use App\Models\Project;
+use Spatie\QueryBuilder\AllowedFilter;
 
 class PaginationHandler extends Handlers {
 
@@ -130,12 +131,28 @@ class PaginationHandler extends Handlers {
         return ['id', 'title', 'is_active', 'is_featured', 'created_at'];
     }
 
+    // public function getAllowedFilters(): array
+    // {
+    //     return [
+    //         'title', 'purpose', 'city_id', 'property_type_id',
+    //         'state_id', 'developer_id', 'price_min', 'price_max',
+    //         'space_min', 'space_max'
+    //     ];
+    // }
+
     public function getAllowedFilters(): array
     {
         return [
-            'title', 'purpose', 'city_id', 'property_type_id',
-            'state_id', 'developer_id', 'price_min', 'price_max',
-            'space_min', 'space_max'
+            'title',
+            'purpose',
+            AllowedFilter::exact('city_id'),
+            AllowedFilter::exact('state_id'),
+            AllowedFilter::exact('developer_id'),
+            AllowedFilter::exact('property_type_id'),
+            'price_min',
+            'price_max',
+            'space_min',
+            'space_max'
         ];
     }
 }
