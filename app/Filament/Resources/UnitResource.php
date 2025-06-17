@@ -45,15 +45,35 @@ class UnitResource extends Resource
                     ->schema([
                         Forms\Components\Grid::make(2)
                             ->schema([
-                                Forms\Components\TextInput::make('title')
-                                    ->required(),
-                                Forms\Components\TextInput::make('slug')
-                                    ->required()
-                                    ->unique(ignoreRecord: true),
-                                Forms\Components\Select::make('project_id')
-                                    ->label('Project')
-                                    ->relationship('project', 'title')
-                                    ->required(),
+                                TextInput::make('title')
+                            ->required()
+                            ->reactive() // Make it reactive to trigger changes
+                            ->afterStateUpdated(function (Set $set, Get $get, $state) {
+                                $projectTitle = optional(\App\Models\Project::find($get('project_id')))->title;
+                                if ($projectTitle && $state) {
+                                    $slug = Str::slug($projectTitle . ' ' . $state);
+                                    $set('slug', $slug);
+                                }
+                            }),
+
+                        Select::make('project_id')
+                            ->label('Project')
+                            ->relationship('project', 'title')
+                            ->required()
+                            ->reactive()
+                            ->afterStateUpdated(function (Set $set, Get $get, $state) {
+                                $unitTitle = $get('title');
+                                $projectTitle = optional(\App\Models\Project::find($state))->title;
+                                if ($projectTitle && $unitTitle) {
+                                    $slug = Str::slug($projectTitle . ' ' . $unitTitle);
+                                    $set('slug', $slug);
+                                }
+                            }),
+
+                        TextInput::make('slug')
+                            ->required()
+                            ->unique(ignoreRecord: true),
+
                                 Forms\Components\Textarea::make('description')
                                     ->columnSpan('full'),
                             ])
