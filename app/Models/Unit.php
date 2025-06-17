@@ -30,18 +30,18 @@ class Unit extends Model
 
     protected $guarded = [];
 
-    protected static function boot()
-    {
-        parent::boot();
+    // protected static function boot()
+    // {
+    //     parent::boot();
 
-        static::creating(function ($unit) {
-            $unit->slug = Str::slug($unit->title);
-        });
+    //     static::creating(function ($unit) {
+    //         $unit->slug = Str::slug($unit->title);
+    //     });
 
-        static::updating(function ($unit) {
-            $unit->slug = Str::slug($unit->title);
-        });
-    }
+    //     static::updating(function ($unit) {
+    //         $unit->slug = Str::slug($unit->title);
+    //     });
+    // }
 
     public function project()
     {
