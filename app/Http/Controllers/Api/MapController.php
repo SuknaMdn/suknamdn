@@ -65,7 +65,9 @@ class MapController extends Controller
             $project->latlong = "({$project->latitude},{$project->longitude})";
 
             // developer logo
-            $project->developer_logo = $project->developer->logo ?? null;
+            $project->developer_logo = $project->developer && $project->developer->logo 
+                ? asset('storage/' . $project->developer->logo) 
+                : null;
             $project->makeHidden('units','latitude', 'longitude','developer'); // Hide the units field
 
         });
