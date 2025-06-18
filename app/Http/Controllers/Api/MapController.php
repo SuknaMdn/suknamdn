@@ -37,10 +37,10 @@ class MapController extends Controller
         $projects->each(function ($project) {
 
             // Add starting price to the project
-            // $startingPrice = $project->units()->min('total_amount');
+            // $startingPrice = $project->units()->min('unit_price');
             // $project->starting_from = $startingPrice ? number_format($startingPrice, 2, '.', ',') : null;
 
-            $startingPrice = $project->units()->min('total_amount');
+            $startingPrice = $project->units()->min('unit_price');
             $project->starting_from = $startingPrice ? formatToArabic($startingPrice) : null;
 
 
