@@ -187,10 +187,10 @@
                             
                             {{-- App Store Buttons with enhanced styling --}}
                             <div class="flex justify-center gap-3 mb-4">
-                                <a href="#" target="_blank" rel="noopener" class="transform hover:scale-105 transition-transform duration-200">
+                                <a href="https://apps.apple.com/eg/app/sukna/id6745800622" target="_blank" rel="noopener" class="transform hover:scale-105 transition-transform duration-200">
                                     <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store" class="h-12 rounded-lg shadow-lg">
                                 </a>
-                                <a href="#" target="_blank" rel="noopener" class="transform hover:scale-105 transition-transform duration-200">
+                                <a href="https://play.google.com/store/apps/details?id=com.suknamdn.sukna" target="_blank" rel="noopener" class="transform hover:scale-105 transition-transform duration-200">
                                     <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play" class="h-12 rounded-lg shadow-lg">
                                 </a>
                             </div>
@@ -238,10 +238,10 @@
             <h2 class="text-2xl font-bold text-gray-800">استكشف المزيد عبر تطبيقنا</h2>
             <p class="text-gray-600 mt-2 mb-6">احصل على التجربة الكاملة. حمّل تطبيقنا للعروض الحصرية والمميزات الفريدة.</p>
             <div class="flex justify-center gap-4">
-                <a href="#" target="_blank" rel="noopener">
+                <a href="https://apps.apple.com/eg/app/sukna/id6745800622" target="_blank" rel="noopener">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store" class="h-12">
                 </a>
-                <a href="#" target="_blank" rel="noopener">
+                <a href="https://play.google.com/store/apps/details?id=com.suknamdn.sukna" target="_blank" rel="noopener">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play" class="h-12">
                 </a>
             </div>
