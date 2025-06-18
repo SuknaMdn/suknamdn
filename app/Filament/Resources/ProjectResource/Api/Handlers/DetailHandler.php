@@ -105,7 +105,7 @@ class DetailHandler extends Handlers
         $query->total_units = $totalUnits;
 
         // Add starting price to the project
-        $startingPrice = $query->units()->min('total_amount');
+        $startingPrice = $query->units()->min('unit_price');
         $query->starting_from = $startingPrice ? number_format($startingPrice, 2, '.', ',') : null;
 
         if (auth('api')->check()) {

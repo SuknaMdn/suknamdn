@@ -60,8 +60,8 @@ class PaginationHandler extends Handlers {
     protected function applyUnitFilters($query)
     {
         $filters = [
-            'price_min' => ['total_amount', '>='],
-            'price_max' => ['total_amount', '<='],
+            'price_min' => ['unit_price', '>='],
+            'price_max' => ['unit_price', '<='],
             'space_min' => ['total_area', '>='],
             'space_max' => ['total_area', '<='],
         ];
@@ -104,7 +104,7 @@ class PaginationHandler extends Handlers {
 
     protected function getFormattedStartingPrice($item)
     {
-        $startingPrice = $item->units()->min('total_amount');
+        $startingPrice = $item->units()->min('unit_price');
         return $startingPrice ? number_format($startingPrice, 2, '.', ',') : null;
     }
 
