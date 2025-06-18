@@ -22,8 +22,8 @@
     </style>
 
     <div class="min-h-screen flex flex-col items-center justify-center p-4">
+        <img src="{{ asset('images/logo.png') }}" width="100px" alt="">
         <main class="w-full max-w-lg bg-gray-50 rounded-3xl shadow-2xl overflow-hidden my-8 transform transition-all duration-500">
-            
             {{-- 1. Image Gallery Section --}}
             <div class="relative" x-data="{ 
                 images: @js($project->images ?? []),
