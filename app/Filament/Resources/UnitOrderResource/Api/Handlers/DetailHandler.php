@@ -53,7 +53,7 @@ class DetailHandler extends Handlers
                         'payment_id' => $order->payment_id,
                         'status' => $order->status,
                         'amount' => $order->payment->amount,
-                        'unit_price' => formatToArabic($order->unit->total_amount),
+                        'unit_price' => formatToArabic($order->unit->unit_price),
                     ],
                     'tax' => [
                         'exemption_status' => $order->tax_exemption_status
