@@ -7,6 +7,7 @@ use App\Filament\Resources\UnitResource;
 use Rupadana\ApiService\Http\Handlers;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Http\Request;
+use App\Models\Unit;
 
 class DetailHandler extends Handlers
 {
@@ -25,19 +26,50 @@ class DetailHandler extends Handlers
             $query->where(static::getKeyName(), $id)
         )
             ->with([
-                'images:id,unit_id,image_path',
+                'images:id,unit_id,image_path,type',
                 'additionalFeatures',
                 'afterSalesServices',
-                'project:id,AdLicense,developer_id',
+                // --== START: تعديلات مهمة ==--
+                // تحميل المشروع مع الحقول الجديدة وخطة الدفعات (القالب)
+                'project:id,title,AdLicense,developer_id,enables_payment_plan,architect_office_name,construction_supervisor_office,project_ownership,ad_license_qr,city_id,state_id,address',
+                'project.city:id,name',
+                'project.state:id,name', 
+                'project.paymentMilestones:id,project_id,name,percentage',
                 'project.operationalServices',
                 'project.developer'
+                // --== END: تعديلات مهمة ==--
             ])
             // ->with(['images:id,unit_id,image_path', 'additionalFeatures','project.operationalServices', 'afterSalesServices', 'project:id,AdLicense,developer_id'])
             ->first();
 
         if (!$query) return static::sendNotFoundResponse();
 
-        $transformedquery = tap($query, function ($item) {
+        // --== START: حساب خطة الدفع المقترحة ديناميكيًا ==--
+        $proposedPaymentPlan = [];
+
+        if ($query->project && $query->project->enables_payment_plan && $query->project->paymentMilestones->isNotEmpty()) {
+            $totalAmount = $query->total_amount;
+            
+            foreach ($query->project->paymentMilestones as $index => $milestone) {
+                $calculatedAmount = ($totalAmount * $milestone->percentage) / 100;
+
+                $proposedPaymentPlan[] = [
+                    'index' => $index + 1,
+                    'name' => $milestone->name,
+                    'percentage' => $milestone->percentage,
+                    'amount' => round($calculatedAmount, 2)
+                ];
+            }
+        }
+        // --== END: حساب خطة الدفع المقترحة ==--
+
+        $transformedquery = tap($query, function ($item) use ($proposedPaymentPlan) {
+
+            $item->unit_price = rtrim(rtrim(number_format($item->unit_price, 2, '.', ''), '0'), '.');
+            $item->property_tax = rtrim(rtrim(number_format($item->property_tax, 2, '.', ''), '0'), '.');
+            $item->total_amount = rtrim(rtrim(number_format($item->total_amount, 2, '.', ''), '0'), '.');
+            // إضافة خطة الدفع المقترحة إلى الرد النهائي
+            $item->proposed_payment_plan = $proposedPaymentPlan;
 
             if ($item->qr_code) {
                 $item->qr_code = asset('storage/' . $item->qr_code);
@@ -70,7 +102,8 @@ class DetailHandler extends Handlers
 
             if ($item->project) {
                 $item->license = $item->project->AdLicense;
-
+                $item->project_name = $item->project->title;
+                $item->enables_payment_plan = $item->project->enables_payment_plan;
                 if ($item->project->operationalServices) {
                     $item->operationalServices = $item->project->operationalServices->map(function ($service) {
                         if ($service->icon && !filter_var($service->icon, FILTER_VALIDATE_URL)) {
@@ -89,6 +122,17 @@ class DetailHandler extends Handlers
                 }
 
                 $item->developer_phone = $item->developer->phone;
+
+                $item->architect_office_name = $item->project->architect_office_name ?? null;
+                $item->construction_supervisor_office = $item->project->construction_supervisor_office ?? null;
+                $item->address = [
+                    'city' => $item->project->city->name ?? null,
+                    'state' => $item->project->state->name ?? null,
+                    'street' => $item->project->address ?? null,
+                ];
+                $item->project_ownership = $item->project->project_ownership;
+                $item->ad_license_qr = asset('storage/' . $item->project->ad_license_qr) ?? null;
+                $item->threedurl = $item->project->threedurl ? $item->project->threedurl : null;
             }
 
             $item->makeHidden('project');

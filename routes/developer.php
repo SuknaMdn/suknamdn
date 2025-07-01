@@ -17,8 +17,11 @@ use App\Livewire\Developer\Dashboard\Orders\AllOrders;
 use App\Livewire\Developer\Dashboard\Orders\Order;
 use App\Livewire\Developer\Dashboard\Projects\Fullmap;
 use App\Livewire\Developer\Dashboard\Customers\AllCustomers;
+use App\Livewire\Developer\Dashboard\Projects\EditProject;
+use App\Livewire\Developer\Dashboard\Projects\ProjectForm;
 
 Route::middleware(['auth', 'check.role'])->prefix('developer')->name('developer.')->group(function () {
+    // dashboard
     Route::get('/dashboard', Index::class)->name('dashboard');
     Route::get('/profile', EditProfile::class)->name('profile');
     Route::get('/edit-profile', EditProfile::class)->name('edit-profile');
@@ -32,6 +35,8 @@ Route::middleware(['auth', 'check.role'])->prefix('developer')->name('developer.
     Route::get('/project/{slug}', ProjectPage::class)->name('projects.show');
     Route::get('/projects/fullmap', Fullmap::class)->name('projects.fullmap');
 
+    // edit project
+    Route::get('projects/{project}/edit', EditProject::class)->name('projects.edit');
     // projects/create
     Route::get('/projects/create', CreateProject::class)->name('projects.create');
 
@@ -45,7 +50,7 @@ Route::middleware(['auth', 'check.role'])->prefix('developer')->name('developer.
 
     // all orders
     Route::get('/orders', AllOrders::class)->name('orders');
-    Route::get('/orders/{id}', Order::class)->name('orders.show');
+    Route::get('/orders/{order}', Order::class)->name('orders.show');
 
     // group of customers
     Route::group(['prefix' => 'customers'], function () {

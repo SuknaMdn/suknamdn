@@ -1,9 +1,22 @@
 <div>
     <div class="row g-5 g-xl-10 mb-5 mb-xl-10">
+        <!-- Flash Messages -->
+        @if (session('success'))
+            <div class="alert alert-success mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <!--begin::Col-->
         <div class="col-xl-4">
             <!--begin::Engage widget 15-->
-            <div class="card h-md-100" dir="ltr">
+            <div class="card" dir="ltr">
                 <!--begin::Body-->
                 <div class="card-body d-flex flex-column flex-center">
                     <!--begin::Heading-->
@@ -14,8 +27,8 @@
                     <!--end::Title-->
                         <!--begin::Illustration-->
                         <div class="py-10 text-center">
-                            <img src="{{ asset('developer/media/auth/coming-soon.png') }}" class="theme-light-show w-250px" alt="" />
-                            <img src="{{ asset('developer/media/auth/coming-soon.png') }}" class="theme-dark-show w-250px" alt="" />
+                            <img src="{{ asset('developer/media/auth/coming-soon.png') }}" class="theme-light-show w-200px" alt="" />
+                            <img src="{{ asset('developer/media/auth/coming-soon.png') }}" class="theme-dark-show w-200px" alt="" />
                         </div>
                         <!--end::Illustration-->
                     </div>

@@ -12,15 +12,23 @@ use App\Http\Controllers\Api\MapController;
 use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\FilterController;
+use App\Http\Controllers\Api\MainpageController;
 use App\Http\Controllers\Api\NafathController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\Payment\UnitPaymentController;
+use App\Http\Controllers\Api\ReservationController;
+use App\Http\Controllers\Api\User\InstallmentController;
+use App\Http\Controllers\Api\User\SupportTicketController;
 
 Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
 
     Route::put('/profile/update', [ProfileController::class, 'updateProfile']);
     Route::put('/password/reset', [PasswordController::class, 'resetPassword']);
 
+    // نقطة النهاية للشاشة الرئيسية
+    Route::get('/mainpage', MainpageController::class);
+    // نقطة النهاية لتفاصيل الحجز الواحد
+    Route::get('/reservations/{unitOrder}', ReservationController::class);
     // remove acount
     Route::delete('/account/destroy', [ProfileController::class, 'destroy']);
 
@@ -61,6 +69,20 @@ Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
     // unit value for unit reservation
     Route::get('/unit-value-for-unit-reservation', [AboutSuknaController::class, 'getUnitValueForUnitReservation']);
 
+    // installments
+    Route::post('/installments/{installment}/upload-receipt', [InstallmentController::class, 'uploadReceipt']);
+
+    // Support Statistics
+    // Route::get('/support/stats', [SupportTicketController::class, 'index']);
+    // Support Tickets
+    Route::get('/support/tickets', [SupportTicketController::class, 'index']);
+    Route::post('/support/tickets', [SupportTicketController::class, 'store']);
+    Route::get('/support/tickets/{id}', [SupportTicketController::class, 'show']);
+    Route::post('/support/tickets/{id}/close', [SupportTicketController::class, 'close']);
+    
+    // Support Messages
+    Route::get('/support/tickets/{ticketId}/messages', [SupportTicketController::class, 'getMessages']);
+    Route::post('/support/tickets/{ticketId}/messages', [SupportTicketController::class, 'addMessage']);
 
 });
 
@@ -88,6 +110,7 @@ Route::middleware('throttle:60,1')->group(function () {
     Route::get('/content/about', [AboutSuknaController::class, 'about']);
     Route::get('/content/term_and_condition', [AboutSuknaController::class, 'term_and_condition']);
     Route::get('/content/privacy_policy', [AboutSuknaController::class, 'privacy_policy']);
+    Route::get('/content/project_ownership', [AboutSuknaController::class, 'project_ownership']);
 
     // search
     Route::get('/search', [SearchController::class, 'searchProjects']);

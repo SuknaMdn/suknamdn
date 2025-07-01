@@ -22,8 +22,8 @@
     </style>
 
     <div class="min-h-screen flex flex-col items-center justify-center p-4">
+        <img src="{{ asset('images/logo.png') }}" width="100px" alt="">
         <main class="w-full max-w-lg bg-gray-50 rounded-3xl shadow-2xl overflow-hidden my-8 transform transition-all duration-500">
-            
             {{-- 1. Image Gallery Section --}}
             <div class="relative" x-data="{ 
                 images: @js($project->images ?? []),
@@ -51,7 +51,9 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ms-1.5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
                             </svg>
-                            <span>{{ optional($project->city)->name ?? 'غير محدد' }}, {{ optional($project->state)->name ?? 'غير محدد' }}</span>
+                            @if ($project)
+                                <span>{{ optional($project->city)->name ?? 'غير محدد' }}, {{ optional($project->state)->name ?? 'غير محدد' }}</span>
+                            @endif
                         </p>
                     </div>
                 </div>
@@ -68,15 +70,11 @@
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 uppercase font-semibold">النوع</p>
-                        <p class="text-lg font-bold text-gray-800">{{ optional($project->propertyType)->name ?? 'غير محدد' }}</p>
+                        <p class="text-lg font-bold text-gray-800">{{ $project->propertyType?->name ?? 'غير محدد' }}</p>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 uppercase font-semibold">طراز البناء</p>
                         <p class="text-lg font-bold text-gray-800">{{ $project->building_style ?? 'غير محدد' }}</p>
-                    </div>
-                    <div>
-                        <p class="text-xs text-gray-500 uppercase font-semibold">الغرض</p>
-                        <p class="text-lg font-bold text-gray-800 capitalize">{{ $project->purpose === 'sale' ? 'بيع' : 'إيجار' }}</p>
                     </div>
                 </div>
 
@@ -224,7 +222,7 @@
                 {{-- Developer & License Info --}}
                 <div class="border-t text-center mt-8 pt-4">
                     <p class="text-sm text-gray-500">المطور العقاري</p>
-                    <p class="font-bold text-gray-700">{{ optional($project->developer)->name ?? 'غير معروف' }}</p>
+                    <p class="font-bold text-gray-700">{{ $project->developer?->name ?? 'غير معروف' }}</p>
                     @if(!empty($project->AdLicense))
                     <p class="text-xs text-gray-400 mt-2">رقم رخصة الإعلان: {{ $project->AdLicense }}</p>
                     @endif

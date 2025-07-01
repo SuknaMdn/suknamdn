@@ -205,4 +205,18 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
             $query->where('user_id', $developerId);
         })->get();
     }
+
+    public function unitOrders()
+    {
+        return $this->hasMany(UnitOrder::class, 'user_id');
+    }
+
+    public function supportTickets()
+    {
+        return $this->hasMany(SupportTicket::class, 'user_id');
+    }
+    public function supportMessages()
+    {
+        return $this->hasMany(SupportMessage::class, 'user_id');
+    }
 }

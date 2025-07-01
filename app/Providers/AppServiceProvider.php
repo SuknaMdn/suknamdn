@@ -82,5 +82,7 @@ class AppServiceProvider extends ServiceProvider
             // Log the error or handle it gracefully
             Log::error('Error loading mail settings: ' . $e->getMessage());
         }
+
+        \App\Models\UnitOrder::observe(\App\Observers\UnitOrderObserver::class);
     }
 }

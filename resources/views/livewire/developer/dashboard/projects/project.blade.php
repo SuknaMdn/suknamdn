@@ -6,9 +6,9 @@
             <!--begin::Item-->
             @if($project->images)
             @foreach($project->images as $image)
-                <div class="overlay me-10">
+                <div class="overlay me-1">
                     <div class="overlay-wrapper">
-                        <img alt="img" class="rounded w-150px" src="{{ asset('storage/' . $image) }}">
+                        <img alt="img" class="rounded w-100px" src="{{ asset('storage/' . $image) }}">
                     </div>
                 </div>
                 @endforeach
@@ -22,7 +22,7 @@
             <div class="d-flex flex-wrap flex-sm-nowrap mb-6">
                 <!--begin::Image-->
                 <div class="d-flex flex-center flex-shrink-0 bg-light rounded w-100px h-100px w-lg-150px h-lg-150px ms-7 mb-4 p-3">
-                    <img class="w-100" src="{{ asset('storage/' . $project->qr_code) }}" alt="image" />
+                    <img class="w-100 text-center h2 text-muted" src="{{ asset('storage/' . $project->qr_code) }}" alt="QR CODE" />
                 </div>
                 <!--end::Image-->
                 <div class="flex-grow-1">
@@ -32,8 +32,8 @@
                         <!--begin::Details-->
                         <div class="d-flex flex-column">
                             <!--begin::Status-->
-                            <div class="d-flex align-items-center mb-1">
-                                <a href="#" class="text-gray-800 text-hover-primary fs-2 fw-bold me-3">{{ $project->title }}</a>
+                            <div class="mb-2">
+                                <span class="text-gray-800 text-hover-primary fs-2 fw-bold me-3">{{ $project->title }}</span>
                                 <span class="badge badge-light-{{ $project->is_active ? 'success' : 'danger' }} ms-auto">{{ $project->is_active ? 'Active' : 'Not Action' }}</span>
                             </div>
                             <!--end::Status-->
@@ -55,7 +55,7 @@
                                 <!--begin::Menu 3-->
                                 <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-200px py-3" data-kt-menu="true">
                                     <div class="menu-item px-3">
-                                        <a href="#" class="menu-link px-3">تعديل</a>
+                                        <a href="{{ route('developer.projects.edit', $project) }}" class="menu-link px-3">تعديل</a>
                                     </div>
                                     <div class="menu-item px-3 my-1">
                                         @if ($project->is_active)
@@ -78,7 +78,7 @@
                         <!--begin::Stats-->
                         <div class="d-flex flex-wrap">
                             <!--begin::Stat-->
-                            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 ms-6 mb-3">
+                            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 ms-3 mb-3">
                                 <!--begin::Number-->
                                 <div class="d-flex align-items-center">
                                     <div class="fs-4 fw-bold">{{ $project->created_at->format('d M, Y') }}</div>
@@ -90,7 +90,7 @@
                             </div>
                             <!--end::Stat-->
                             <!--begin::Stat-->
-                            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 ms-6 mb-3">
+                            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 ms-3 mb-3">
                                 <!--begin::Number-->
                                 <div class="d-flex align-items-center">
                                     <i class="ki-outline ki-sort fs-3 text-dark ms-2"></i>
@@ -102,7 +102,7 @@
                                 <!--end::Label-->
                             </div>
                             <!--begin::Stat-->
-                            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 ms-6 mb-3">
+                            <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 ms-3 mb-3">
                                 <!--begin::Number-->
                                 <div class="d-flex align-items-center">
                                     <i class="ki-outline ki-user fs-3 text-dark ms-2"></i>
@@ -152,30 +152,19 @@
                     @foreach ($orders as $order)
                     <div class="d-flex flex-stack">
                         <!--begin::Section-->
-                        <div class="d-flex align-items-center ms-5">
-                            <!--begin::Symbol-->
-                            <div class="symbol symbol-40px ms-4">
+                        <div class="d-flex align-items-center">
+                            <div class="symbol symbol-30px ms-2">
                                 <span class="symbol-label">
-                                    <i class="ki-outline ki-flag text-gray-600 fs-1"></i>
+                                    <i class="ki-outline ki-flag text-gray-600 fs-2"></i>
                                 </span>
                             </div>
-                            <!--end::Symbol-->
-                            <!--begin::Content-->
-                            <div class="ms-5">
-                                <!--begin::Title-->
+                            <div class="ms-2">
                                 <a href="#" class="text-gray-800 fw-bold text-hover-primary fs-6">{{ $order->user->username }}</a>
-                                <!--end::Title-->
-                                <!--begin::Desc-->
                                 <span class="text-gray-500 fw-semibold fs-7 d-block text-start ps-0">{{ $order->user->phone }}</span>
-                                <!--end::Desc-->
                             </div>
-                            <div class="ms-5">
+                            <div class="ms-2">
                                 <!--begin::Title-->
                                 <a href="#" class="text-gray-800 fw-bold text-hover-primary fs-6">{{ $order->unit->title }}</a>
-                                <!--end::Title-->
-                                <!--begin::Desc-->
-                                <span class="text-gray-500 fw-semibold fs-7 d-block text-start ps-0">SAR {{ $order->unit->total_amount }}</span>
-                                <!--end::Desc-->
                             </div>
 
                             <!--end::Content-->
@@ -275,20 +264,21 @@
                                                 </span>
                                             </td>
                                             <td class="fs-6 fw-bold text-gray-500">السعر:
-                                                <span class="text-gray-800">SAR {{ $unit->unit_price }}</span>
-                                                <span class="text-gray-800"><span class="text-info">+</span> <span class="badge badge-light-primary">{{ $unit->property_tax }} %</span></span>
-                                                <span class="text-gray-800">= SAR {{ $unit->total_amount }}</span>
+                                                <span class="text-gray-800">{{ $unit->unit_price }} <img src="{{ asset('developer/Saudi_Riyal_Symbol.png') }}" width="10px" alt=""> </span>
                                             </td>
                                             <td class="pe-0 text-end">
-                                                {{-- <button class="btn btn-sm btn-primary">عرض</button> --}}
                                                 <button class="btn btn-sm btn-light"><i class="ki-solid ki-brush p-0"></i> تعديل</button>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="bg-light rounded text-gray-600 fs-8 fw-bold px-3 py-2" colspan="4">
+                                            <td class="bg-light text-gray-600 fs-8 fw-bold px-3 py-2" colspan="1">
+                                                <div class="d-flex flex-column">
+                                                    <span class="text-gray-900"><span class="text-dark fw-bold">نوع الوحدة</span> : {{ $unit->unit_type }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="bg-light text-gray-600 fs-8 fw-bold px-3 py-2" colspan="1">
                                                 <div class="d-flex flex-column">
                                                     <span class="text-gray-900"><span class="text-dark fw-bold">المبني</span> : {{ $unit->building_number }} - {{ $unit->unit_number }} <span class="text-dark fw-bold">الطابق: {{ $unit->floor }}</span></span>
-                                                    <span class="text-gray-900"><span class="text-dark fw-bold">نوع الوحدة</span> : {{ $unit->unit_type }}</span>
                                                 </div>
                                             </td>
                                         </tr>

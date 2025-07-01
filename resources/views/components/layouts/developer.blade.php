@@ -30,8 +30,8 @@
     <link href="{{ asset('developer/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet">
     <link href="{{ asset('developer/css/custom.css') }}" rel="stylesheet">
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet'>
-
-    @vite('resources/css/app.css')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    {{-- @vite('resources/css/app.css') --}}
     @livewireStyles
     @stack('styles')
 </head>
@@ -68,8 +68,9 @@
             @livewire('partials.developer.navbar')
 
             <div class="app-wrapper d-flex" id="kt_app_wrapper">
-                <div class="app-container container d-flex mt-10">
+                <div class="container d-flex mt-10">
                     <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+                        
                         <div class="d-flex flex-column flex-column-fluid">
                             {{ $slot }}
                         </div>
@@ -79,31 +80,18 @@
         </div>
     </div>
 
-    <!-- Core JS -->
-    <script src="{{ asset('developer/plugins/global/plugins.bundle.js') }}"></script>
-    <script src="{{ asset('developer/js/scripts.bundle.js') }}"></script>
-
-    <!-- Vendor JS -->
-    <script src="{{ asset('developer/plugins/custom/fullcalendar/fullcalendar.bundle.js') }}" defer></script>
-    <script src="{{ asset('developer/plugins/custom/datatables/datatables.bundle.js') }}" defer></script>
-
-    <!-- Charts - Load async -->
-    <script src="https://cdn.amcharts.com/lib/5/index.js" defer></script>
-    <script src="https://cdn.amcharts.com/lib/5/xy.js" defer></script>
-    <script src="https://cdn.amcharts.com/lib/5/percent.js" defer></script>
-    <script src="https://cdn.amcharts.com/lib/5/radar.js" defer></script>
-    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js" defer></script>
-    <script src="https://cdn.amcharts.com/lib/5/map.js" defer></script>
-    <script src="https://cdn.amcharts.com/lib/5/geodata/worldLow.js" defer></script>
-
     <!-- Custom JS -->
-    <script src="{{ asset('developer/js/widgets.bundle.js') }}" defer></script>
     <script src="{{ asset('developer/js/custom.js') }}" defer></script>
-    <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js' defer></script>
+    {{-- <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js' defer></script> --}}
+    <script defer src="//unpkg.com/alpinejs" ></script>
 
     @stack('scripts')
     @livewire('notifications')
     @vite('resources/js/app.js')
     @livewireScripts
+    <!-- Core JS -->    
+    <script src="{{ asset('developer/plugins/global/plugins.bundle.js') }}"></script>
+    <script src="{{ asset('developer/js/scripts.bundle.js') }}"></script>
+
 </body>
 </html>

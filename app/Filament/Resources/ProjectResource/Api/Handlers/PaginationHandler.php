@@ -17,7 +17,8 @@ class PaginationHandler extends Handlers {
     protected $selectedFields = [
         'id', 'title', 'is_active', 'is_featured', 'purpose',
         'city_id', 'state_id', 'developer_id', 'area_range_from',
-        'area_range_to', 'images', 'property_type_id',
+        'area_range_to', 'images', 'property_type_id','completion_percentage',
+        'enables_payment_plan', 'created_at', 'updated_at'
     ];
 
     public function handler()
@@ -50,7 +51,7 @@ class PaginationHandler extends Handlers {
             ->allowedSorts($this->getAllowedSorts() ?? [])
             ->allowedFilters($this->getAllowedFilters() ?? [])
             ->allowedIncludes($this->getAllowedIncludes() ?? [])
-            ->when(request()->hasAny(['price_min', 'price_max', 'space_min', 'space_max']), function ($query) {
+            ->when(request()->hasAny(['price_min', 'price_max', 'space_min', 'space_max', 'enables_payment_plan']), function ($query) {
                 $query->whereHas('units', function ($subQuery) {
                     $this->applyUnitFilters($subQuery);
                 });
@@ -64,6 +65,7 @@ class PaginationHandler extends Handlers {
             'price_max' => ['unit_price', '<='],
             'space_min' => ['total_area', '>='],
             'space_max' => ['total_area', '<='],
+            'enables_payment_plan' => ['enables_payment_plan', '=', true]
         ];
 
         foreach ($filters as $param => [$column, $operator]) {
@@ -96,7 +98,11 @@ class PaginationHandler extends Handlers {
             $item->images = $this->transformImages($item->images);
             $item->property_type = $item->propertyType?->name;
             if ($item->developer && $item->developer->logo) {
-                $item->developer->logo = asset('storage/' . $item->developer->logo);
+                $logo = $item->developer->logo;
+                if (!str_starts_with($logo, 'http://') && !str_starts_with($logo, 'https://')) {
+                    $logo = asset('storage/' . $logo);
+                }
+                $item->developer->logo = $logo;
             }
             return $item;
         });
@@ -105,7 +111,7 @@ class PaginationHandler extends Handlers {
     protected function getFormattedStartingPrice($item)
     {
         $startingPrice = $item->units()->min('unit_price');
-        return $startingPrice ? number_format($startingPrice, 2, '.', ',') : null;
+        return $startingPrice ? number_format($startingPrice, 0, '.', ',') : null;
     }
 
     protected function checkIfFavorite($item)
@@ -128,7 +134,7 @@ class PaginationHandler extends Handlers {
 
     public function getAllowedSorts(): array
     {
-        return ['id', 'title', 'is_active', 'is_featured', 'created_at'];
+        return ['id', 'title', 'is_active', 'enables_payment_plan','is_featured', 'created_at'];
     }
 
     // public function getAllowedFilters(): array
@@ -145,6 +151,7 @@ class PaginationHandler extends Handlers {
         return [
             'title',
             'purpose',
+            'enables_payment_plan',
             AllowedFilter::exact('city_id'),
             AllowedFilter::exact('state_id'),
             AllowedFilter::exact('developer_id'),
