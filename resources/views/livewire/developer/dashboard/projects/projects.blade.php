@@ -5,7 +5,7 @@
             <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
                 <div class="page-title d-flex flex-column justify-content-center gap-1 ms-3">
                     <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7">
-
+                        
                         <li class="breadcrumb-item text-gray-700 fw-bold lh-1 mx-n1">
                             <a href="{{ route('developer.dashboard') }}" class="text-hover-primary">
                                 <i class="ki-outline ki-home text-gray-700 fs-6"></i>
@@ -36,7 +36,7 @@
         <div class="d-flex flex-wrap align-items-center my-2">
 
             <div wire:loading wire:target="selected_is_active, selected_project_type" class="spinner-border spinner-border-sm mx-5" role="status" aria-hidden="true"></div>
-            <div class="me-2">
+            <div class="ms-2">
                 <!--begin::Select-->
                 <select wire:model.live="selected_is_active" class="form-select form-select-sm form-select-solid w-125px">
                     <option value="">كل الحالات</option>
@@ -46,7 +46,7 @@
                 <!--end::Select-->
             </div>
 
-            <div class="me-4">
+            <div class="ms-4">
                 <!--begin::Select-->
                 <select wire:model.live="selected_project_type" class="form-select form-select-sm form-select-solid w-125px">
                     <option value="">كل الانواع</option>
@@ -57,7 +57,7 @@
                 <!--end::Select-->
             </div>
 
-            <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#kt_modal_create_project">مشروع جديد</a>
+            <a href="{{ route('developer.projects.create') }}" class="btn btn-primary btn-sm">مشروع جديد</a>
         </div>
         <!--end::Actions-->
     </div>
@@ -68,7 +68,7 @@
     <div class="row gx-6 gx-xl-9 mb-5" dir="rtl">
         <div class="col-lg-6 col-xxl-4">
             <!--begin::Card-->
-            <div class="card h-100">
+            <div class="card h-100 border-dashed">
                 <!--begin::Card body-->
                 <div class="card-body p-9">
                     <!--begin::Heading-->
@@ -116,7 +116,7 @@
         </div>
         <div class="col-lg-6 col-xxl-4">
             <!--begin::Budget-->
-            <div class="card h-100">
+            <div class="card h-100 border-dashed">
                 <div class="card-body p-9">
                     <div class="fs-4 fw-semibold text-gray-900 mb-7">وحدات المشاريع</div>
                     <div class="fs-6 d-flex justify-content-between mb-4">
@@ -138,7 +138,7 @@
             <!--end::Budget-->
         </div>
 
-        {{-- <div class="col-lg-6 col-xxl-4">
+        <div class="col-lg-6 col-xxl-4">
             <!--begin::Budget-->
             <div class="card h-100">
                 <div class="card-body p-0">
@@ -153,9 +153,10 @@
                 </div>
             </div>
             <!--end::Budget-->
-        </div> --}}
+        </div>
     </div>
     <!--end::Stats-->
+    <div class="separator separator-dashed my-10"></div>
     <!--begin::Row-->
     <div class="row g-6 g-xl-9" dir="rtl">
         <!--begin::Col-->
@@ -164,14 +165,14 @@
             <!--begin::Card-->
             <a href="{{ route('developer.projects.show', $project->slug) }}" class="card border-hover-primary">
                 <!--begin::Card header-->
-                <div class="card-header border-0 pt-4">
+                <div class="card-header border-0 px-5">
                     <!--begin::Card Title-->
                     <div class="card-title m-0">
-                        <!--begin::Avatar-->
-                        <div class="bg-light">
-                            <img src="{{ asset($developer->logo) }}" alt="image" width="50px" />
-                        </div>
-                        <!--end::Avatar-->
+                        @if ($project->enables_payment_plan == 1)
+                            <span class="badge badge-light-dark fw-bold me-2 px-4 py-3">بيع علي الخارطة</span>
+                        @elseif ($project->enables_payment_plan == 0)
+                            <span class="badge badge-light-dark fw-bold me-2 px-4 py-3">بيع جاهز</span>
+                        @endif
                     </div>
                     <!--end::Car Title-->
                     <!--begin::Card toolbar-->
@@ -184,13 +185,13 @@
                 </div>
                 <!--end:: Card header-->
                 <!--begin:: Card body-->
-                <div class="card-body p-9 pt-1">
+                <div class="card-body p-8 pt-0 pb-7">
                     <!--begin::Name-->
                     <div class="fs-3 fw-bold text-gray-900">{{ $project->title }}</div>
                     <!--end::Name-->
                     <!--begin::Description-->
                     <p class="text-gray-500 fw-semibold fs-5 mt-1 mb-7">
-                        {{ \Illuminate\Support\Str::words(strip_tags($project->description), 50, '...') }}
+                        {{ \Illuminate\Support\Str::words(strip_tags($project->description), 10, '...') }}
                         <br>
                         <span class="fs-6 text-gray-500">{{ $project->created_at->format('M d, Y') }}</span>
                     </p>
@@ -203,13 +204,13 @@
                             <div class="fw-semibold text-gray-500">وحدات</div>
                         </div>
                         <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 mb-3">
-                            <div class="fs-6 text-gray-800 fw-bold">SAR {{ number_format($project->units->where('case', 1)->sum('total_amount'), 2) }}</div>
+                            <div class="fs-6 text-gray-800 fw-bold"> {{ number_format($project->units->where('case', 1)->sum('total_amount'), 0) }} <img src="{{ asset('developer/Saudi_Riyal_Symbol.png') }}" width="10px" alt=""></div>
                             <div class="fw-semibold text-gray-500">مباع</div>
                         </div>
                     </div>
                     <!--end::Info-->
                     <!--begin::Progress-->
-                    <div class="h-4px w-100 bg-light" data-bs-toggle="tooltip" title="This project {{ number_format($this->calculateProgressPercentage($project), 2) }}% sold">
+                    <div class="h-4px w-100 bg-light" data-bs-toggle="tooltip" title="This project {{ number_format($this->calculateProgressPercentage($project), 0) }}% sold">
                         <div class="{{ $this->calculateProgressPercentage($project) >= 50 ? 'bg-success' : 'bg-primary' }} rounded h-4px" role="progressbar" style="width: {{ $this->calculateProgressPercentage($project) }}%" aria-valuenow="{{ $this->calculateProgressPercentage($project) }}" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                 </div>

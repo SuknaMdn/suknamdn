@@ -168,4 +168,9 @@ class Project extends Model
     //         $this->attributes['location'] = $value;
     //     }
     // }
+
+    public function paymentMilestones(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ProjectPaymentMilestone::class)->orderBy('order');
+    }
 }

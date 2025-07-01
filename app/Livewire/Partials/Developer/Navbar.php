@@ -9,6 +9,21 @@ use App\Models\UnitOrder;
 
 class Navbar extends Component
 {
+    public $developer;
+
+    // nafath auth component
+    protected $listeners = [
+        'nafath-verified' => 'handleNafathVerified'
+    ];
+
+    public function handleNafathVerified($data)
+    {
+        // Handle what happens after successful Nafath verification
+        $this->developer = $this->developer->fresh(); // Refresh the model
+        session()->flash('success', 'تم التحقق من الهوية بنجاح! يمكنك الآن الوصول لجميع الخدمات');
+    }
+
+
     public $siteLogo;
     public $user;
     public $ordersCount;
@@ -17,6 +32,7 @@ class Navbar extends Component
     public function mount()
     {
         $settings = app(GeneralSettings::class);
+        $this->developer = auth()->user()->developer;
         $siteLogo = $settings->brand_logo;
         $this->siteLogo = $siteLogo;
         $this->user = auth()->user();

@@ -33,65 +33,75 @@ class UnitResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-library';
 
-    protected static ?string $navigationGroup = 'Properties';
-
-    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'العقارات';
+    public static function getNavigationSort(): ?int
+    {
+        return -2;
+    }
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Basic Information')
+                Forms\Components\Section::make('المعلومات الأساسية')
                     ->schema([
                         Forms\Components\Grid::make(2)
                             ->schema([
                                 TextInput::make('title')
-                            ->required()
-                            ->reactive() // Make it reactive to trigger changes
-                            ->afterStateUpdated(function (Set $set, Get $get, $state) {
-                                $projectTitle = optional(\App\Models\Project::find($get('project_id')))->title;
-                                if ($projectTitle && $state) {
-                                    $slug = Str::slug($projectTitle . ' ' . $state);
-                                    $set('slug', $slug);
-                                }
-                            }),
+                                    ->label('العنوان')
+                                    ->required()
+                                    ->reactive()
+                                    ->afterStateUpdated(function (Set $set, Get $get, $state) {
+                                        $projectTitle = optional(\App\Models\Project::find($get('project_id')))->title;
+                                        if ($projectTitle && $state) {
+                                            $slug = Str::slug($projectTitle . ' ' . $state);
+                                            $set('slug', $slug);
+                                        }
+                                    }),
 
-                        Select::make('project_id')
-                            ->label('Project')
-                            ->relationship('project', 'title')
-                            ->required()
-                            ->reactive()
-                            ->afterStateUpdated(function (Set $set, Get $get, $state) {
-                                $unitTitle = $get('title');
-                                $projectTitle = optional(\App\Models\Project::find($state))->title;
-                                if ($projectTitle && $unitTitle) {
-                                    $slug = Str::slug($projectTitle . ' ' . $unitTitle);
-                                    $set('slug', $slug);
-                                }
-                            }),
+                                Select::make('project_id')
+                                    ->label('المشروع')
+                                    ->relationship('project', 'title')
+                                    ->required()
+                                    ->reactive()
+                                    ->afterStateUpdated(function (Set $set, Get $get, $state) {
+                                        $unitTitle = $get('title');
+                                        $projectTitle = optional(\App\Models\Project::find($state))->title;
+                                        if ($projectTitle && $unitTitle) {
+                                            $slug = Str::slug($projectTitle . ' ' . $unitTitle);
+                                            $set('slug', $slug);
+                                        }
+                                    }),
 
-                        TextInput::make('slug')
-                            ->required()
-                            ->unique(ignoreRecord: true),
+                                TextInput::make('slug')
+                                    ->label('الرابط')
+                                    ->required()
+                                    ->unique(ignoreRecord: true),
 
                                 Forms\Components\Textarea::make('description')
+                                    ->label('الوصف')
+                                    ->required()
                                     ->columnSpan('full'),
                             ])
                             ->columns(3),
                     ]),
 
-                Forms\Components\Section::make('Location')
+                Forms\Components\Section::make('الموقع')
                     ->schema([
                         Forms\Components\Grid::make(2)
                             ->schema([
                                 Forms\Components\TextInput::make('latitude')
+                                    ->label('خط العرض')
                                     ->numeric()
                                     ->hidden(),
                                 Forms\Components\TextInput::make('longitude')
+                                    ->label('خط الطول')
                                     ->numeric()
                                     ->hidden(),
                             ]),
                         \Dotswan\MapPicker\Fields\Map::make('location')
+                            ->label('الموقع على الخريطة')
                             ->columnSpanFull()
                             ->defaultLocation(25.2048, 55.2708)
                             ->afterStateUpdated(function ($set, ?array $state): void {
@@ -119,7 +129,6 @@ class UnitResource extends Resource
                             ->showZoomControl()
                             ->draggable()
                             ->zoom(18)
-                            // GeoMan drawing tools
                             ->geoMan(true)
                             ->geoManEditable(true)
                             ->drawPolygon()
@@ -133,118 +142,152 @@ class UnitResource extends Resource
                     ])
                     ->collapsible(),
 
-                Forms\Components\Section::make('Building Information')
+                Forms\Components\Section::make('معلومات المبنى')
                     ->schema([
                         Forms\Components\Grid::make(3)
                             ->schema([
-                                Forms\Components\TextInput::make('building_number'),
-                                Forms\Components\TextInput::make('unit_number'),
-                                Forms\Components\TextInput::make('unit_type'),
-                                Forms\Components\TextInput::make('floor'),
+                                Forms\Components\TextInput::make('building_number')
+                                    ->label('رقم المبنى')
+                                    ->required(),
+                                Forms\Components\TextInput::make('unit_number')
+                                    ->label('رقم الوحدة')
+                                    ->required(),
+                                Forms\Components\TextInput::make('unit_type')
+                                    ->label('نوع الوحدة')
+                                    ->required(),
+                                Forms\Components\TextInput::make('floor')
+                                    ->label('الدور')
+                                    ->required(),
                             ])->columns(4),
                     ])
                     ->collapsible(),
 
-                Forms\Components\Section::make('Area Details')
+                Forms\Components\Section::make('تفاصيل المساحة')
                     ->schema([
                         Forms\Components\Grid::make(3)
                             ->schema([
                                 Forms\Components\TextInput::make('total_area')
+                                    ->label('المساحة الإجمالية')
                                     ->numeric()
-                                    ->step('0.01'),
+                                    ->step('0.01')
+                                    ->required(),
                                 Forms\Components\TextInput::make('internal_area')
+                                    ->label('المساحة الداخلية')
                                     ->numeric()
-                                    ->step('0.01'),
+                                    ->step('0.01')
+                                    ->required(),
                                 Forms\Components\TextInput::make('external_area')
+                                    ->label('المساحة الخارجية')
                                     ->numeric()
-                                    ->step('0.01'),
+                                    ->step('0.01')
+                                    ->required(),
                             ]),
                     ])
                     ->collapsible(),
 
-                Forms\Components\Section::make('Room Configuration')
+                Forms\Components\Section::make('توزيع الغرف')
                     ->schema([
                         Forms\Components\Grid::make(3)
                             ->schema([
                                 Forms\Components\TextInput::make('total_rooms')
-                                    ->numeric(),
+                                    ->label('إجمالي الغرف')
+                                    ->numeric()
+                                    ->required(),
                                 Forms\Components\TextInput::make('bedrooms')
-                                    ->numeric(),
+                                    ->label('غرف النوم')
+                                    ->numeric()
+                                    ->required(),
                                 Forms\Components\TextInput::make('living_rooms')
-                                    ->numeric(),
+                                    ->label('غرف المعيشة')
+                                    ->numeric()
+                                    ->required(),
                                 Forms\Components\TextInput::make('bathrooms')
-                                    ->numeric(),
+                                    ->label('دورات المياه')
+                                    ->numeric()
+                                    ->required(),
                                 Forms\Components\TextInput::make('kitchens')
-                                    ->numeric(),
+                                    ->label('المطابخ')
+                                    ->numeric()
+                                    ->required(),
                             ])->columns(5),
                     ])
                     ->collapsible(),
 
-                Forms\Components\Section::make('Sales Information')
+                Forms\Components\Section::make('معلومات البيع')
                     ->schema([
                         Forms\Components\Grid::make(2)
                             ->schema([
                                 Forms\Components\Select::make('sale_type')
+                                    ->label('نوع البيع')
+                                    ->hidden()
                                     ->options([
-                                        'direct' => 'Direct',
-                                        'installments' => 'Installments',
+                                        'cash' => 'نقدي',
+                                        'bank' => 'بنكي',
                                     ])
-                                    ->default('direct'),
+                                    ->default('direct')
+                                    ->required(),
                                 Forms\Components\TextInput::make('unit_price')
-                                    ->numeric(),
-                                Forms\Components\TextInput::make('property_tax')
+                                    ->label('سعر الوحدة')
                                     ->numeric()
-                                    ->default(15),
+                                    ->required(),
+                                Forms\Components\TextInput::make('property_tax')
+                                    ->label('الضريبة العقارية')
+                                    ->numeric()
+                                    ->default(15)
+                                    ->required(),
                                 Forms\Components\TextInput::make('total_amount')
-                                    ->numeric(),
-
-
+                                    ->label('المبلغ الإجمالي')
+                                    ->numeric()
+                                    ->required(),
                             ])->columns(4),
                     ])
                     ->collapsible(),
 
-                Forms\Components\Section::make('Additional Information')
+                Forms\Components\Section::make('معلومات إضافية')
                     ->schema([
                         Forms\Components\Select::make('after_sales_services')
-                            ->label('After Sales Services')
+                            ->label('خدمات ما بعد البيع')
                             ->multiple()
                             ->relationship('afterSalesServices', 'title')
                             ->preload()
                             ->searchable(),
 
                         Forms\Components\Select::make('additional_features')
-                            ->label('Additional Features')
+                            ->label('مميزات إضافية')
                             ->multiple()
                             ->relationship('additionalFeatures', 'title')
                             ->preload()
                             ->searchable(),
                         Forms\Components\Select::make('case')
-                            ->label('unit Case')
+                            ->label('حالة الوحدة')
                             ->default(0)
                             ->options([
                                 0 => 'جديد',
                                 1 => 'محجوز',
                                 2 => 'مباع',
-                            ]),
+                            ])
+                            ->required(),
 
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('Images')
+                Forms\Components\Section::make('الصور')
                     ->schema([
                         Forms\Components\Repeater::make('images')
                             ->relationship()
-                            ->grid(3) // This sets up 3 columns for repeater items
+                            ->grid(3)
                             ->schema([
                                 Forms\Components\FileUpload::make('image_path')
+                                    ->label('الصورة')
                                     ->image()
                                     ->directory('unit-images')
                                     ->disk('public')
                                     ->required(),
                                 Forms\Components\Select::make('type')
+                                    ->label('النوع')
                                     ->options([
-                                        'image' => 'Image',
-                                        'floor_plan' => 'Floor Plan',
+                                        'image' => 'صورة',
+                                        'floor_plan' => 'مخطط أرضي',
                                     ])
                                     ->default('image')
                                     ->required(),
@@ -260,44 +303,50 @@ class UnitResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
+                    ->label('اسم الوحدة')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('qr_code'),
-                Tables\Columns\TextColumn::make('unit_number'),
-                Tables\Columns\TextColumn::make('unit_type'),
-                Tables\Columns\TextColumn::make('floor'),
-                Tables\Columns\TextColumn::make('total_area'),
-                Tables\Columns\TextColumn::make('internal_area'),
-                Tables\Columns\TextColumn::make('external_area'),
-                Tables\Columns\TextColumn::make('total_rooms'),
-                Tables\Columns\TextColumn::make('bedrooms'),
-                Tables\Columns\TextColumn::make('living_rooms'),
-                Tables\Columns\TextColumn::make('bathrooms'),
-                Tables\Columns\TextColumn::make('kitchens'),
-                Tables\Columns\TextColumn::make('sale_type'),
-                Tables\Columns\TextColumn::make('unit_price'),
-                Tables\Columns\TextColumn::make('property_tax'),
-                Tables\Columns\TextColumn::make('total_amount'),
+                Tables\Columns\TextColumn::make('project.title')
+                    ->label('المشروع'),
+                Tables\Columns\TextColumn::make('unit_number')
+                    ->label('رقم الوحدة'),
+                Tables\Columns\TextColumn::make('unit_type')
+                    ->label('نوع الوحدة'),
+                Tables\Columns\TextColumn::make('floor')
+                    ->label('الدور'),
+                Tables\Columns\TextColumn::make('total_area')
+                    ->label('المساحة الإجمالية'),
+                Tables\Columns\TextColumn::make('total_rooms')
+                    ->label('إجمالي الغرف'),
+                Tables\Columns\TextColumn::make('unit_price')
+                    ->label('سعر الوحدة'),
+                Tables\Columns\TextColumn::make('total_amount')
+                    ->label('المبلغ الإجمالي'),
+                Tables\Columns\ImageColumn::make('qr_code')
+                    ->label('كود QR'),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->label('عرض'),
+                Tables\Actions\EditAction::make()
+                    ->label('تعديل'),
                 TableAction::make('generate_qr')
-                    ->label('Generate QR')
+                    ->label('إنشاء كود QR')
                     ->icon('heroicon-o-qr-code')
                     ->action(function (Unit $record) {
                         $record->generateQrCode();
                         Notification::make()
-                            ->title('QR Code generated successfully')
+                            ->title('تم إنشاء كود QR بنجاح')
                             ->success()
                             ->send();
                     })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->label('حذف المحدد'),
                 ]),
             ]);
     }
@@ -322,17 +371,31 @@ class UnitResource extends Resource
     public static function getActions(): array
     {
         return [
-            // ... your existing actions ...
             Action::make('generate_qr')
-                ->label('Generate QR')
+                ->label('إنشاء كود QR')
                 ->icon('heroicon-o-qr-code')
                 ->action(function (Unit $record) {
                     $record->generateQrCode();
                     Notification::make()
-                        ->title('QR Code generated successfully')
+                        ->title('تم إنشاء كود QR بنجاح')
                         ->success()
                         ->send();
                 })
         ];
+    }
+
+    public static function getModelLabel(): string
+    {
+        return 'وحدة';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'الوحدات';
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return 'الوحدات';
     }
 }

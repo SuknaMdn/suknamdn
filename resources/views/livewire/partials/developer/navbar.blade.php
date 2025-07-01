@@ -42,7 +42,7 @@
                                 <span class="menu-link">
                                     <span class="menu-title">الطلبات</span>
                                     <span class="menu-arrow d-lg-none"></span>
-                                    <span class="menu-badge">
+                                    <span class="menu-badge ms-0 me-2">
                                         <span class="badge badge-dark badge-circle fw-bold fs-7 me-1 ms-0">{{ $ordersCount }}</span>
                                     </span>
                                 </span>
@@ -158,9 +158,9 @@
 
                                 <div class="menu-sub menu-sub-lg-down-accordion menu-sub-lg-dropdown px-lg-2 py-lg-4 w-lg-200px">
 
-                                    <div class="menu-item">
+                                    {{-- <div class="menu-item">
 
-                                        <a class="menu-link" href="https://preview.keenthemes.com/html/metronic/docs/base/utilities" target="_blank" title="Check out over 200 in-house components, plugins and ready for use solutions" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
+                                        <a class="menu-link" href="" target="_blank" title="Check out over 200 in-house components, plugins and ready for use solutions" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
                                             <span class="menu-icon me-0 ms-2">
                                                 <i class="ki-outline ki-rocket fs-2"></i>
                                             </span>
@@ -172,7 +172,7 @@
 
                                     <div class="menu-item">
 
-                                        <a class="menu-link" href="https://preview.keenthemes.com/html/metronic/docs" target="_blank" title="Check out the complete documentation" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
+                                        <a class="menu-link" href="" target="_blank" title="Check out the complete documentation" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
                                             <span class="menu-icon me-0 ms-2">
                                                 <i class="ki-outline ki-abstract-26 fs-2"></i>
                                             </span>
@@ -184,7 +184,7 @@
 
                                     <div class="menu-item">
 
-                                        <a class="menu-link" href="https://preview.keenthemes.com/metronic8/demo44/layout-builder.html" title="Build your layout and export HTML for server side integration" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
+                                        <a class="menu-link" href="" title="Build your layout and export HTML for server side integration" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
                                             <span class="menu-icon me-0 ms-2">
                                                 <i class="ki-outline ki-switch fs-2"></i>
                                             </span>
@@ -196,14 +196,14 @@
 
                                     <div class="menu-item">
 
-                                        <a class="menu-link" href="https://preview.keenthemes.com/html/metronic/docs/getting-started/changelog" target="_blank">
+                                        <a class="menu-link" href="" target="_blank">
                                             <span class="menu-icon me-0 ms-2">
                                                 <i class="ki-outline ki-code fs-2"></i>
                                             </span>
                                             <span class="menu-title">Changelog v8.2.1</span>
                                         </a>
 
-                                    </div>
+                                    </div> --}}
 
                                 </div>
 
@@ -217,14 +217,37 @@
 
                 <div class="app-navbar flex-shrink-0">
 
-                    <div class="app-navbar-item">
+                    {{-- <div class="app-navbar-item">
                         <a href="#" class="btn btn-flex flex-center btn-sm fw-bold btn-dark py-3 w-40px h-40px w-md-auto disabled" disabled data-bs-toggle="modal" data-bs-target="#kt_modal_upgrade_plan">
                             <i class="ki-outline ki-verify d-inline-flex d-md-none fs-2 p-0 m-0"></i>
                             <span class="d-none d-md-inline ps-lg-1">ترقية الخطة</span>
                         </a>
+                    </div> --}}
+
+                    <div class="app-navbar-item ms-3">
+
+                        @if(auth()->user()->national_id !== null)
+                            <a class="btn btn-flex flex-center btn-sm fw-bold btn-success py-3 w-40px h-40px w-md-auto">
+                                <span class="pe-lg-1 d-none d-md-inline">موثق بنفاذ</span>
+                                <i class="ki-outline ki-verify fs-2 ps-1 m-0"></i>
+                            </a>
+                        @else
+                            <a class="btn btn-flex flex-center btn-sm fw-bold btn-dark py-3 w-40px h-40px w-md-auto" onclick="Livewire.dispatch('showNafathPopup')">
+                                <span class="pe-lg-1 d-none d-md-inline">توثيق الهوية عن طريق النفاذ الوطني</span> 
+                                <i class="ki-outline ki-information-2 fs-2 ps-1 m-0"></i>
+                            </a>
+                        @endif
                     </div>
 
-
+                    <!-- Nafath Auth Component -->
+                    <livewire:developer.components.nafath-auth 
+                        :user="$developer" 
+                        user-type="developer" 
+                        :is-required="true"
+                        :auto-check="true"
+                        title="توثيق هوية المطور"
+                        description="يجب توثيق هويتك باستخدام نفاذ للوصول إلى جميع خدمات المطورين"
+                    />
                     {{-- @livewire('developer.components.search') <!-- Search not used --> --}}
 
                     @livewire('developer.components.notifications') <!-- Notifications -->
@@ -311,7 +334,7 @@
                                 <a href="#" class="menu-link px-5">
                                     <span class="menu-title position-relative text-left">
                                         الثيم
-                                        <span class="ms-5 position-absolute translate-middle-y top-50 end-0">
+                                        <span class="ms-5 position-absolute translate-middle-y top-50 start-0">
                                             <i class="ki-outline ki-night-day theme-light-show fs-2"></i>
                                             <i class="ki-outline ki-moon theme-dark-show fs-2"></i>
                                         </span>

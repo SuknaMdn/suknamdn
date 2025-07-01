@@ -32,6 +32,7 @@ class DetailHandler extends Handlers
                 'operationalServices:id,title,icon,project_id',
                 'warranties:id,title,content,icon,project_id',
                 'landmarks:id,title,distance,project_id',
+                'paymentMilestones:id,project_id,name,percentage',
             ])
             ->where('is_active', true)
             ->first();
@@ -106,7 +107,29 @@ class DetailHandler extends Handlers
 
         // Add starting price to the project
         $startingPrice = $query->units()->min('unit_price');
-        $query->starting_from = $startingPrice ? number_format($startingPrice, 2, '.', ',') : null;
+        $query->starting_from = $startingPrice ? number_format($startingPrice, 0, '.', ',') : null;
+
+        // $proposedPaymentPlan = [];
+
+        // if ($query->enables_payment_plan && $query->paymentMilestones->isNotEmpty()) {
+        //     $startingPrice = $query->units()->min('unit_price'); // أو total_amount لو موجود
+        //     if ($startingPrice) {
+        //         foreach ($query->paymentMilestones as $index => $milestone) {
+        //             $calculatedAmount = ($startingPrice * $milestone->percentage) / 100;
+
+        //             $proposedPaymentPlan[] = [
+        //                 'index' => $index + 1,
+        //                 'name' => $milestone->name,
+        //                 'percentage' => $milestone->percentage,
+        //                 'amount' => fmod($calculatedAmount, 1) === 0.0 ? (int) $calculatedAmount : (float) $calculatedAmount,
+        //             ];
+        //         }
+        //     }
+        // }
+
+        // $query->proposed_payment_plan = $proposedPaymentPlan;
+        
+        $query->makeHidden(['paymentMilestones']);
 
         if (auth('api')->check()) {
             $user = auth('api')->user();
@@ -117,9 +140,8 @@ class DetailHandler extends Handlers
         } else {
             $query->is_favorite = false;
         }
-
+        $query->makeHidden(['main_contractor','istisna_contract_details']);
         $transformer = static::getApiTransformer();
-
         return new $transformer($query);
     }
 }

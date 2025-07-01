@@ -13,6 +13,18 @@ class Index extends Component
     public $developer;
     public $projects;
 
+    // nafath auth component
+    protected $listeners = [
+        'nafath-verified' => 'handleNafathVerified'
+    ];
+
+    public function handleNafathVerified($data)
+    {
+        // Handle what happens after successful Nafath verification
+        $this->developer = $this->developer->fresh(); // Refresh the model
+        session()->flash('success', 'تم التحقق من الهوية بنجاح! يمكنك الآن الوصول لجميع الخدمات');
+    }
+
     public function mount()
     {
         $this->developer = auth()->user()->developer;

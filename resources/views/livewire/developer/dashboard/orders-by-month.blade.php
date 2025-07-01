@@ -13,8 +13,8 @@
 
                     <span class="spinner-border spinner-border-sm ms-4 m-auto" wire:loading wire:target="filterPaymentPlan, filterStatus, filterProject, searchTerm,dateRange"></span>
 
-                    <div class="row g-3 align-items-center" wire:ignore>
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <div class="row g-3 align-items-center justify-content-end" wire:ignore>
+                        <div class="col">
                             <div class="d-flex align-items-center position-relative">
                                 <i class="ki-outline ki-magnifier fs-3 position-absolute me-5"></i>
                                 <input
@@ -27,7 +27,7 @@
                             </div>
                         </div>
 
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-2" dir="ltr">
+                        <div class="col" dir="ltr">
                             <select
                                 wire:model.live="filterStatus"
                                 data-control="select2"
@@ -41,7 +41,7 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-2" dir="ltr" wire:ignore>
+                        <div class="col" dir="ltr" wire:ignore>
                             <select
                                 wire:model.live="filterPaymentPlan"
                                 data-control="select2"
@@ -56,7 +56,7 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-2" dir="ltr" wire:ignore>
+                        <div class="col" dir="ltr" wire:ignore>
                             <select
                                 wire:model.live="filterProject"
                                 data-control="select2"
@@ -70,7 +70,7 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                        <div class="col">
                             <div class="input-group" dir="ltr">
                                 <input class="form-control form-control-solid rounded rounded-end-0"
                                 placeholder="اختر التاريخ"
@@ -110,10 +110,10 @@
                             @forelse ($orders as $order)
                             <tr>
                                 <td class="min-w-175px">
-                                    <div class="position-relative ps-6 ps-3 py-2">
-                                        <div class="position-absolute start-0 top-0 w-4px h-100 rounded-2 {{ $order->status == 'pending' ? 'bg-warning' : ($order->status == 'processing' ? 'bg-info' : ($order->status == 'confirmed' ? 'bg-success' : 'bg-danger')) }}"></div>
+                                    <div class="position-relative ps-6 py-2">
+                                        <div class="position-absolute end-0 top-0 w-3px h-100 rounded-2 {{ $order->status == 'pending' ? 'bg-warning' : ($order->status == 'processing' ? 'bg-info' : ($order->status == 'confirmed' ? 'bg-success' : 'bg-danger')) }}"></div>
                                         <a data-bs-toggle="modal" data-bs-target="#orderDetailsModal" wire:click="openOrderDetails({{ $order->id }})" class="mb-1 text-gray-900 text-hover-primary fw-bold cursor-pointer">
-                                            <div class="border border-gray-400 border-dashed rounded py-2 px-4 me-2" style="max-width: fit-content;">
+                                            <div class="border border-gray-400 border-dashed rounded py-2 px-4 me-4">
 
                                                 <span class="text-muted">الوحدة</span> <span class="fs-6 text-gray-700 fw-bold">{{ $order->unit->title }}</span>
                                                 @if ($order->unit->case == '1')
@@ -122,6 +122,13 @@
                                                     <span class="badge badge-light-dark fs-7">غير مباع</span>
                                                 @endif
                                                 <div class="fw-semibold text-gray-500">المشروع: {{ $order->unit->project->title }}</div>
+                                                <div class="fw-semibold text-gray-500">نوع المشروع : 
+                                                    @if ($order->unit->project->enables_payment_plan == 1)
+                                                        بيع علي الخارطة
+                                                    @else
+                                                        جاهز
+                                                    @endif
+                                                </div>
                                             </div>
                                         </a>
                                     </div>

@@ -32,6 +32,13 @@ class AboutSuknaController extends Controller
         }
     }
 
+    public function project_ownership(GeneralSettings $settings){
+        try {
+            return $settings->privacy_policy ?? 'Privacy policy not available';
+        } catch (\Exception $e) {
+            return 'An error occurred: ' . $e->getMessage();
+        }
+    }
 
     /**
      * Get the unit value for unit reservation.

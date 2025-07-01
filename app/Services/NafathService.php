@@ -14,16 +14,19 @@ class NafathService
     {
         $config = config('nafath');
         $this->client = new Client([
-            'base_uri' => 'https://nafath.api.elm.sa/stg/',
+            'base_uri' => 'https://nafath.api.elm.sa/',
             'headers' => [
-                'APP-ID' => '0d47c960',
-                'APP-KEY' => 'f77ee9a3121448e244e24c08275f9081',
+                'APP-ID' => 'a99667c2',
+                'APP-KEY' => '0ac6e0d1a3185a1afdfd1954ba9846af',
                 'Content-Type' => 'application/json;charset=utf-8',
             ]
         ]);
     }
     // 0d47c960
     // f77ee9a3121448e244e24c08275f9081
+    // live
+    // 'APP-ID' => 'a99667c2',
+    // 'APP-KEY' => '0ac6e0d1a3185a1afdfd1954ba9846af',
 
 
     /**
