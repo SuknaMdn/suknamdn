@@ -135,6 +135,7 @@ class SupportTicketController extends Controller
                 'category' => $ticket->category,
                 'created_at' => $ticket->created_at,
                 'user' => [
+                    'id' => $ticket->user->id,
                     'username' => $ticket->user->username,
                     'firstname' => $ticket->user->firstname,
                     'lastname' => $ticket->user->lastname,
@@ -147,6 +148,7 @@ class SupportTicketController extends Controller
                         'is_internal' => $message->is_internal,
                         'created_at' => $message->created_at,
                         'user' => [
+                            'id' => $message->user->id,
                             'username' => $message->user->username,
                         ],
                     ];
@@ -222,6 +224,7 @@ class SupportTicketController extends Controller
                     'message' => $message->message,
                     'created_at' => $message->created_at,
                     'user' => [
+                        'id' => $message->user->id,
                         'username' => $message->user->username,
                         'firstname' => $message->user->firstname,
                         'lastname' => $message->user->lastname,
