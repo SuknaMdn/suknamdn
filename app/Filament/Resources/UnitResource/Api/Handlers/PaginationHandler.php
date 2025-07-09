@@ -7,6 +7,7 @@ use Rupadana\ApiService\Http\Handlers;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use App\Filament\Resources\UnitResource;
+use App\Models\Unit;
 
 class PaginationHandler extends Handlers
 {
@@ -18,7 +19,7 @@ class PaginationHandler extends Handlers
     {
         $query = static::getEloquentQuery();
         $model = static::getModel();
-
+        
         $query = QueryBuilder::for($query)
             ->with(['images' => function ($query) {
                 $query->oldest()->limit(1);
@@ -63,7 +64,7 @@ class PaginationHandler extends Handlers
             ->allowedIncludes($this->getAllowedIncludes() ?? [])
             ->paginate(request()->query('per_page'))
             ->appends(request()->query());
-
+                
         $query->getCollection()->transform(function ($item) {
             if ($item->images->isNotEmpty()) {
                 $item->images = $item->images->map(function ($image) {
@@ -71,12 +72,25 @@ class PaginationHandler extends Handlers
                     return $image;
                 });
             }
+            $item->is_favorite = $this->checkIfFavorite($item);
             return $item;
         });
 
         return static::getApiTransformer()::collection($query);
     }
 
+    protected function checkIfFavorite($item)
+    {
+        if (!auth('api')->check()) {
+            return false;
+        }
+        
+        return auth('api')->user()
+            ->favoritesUnits()
+            ->where('favoritable_id', $item->id)
+            ->where('favoritable_type', Unit::class)
+            ->exists();
+    }
     public function getAllowedSorts(): array
     {
         return ['id', 'total_amount', 'unit_price','total_area', 'created_at'];
