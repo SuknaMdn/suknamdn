@@ -33,12 +33,12 @@
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">اكتشف وحدتك المثالية في أرقى المشاريع العقارية بالمملكة</h1>
             <p class="text-xl text-gray-300 mb-10 max-w-3xl mx-auto">سكنة توفر لك الفرصة لتصفح أحدث المشاريع العقارية وتقديم طلب اهتمام بالوحدات التي تناسبك</p>
             <div class="flex flex-col md:flex-row justify-center gap-4 mb-16">
-                <button class="gold-gradient text-slate-900 font-bold py-3 px-8 rounded-full flex items-center justify-center">
+                <a href="https://apps.apple.com/eg/app/sukna/id6745800622" class="gold-gradient text-slate-900 font-bold py-3 px-8 rounded-full flex items-center justify-center">
                     <i class="fab fa-apple mr-2 text-xl"></i> متجر التطبيقات
-                </button>
-                <button class="bg-white text-slate-900 font-bold py-3 px-8 rounded-full flex items-center justify-center">
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=com.suknamdn.sukna" class="bg-white text-slate-900 font-bold py-3 px-8 rounded-full flex items-center justify-center">
                     <i class="fab fa-google-play mr-2 text-xl"></i> جوجل بلاي
-                </button>
+                </a>
             </div>
             <a href="#features" class="scroll-down text-white inline-block">
                 <i class="fas fa-chevron-down text-3xl"></i>
@@ -201,27 +201,6 @@
         </div>
     </section>
 
-    <!-- Download CTA Section -->
-    <section class="py-20 bg-black text-white">
-        <div class="container mx-auto px-4 text-center">
-
-            <div class="flex justify-center mb-10">
-                <img src="{{ asset('images/logo-text.png') }}" alt="Sukna" class="max-h-20">
-            </div>
-            <h2 class="text-3xl md:text-4xl font-bold mb-6">ابدأ رحلتك العقارية المميزة الآن!</h2>
-            <p class="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">لا تفوت فرصًا عقارية استثنائية. حمل تطبيق سُكنا الآن</p>
-
-            <div class="flex flex-col md:flex-row justify-center gap-6 mb-12">
-                <button class="gold-gradient text-slate-900 font-bold py-4 px-8 rounded-full flex items-center justify-center">
-                    <i class="fab fa-apple mr-2 text-xl"></i> تنزيل على متجر التطبيقات
-                </button>
-                <button class="bg-white text-slate-900 font-bold py-4 px-8 rounded-full flex items-center justify-center">
-                    <i class="fab fa-google-play mr-2 text-xl"></i> احصل عليه من Google Play
-                </button>
-            </div>
-
-        </div>
-    </section>
 
     <!-- Footer -->
     <footer class="gold-gradient text-gray-700 py-12" dir="rtl">
