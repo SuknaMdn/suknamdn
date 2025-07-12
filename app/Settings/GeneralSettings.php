@@ -17,7 +17,7 @@ class GeneralSettings extends Settings
 
     public string $term_and_condition;
     public string $privacy_policy;
-    // public string $project_ownership;
+    public string $project_ownership;
     public string $about;
 
     public static function group(): string
