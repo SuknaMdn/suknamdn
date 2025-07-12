@@ -40,14 +40,14 @@ class ManagePages extends SettingsPage
                         ->required(),
                 ])->columns(1),
 
-                // Forms\Components\Section::make('project ownership')
-                // ->label(fn () => __('page.general_settings.sections.project_ownership.title'))
-                // ->description(fn () => __('page.general_settings.sections.project_ownership.description'))
-                // ->schema([
-                //     RichEditor::make('project_ownership')
-                //         ->label(fn () => __('page.general_settings.fields.project_ownership'))
-                //         ->required(),
-                // ])->columns(1),
+                Forms\Components\Section::make('project ownership')
+                ->label(fn () => __('page.general_settings.sections.project_ownership.title'))
+                ->description(fn () => __('page.general_settings.sections.project_ownership.description'))
+                ->schema([
+                    RichEditor::make('project_ownership')
+                        ->label(fn () => __('page.general_settings.fields.project_ownership'))
+                        ->required(),
+                ])->columns(1),
                 // about
                 Forms\Components\Section::make('About')
                 ->label(fn () => __('page.general_settings.sections.about.title'))

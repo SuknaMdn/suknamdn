@@ -61,7 +61,7 @@ class ManageGeneral extends SettingsPage
         $data['privacy_policy'] = $settings->privacy_policy;
 
         // project ownership
-        // $data['project_ownership'] = $settings->project_ownership;
+        $data['project_ownership'] = $settings->project_ownership;
         // about
         $data['about'] = $settings->about;
         $this->form->fill($data);
