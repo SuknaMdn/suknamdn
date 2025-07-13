@@ -121,9 +121,7 @@ class ProjectResource extends Resource
                                         ->directory('projects')
                                         ->disk('public')
                                         ->image()
-                                        ->imageEditor()
-                                        ->maxFiles(10)
-                                        ->helperText('يمكنك رفع حتى 10 صور'),
+                                        ->imageEditor(),
                                 ]),
 
                             Section::make('تفاصيل المساحة والبناء')
