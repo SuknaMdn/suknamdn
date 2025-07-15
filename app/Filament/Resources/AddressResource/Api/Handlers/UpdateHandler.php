@@ -28,6 +28,13 @@ class UpdateHandler extends Handlers {
 
         $model->fill($request->all());
 
+        if ($request->has('is_default') && $request->boolean('is_default') === true) {
+            static::getModel()
+                ::where('user_id', $model->user_id)
+                ->where('id', '!=', $model->id)
+                ->update(['is_default' => false]);
+        }
+        
         $model->save();
 
         return static::sendSuccessResponse($model, "Successfully Update Resource");

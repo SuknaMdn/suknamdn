@@ -10,47 +10,97 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
+    
+    <title>سُكنة - نبض المدن ومفاتيحها | اكتشف وحدتك المثالية</title>
+    <meta name="description" content="تطبيق سُكنة يوفر لك أحدث المشاريع العقارية في السعودية. تصفح آلاف الوحدات السكنية، احجز مباشرة، واستفد من عروض حصرية. حمّل التطبيق الآن!">
+    <meta name="keywords" content="تطبيق عقارات, سكن في السعودية, شقق للبيع, فلل للايجار, مشاريع عقارية, شراء منزل, سُكنة, sukna">
+    <meta name="author" content="سُكنة">
 
-    <title>{{ config('app.name') }} - @yield('title')</title>
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sukna.app/">
+    <meta property="og:title" content="سُكنة - نبض المدن ومفاتيحها">
+    <meta property="og:description" content="اكتشف وحدتك المثالية في أرقى المشاريع العقارية بالمملكة عبر تطبيق سُكنة">
+    <meta property="og:image" content="{{ asset('frontend/assets/img/sukna-15.jpg') }}">
 
-    <!-- Preload critical assets -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap" as="style">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://sukna.app/">
+    <meta name="twitter:title" content="سُكنة - نبض المدن ومفاتيحها">
+    <meta name="twitter:description" content="اكتشف وحدتك المثالية في أرقى المشاريع العقارية بالمملكة عبر تطبيق سُكنة">
+    <meta name="twitter:image" content="{{ asset('frontend/assets/img/sukna-15.jpg') }}">
+    <meta name="twitter:site" content="@sukna_app">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://sukna.app/">
+
+    <!-- Favicon and App Icons -->
+    <link rel="shortcut icon" href="{{ asset('frontend/assets/img/favicon.svg') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('frontend/assets/img/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('frontend/assets/img/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('frontend/assets/img/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('frontend/assets/img/site.webmanifest') }}">
+
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="{{ asset('frontend/assets/img/favicon.svg') }}">
+    <link rel="stylesheet" href="{{ asset('frontend/assets/css/plugins.css') }}">
+    <link rel="stylesheet" href="{{ asset('frontend/assets/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('frontend/assets/css/colors/navy.css') }}">
+    <link rel="preload" href="{{ asset('frontend/assets/css/fonts/ibm.css') }}" as="style" onload="this.rel='stylesheet'">
+    <!-- Schema.org markup for Google -->
+    <script type="application/ld+json">
+        {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "سُكنة",
+        "url": "https://sukna.app",
+        "logo": "https://sukna.app/assets/img/logodark2.svg",
+        "description": "نبض المدن ومفاتيحها لاكتشاف وحدات سكنية في أرقى المشاريع العقارية",
+        "sameAs": [
+            "https://twitter.com/sukna_app",
+            "https://www.facebook.com/suknaapp",
+            "https://www.instagram.com/suknaapp"
+        ]
+        }
+    </script>
 
-    <style>
-        *{
-            font-family: "IBM Plex Sans Arabic", sans-serif;
-        }
-        .hero-section {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('/api/placeholder/1920/1080');
-            background-size: cover;
-            background-position: center;
-        }
-        .gold-gradient {
-            background: linear-gradient(90deg, #d4af37 0%, #f2d675 100%);
-        }
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-        }
-        .scroll-down {
-            animation: bounce 2s infinite;
-        }
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-20px);}
-            60% {transform: translateY(-10px);}
-        }
-    </style>
+        <!-- Snap Pixel Code -->
+        <script type='text/javascript'>
+        (function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function()
+        {a.handleRequest?a.handleRequest.apply(a,arguments):a.queue.push(arguments)};
+        a.queue=[];var s='script';r=t.createElement(s);r.async=!0;
+        r.src=n;var u=t.getElementsByTagName(s)[0];
+        u.parentNode.insertBefore(r,u);})(window,document,
+        'https://sc-static.net/scevent.min.js');
+
+        snaptr('init', '0c89270f-3114-458a-9a55-084f4fdcdee7', {});
+
+        snaptr('track', 'PAGE_VIEW');
+
+        </script>
+        <!-- End Snap Pixel Code -->
+            
+        <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FBFHKK5MXZ"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-FBFHKK5MXZ');
+    </script>
+        <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-PC3CCCF2');</script>
+    <!-- End Google Tag Manager -->
+
+
     <!-- Alpine.js hide -->
     <style>[x-cloak] { display: none !important; }</style>
 
@@ -59,11 +109,25 @@
     @livewireStyles
 
 </head>
-<body class="antialiased min-h-screen">
-    {{ $slot }}
+<body>
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PC3CCCF2"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <div class="content-wrapper">
+        @livewire('partials.frontend.navbar')
+        {{ $slot }}
+        @livewire('partials.frontend.footer')
+
+    </div>
 
     @livewire('notifications')
 
+    <script src="{{ asset('frontend/assets/js/plugins.js') }}"></script>
+    <script src="{{ asset('frontend/assets/js/theme.js') }}"></script>
+    
     <!-- Scripts -->
     @filamentScripts
     @vite(['resources/js/app.js'])

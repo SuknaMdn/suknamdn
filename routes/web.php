@@ -6,6 +6,7 @@ use App\Livewire\Developer\Auth\Login;
 use App\Livewire\Frontend\ShowProject;
 use App\Http\Controllers\Api\PaymentController;
 use App\Livewire\Frontend\Auth\DeleteAccountForm;
+use App\Livewire\Frontend\DeveloperContact;
 use App\Livewire\Frontend\HomePage;
 use App\Livewire\Frontend\Privacy;
 
@@ -28,7 +29,8 @@ Route::middleware('throttle:60,1')->group(function () {
     //     return redirect()->route('login');
     // });
 
-    Route::get('/', HomePage::class)->name('home');
+    Route::get('/', HomePage::class)->name('front.home');
+    Route::get('/developer/contact', DeveloperContact::class)->name('front.developer.contact');
     Route::get('/privacy', Privacy::class)->name('privacy');
     Route::get('/projects/{slug}', ShowProject::class)->name('projects.show');
 

@@ -19,8 +19,10 @@ class NafathResource extends Resource
     protected static ?string $model = Nafath::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-identification';
-
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $navigationLabel = 'طلبات نافذ';
+    protected static ?string $modelLabel = 'طلبات نافذ';
+    protected static ?string $pluralModelLabel = 'طلبات نافذ';
+    protected static ?string $navigationGroup = 'نفاذ';
 
 
     public static function form(Form $form): Form

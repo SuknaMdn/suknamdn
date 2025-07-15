@@ -17,6 +17,7 @@ use App\Otp\UserRegistrationOtp;
 use HossamMonir\Msegat\Facades\Msegat;
 use App\Services\OtpAuthService;
 use App\Exceptions\OtpException;
+use App\Models\DeviceToken;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Spatie\Permission\Models\Role;
@@ -61,7 +62,9 @@ class AuthController extends Controller
         try {
             $validated = $request->validate([
                 'phone' => 'required|string|min:9|max:15',
-                'otp' => 'required|string|size:4'
+                'otp' => 'required|string|size:4',
+                'device_token' => 'nullable|string',
+                'device_type' => 'nullable|string|in:android,ios,web'
             ]);
 
             if ($this->otpService->verifyOtp($validated['phone'], $validated['otp'])) {
@@ -76,6 +79,11 @@ class AuthController extends Controller
                     $user->is_new_user = true;
                 }else {
                     $user->is_new_user = false;
+                }
+
+                // Store device token if provided
+                if (!empty($validated['device_token'])) {
+                    $this->storeDeviceToken($user, $validated['device_token'], $validated['device_type'] ?? 'unknown');
                 }
 
                 return response()->json([
@@ -116,6 +124,103 @@ class AuthController extends Controller
                 'message' => 'An unexpected error occurred',
                 'error' => $e->getMessage()
 
+            ], 500);
+        }
+    }
+
+    /**
+     * Store or update device token for push notifications
+     */
+    private function storeDeviceToken($user, $deviceToken, $deviceType)
+    {
+        try {
+            DeviceToken::updateOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'token' => $deviceToken
+                ],
+                [
+                    'device_type' => $deviceType,
+                    'updated_at' => now()
+                ]
+            );
+
+            Log::info('Device token stored successfully', [
+                'user_id' => $user->id,
+                'device_type' => $deviceType
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to store device token', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+      /**
+     * Update device token (separate endpoint)
+     */
+    public function updateDeviceToken(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'device_token' => 'required|string',
+                'device_type' => 'nullable|string|in:android,ios,web'
+            ]);
+
+            $user = auth()->user();
+            $this->storeDeviceToken($user, $validated['device_token'], $validated['device_type'] ?? 'unknown');
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Device token updated successfully'
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Failed to update device token', [
+                'user_id' => auth()->id(),
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to update device token'
+            ], 500);
+        }
+    }
+
+        /**
+     * Logout and remove device token
+     */
+    public function logout(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            
+            // Remove device token if provided
+            if ($request->has('device_token')) {
+                DeviceToken::where('user_id', $user->id)
+                    ->where('token', $request->input('device_token'))
+                    ->delete();
+            }
+
+            // Revoke current token
+            $request->user()->currentAccessToken()->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Successfully logged out'
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Logout error', [
+                'user_id' => auth()->id(),
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Logout failed'
             ], 500);
         }
     }

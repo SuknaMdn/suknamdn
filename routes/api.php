@@ -66,6 +66,10 @@ Route::middleware(['auth:sanctum','throttle:60,1'])->group(function () {
     Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'makeAsRead']);
     Route::post('/notifications/mark-all-as-read', [NotificationController::class, 'makeAllAsRead']);
 
+    // Sending notifications
+    Route::post('/notifications/send-to-user', [NotificationController::class, 'sendToUser']);
+    Route::post('/notifications/send-to-multiple', [NotificationController::class, 'sendToMultipleUsers']);
+
     // unit value for unit reservation
     Route::get('/unit-value-for-unit-reservation', [AboutSuknaController::class, 'getUnitValueForUnitReservation']);
 
