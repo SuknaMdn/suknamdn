@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Settings\MailSettings;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Notifications\ChannelManager;
+use App\Channels\FirebaseChannel;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -84,5 +86,10 @@ class AppServiceProvider extends ServiceProvider
         }
 
         \App\Models\UnitOrder::observe(\App\Observers\UnitOrderObserver::class);
+
+        // Register custom Firebase notification channel
+        $this->app->make(ChannelManager::class)->extend('firebase', function ($app) {
+            return new FirebaseChannel($app->make(\App\Services\FirebaseService::class));
+        });
     }
 }

@@ -103,12 +103,25 @@ class NafathController extends Controller
             $random = $request->input('random');
 
             $response = $this->nafathService->getMfaRequestStatus($nationalId, $transId, $random);
-
+            $nafathTable = Nafath::where('transaction_id', $transId)->first();
             if ($response['success']) {
+                if ($nafathTable) {
+                    $nafathTable->update([
+                        'status' => $response['data']['status'],
+                        'verified_at' => now(),
+                    ]);
+                }
                 return response()->json($response['data'], 200);
+                
             } else {
+                if ($nafathTable) {
+                    $nafathTable->update([
+                        'status' => $response['data']['status'],
+                    ]);
+                }
                 return response()->json($response['error'], $response['error']['code'] ?? 500);
             }
+
         } catch (Exception $e) {
             Log::error('Nafath getMfaRequestStatus error: ' . $e->getMessage());
             return response()->json(['message' => $e->getMessage()], 500);

@@ -56,7 +56,50 @@ class OtpAuthService
     /**
      * Send OTP securely
      */
-    public function sendOtp(string $phoneNumber)
+    // public function sendOtp(string $phoneNumber)
+    // {
+    //     try {
+    //         // Validate and prepare phone number
+    //         $formattedPhone = OtpException::prepareSaudiPhoneNumber($phoneNumber);
+
+    //         if (!OtpException::validateSaudiPhoneNumber($formattedPhone)) {
+    //             throw OtpException::log(
+    //                 'Invalid phone number',
+    //                 OtpException::ERROR_INVALID_PHONE,
+    //                 $phoneNumber
+    //             );
+    //         }
+
+    //         $otp = $this->generateOtp($formattedPhone);
+
+    //         // Send OTP via Msegat
+    //         $response = Msegat::numbers([$formattedPhone])
+    //         ->message('رمز الدخول : ' . $otp)
+    //         ->sendWithDefaultSender();
+
+    //         // $response = Msegat::getSenders();
+
+    //         return response()->json([
+    //             'status' => $response,
+    //             'otp' => $otp
+    //         ]);
+
+    //     } catch (OtpException $e) {
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => $e->getMessage(),
+    //             'error_code' => $e->getCode()
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => 'An unexpected error occurred',
+    //             'error_code' => 500
+    //         ]);
+    //     }
+    // }
+
+        public function sendOtp(string $phoneNumber)
     {
         try {
             // Validate and prepare phone number
@@ -72,33 +115,35 @@ class OtpAuthService
 
             $otp = $this->generateOtp($formattedPhone);
 
-            // Send OTP via Msegat
             $response = Msegat::numbers([$formattedPhone])
-            ->message('رمز الدخول : ' . $otp)
-            ->sendWithDefaultSender();
+                ->message('رمز الدخول : ' . $otp)
+                ->sendWithDefaultSender();
 
-            // $response = Msegat::getSenders();
+            // تحويل الاستجابة إلى مصفوفة
+            $responseArray = $response->getData(true);
 
+            // استخراج الرسالة
+            $message = $responseArray['response']['message'] ?? 'OTP sent successfully';
             return response()->json([
-                'status' => $response,
+                'status' => true,
+                'message' => $message,
                 'otp' => $otp
             ]);
-
         } catch (OtpException $e) {
             return response()->json([
-                'status' => 'error',
+                'status' => false,
                 'message' => $e->getMessage(),
-                'error_code' => $e->getCode()
+                'otp' => null
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
+                'status' => false,
                 'message' => 'An unexpected error occurred',
-                'error_code' => 500
+                'otp' => null
             ]);
         }
     }
-
+    
     /**
      * Verify OTP with enhanced security and virtual account support
      */
